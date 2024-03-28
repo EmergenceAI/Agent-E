@@ -1,0 +1,56 @@
+[build-system]
+requires = ["uv"]
+build-backend = "uv.build_api"
+
+[project]
+name = "Agent-E"
+version = "0.1.0"
+description = "Automation tool for agents to perform tasks starting with on the web browser."
+authors = [
+    { name = "Deepak Akkil", email = "deepak.akkil@merlyn.org" },
+    { name = "Tamer Abuelsaad", email = "tea@merlyn.org" },
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "nltk==3.8.1",
+    "playwright==1.41.2",
+    "pyautogen==0.2.15",
+    "pydantic==2.6.2",
+    "python-dotenv==1.0.0",
+    "tabulate==0.9.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.0.79", # Ruff as a dev dependency for linting
+    "sphinx>=4.0.0", # for docs generation
+    "sphinx-rtd-theme>=1.0.0" # for docs generation
+]
+
+[project.scripts]
+run = "main.py"
+
+[tool.ruff]
+src = ["ae"]
+fix = false
+show-fixes = true
+show-source = true
+line-length = 250
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # pyflakes
+    "I",  # isort
+    "UP",  # pyupgrade
+    "W",  # pycodestyle warning
+]
+ignore = ["E501"]  # Ignore the "line too long" rule
+
+
+[tool.ruff.lint.isort]
+force-single-line = true
+order-by-type = false

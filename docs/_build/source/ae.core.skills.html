@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ae.core.skills package &mdash; Agent-E  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Agent-E
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ae.core.skills package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ae.core.skills.click_using_selector">ae.core.skills.click_using_selector module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.click_using_selector.click"><code class="docutils literal notranslate"><span class="pre">click()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.click_using_selector.do_click"><code class="docutils literal notranslate"><span class="pre">do_click()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.click_using_selector.is_element_present"><code class="docutils literal notranslate"><span class="pre">is_element_present()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.click_using_selector.perform_javascript_click"><code class="docutils literal notranslate"><span class="pre">perform_javascript_click()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.click_using_selector.perform_playwright_click"><code class="docutils literal notranslate"><span class="pre">perform_playwright_click()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.enter_text_and_click">ae.core.skills.enter_text_and_click module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_and_click.enter_text_and_click"><code class="docutils literal notranslate"><span class="pre">enter_text_and_click()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.enter_text_using_selector">ae.core.skills.enter_text_using_selector module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry</span></code></a><ul>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry.query_selector"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.query_selector</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry.text"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.text</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.query_selector</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.text</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.bulk_enter_text"><code class="docutils literal notranslate"><span class="pre">bulk_enter_text()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.custom_fill_element"><code class="docutils literal notranslate"><span class="pre">custom_fill_element()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.do_entertext"><code class="docutils literal notranslate"><span class="pre">do_entertext()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.entertext"><code class="docutils literal notranslate"><span class="pre">entertext()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.get_dom_with_content_type">ae.core.skills.get_dom_with_content_type module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.get_dom_with_content_type.get_dom_with_content_type"><code class="docutils literal notranslate"><span class="pre">get_dom_with_content_type()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.get_url">ae.core.skills.get_url module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.get_url.geturl"><code class="docutils literal notranslate"><span class="pre">geturl()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.get_user_input">ae.core.skills.get_user_input module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.get_user_input.get_user_input"><code class="docutils literal notranslate"><span class="pre">get_user_input()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.open_url">ae.core.skills.open_url module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.open_url.openurl"><code class="docutils literal notranslate"><span class="pre">openurl()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills.press_key_combination">ae.core.skills.press_key_combination module</a><ul>
+<li><a class="reference internal" href="#ae.core.skills.press_key_combination.do_press_key_combination"><code class="docutils literal notranslate"><span class="pre">do_press_key_combination()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.press_key_combination.press_enter_key"><code class="docutils literal notranslate"><span class="pre">press_enter_key()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.skills.press_key_combination.press_key_combination"><code class="docutils literal notranslate"><span class="pre">press_key_combination()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.skills">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Agent-E</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ae.core.skills package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/ae.core.skills.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ae-core-skills-package">
+<h1>ae.core.skills package<a class="headerlink" href="#ae-core-skills-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ae.core.skills.click_using_selector">
+<span id="ae-core-skills-click-using-selector-module"></span><h2>ae.core.skills.click_using_selector module<a class="headerlink" href="#module-ae.core.skills.click_using_selector" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.click_using_selector.click">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.click_using_selector.</span></span><span class="sig-name descname"><span class="pre">click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_before_execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.click_using_selector.click" title="Link to this definition"></a></dt>
+<dd><p>Executes a click action on the element matching the given query selector string within the currently open web page.
+If there is no page open, it will raise a ValueError. An optional wait time can be specified before executing the click logic. Use this to wait for the page to load especially when the last action caused the DOM/Page to load.</p>
+<p>Parameters:
+- selector: The query selector string to identify the element for the click action.
+- wait_before_execution: Optional wait time in seconds before executing the click event logic. Defaults to 0.0 seconds.</p>
+<p>Returns:
+- Success if the click was successful, Appropropriate error message otherwise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.click_using_selector.do_click">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.click_using_selector.</span></span><span class="sig-name descname"><span class="pre">do_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_before_execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.click_using_selector.do_click" title="Link to this definition"></a></dt>
+<dd><p>Executes the click action on the element with the given selector within the provided page.</p>
+<p>Parameters:
+- page: The Playwright page instance.
+- selector: The query selector string to identify the element for the click action.
+- wait_before_execution: Optional wait time in seconds before executing the click event logic.</p>
+<p>Returns:
+- A message indicating success or failure of the click.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.click_using_selector.is_element_present">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.click_using_selector.</span></span><span class="sig-name descname"><span class="pre">is_element_present</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ae.core.skills.click_using_selector.is_element_present" title="Link to this definition"></a></dt>
+<dd><p>Checks if an element is present on the page.</p>
+<p>Parameters:
+- page: The Playwright page instance.
+- selector: The query selector string to identify the element.</p>
+<p>Returns:
+- True if the element is present, False otherwise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.click_using_selector.perform_javascript_click">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.click_using_selector.</span></span><span class="sig-name descname"><span class="pre">perform_javascript_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.skills.click_using_selector.perform_javascript_click" title="Link to this definition"></a></dt>
+<dd><p>Performs a click action on the element using JavaScript.</p>
+<p>Parameters:
+- page: The Playwright page instance.
+- selector: The query selector string of the element.</p>
+<p>Returns:
+- None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.click_using_selector.perform_playwright_click">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.click_using_selector.</span></span><span class="sig-name descname"><span class="pre">perform_playwright_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ElementHandle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.skills.click_using_selector.perform_playwright_click" title="Link to this definition"></a></dt>
+<dd><p>Performs a click action on the element using Playwright’s click method.</p>
+<p>Parameters:
+- element: The Playwright ElementHandle instance representing the element to be clicked.
+- selector: The query selector string of the element.</p>
+<p>Returns:
+- None</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.enter_text_and_click">
+<span id="ae-core-skills-enter-text-and-click-module"></span><h2>ae.core.skills.enter_text_and_click module<a class="headerlink" href="#module-ae.core.skills.enter_text_and_click" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_and_click.enter_text_and_click">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_and_click.</span></span><span class="sig-name descname"><span class="pre">enter_text_and_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_to_enter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">click_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_before_click_execution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.enter_text_and_click.enter_text_and_click" title="Link to this definition"></a></dt>
+<dd><p>Enters text into an element and then clicks on another element.</p>
+<p>Parameters:
+- text_selector: The selector for the element to enter text into. It should be a properly formatted DOM selector query, for example [mmid=’1234’], where the text will be entered. Use the mmid attribute.
+- text_to_enter: The text to enter into the element specified by text_selector.
+- click_selector: The selector for the element to click. It should be a properly formatted DOM selector query, for example [mmid=’1234’].
+- wait_before_click_execution: Optional wait time in seconds before executing the click action. Default is 0.0.</p>
+<p>Returns:
+- A message indicating the success or failure of the text entry and click.</p>
+<p>Raises:
+- ValueError: If no active page is found. The OpenURL command opens a new page.</p>
+<p>Example usage:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">await</span> <span class="pre">enter_text_and_click(&quot;[mmid='1234']&quot;,</span> <span class="pre">&quot;Hello,</span> <span class="pre">World!&quot;,</span> <span class="pre">&quot;[mmid='5678']&quot;,</span> <span class="pre">wait_before_click_execution=1.5)</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.enter_text_using_selector">
+<span id="ae-core-skills-enter-text-using-selector-module"></span><h2>ae.core.skills.enter_text_using_selector module<a class="headerlink" href="#module-ae.core.skills.enter_text_using_selector" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.EnterTextEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_using_selector.</span></span><span class="sig-name descname"><span class="pre">EnterTextEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents an entry for text input.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.EnterTextEntry.query_selector">
+<span class="sig-name descname"><span class="pre">query_selector</span></span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry.query_selector" title="Link to this definition"></a></dt>
+<dd><p>A valid DOM selector query. Use the mmid attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.EnterTextEntry.text">
+<span class="sig-name descname"><span class="pre">text</span></span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry.text" title="Link to this definition"></a></dt>
+<dd><p>The text to enter in the element identified by the query_selector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">query_selector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.bulk_enter_text">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_using_selector.</span></span><span class="sig-name descname"><span class="pre">bulk_enter_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.bulk_enter_text" title="Link to this definition"></a></dt>
+<dd><p>Enters text into multiple DOM elements using a bulk operation.</p>
+<p>This function enters text into multiple DOM elements using a bulk operation.
+It takes a list of dictionaries, where each dictionary contains a ‘query_selector’ and ‘text’ pair.
+The function internally calls the ‘entertext’ function to perform the text entry operation for each entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entries</strong> – List of objects, each containing ‘query_selector’ and ‘text’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of dictionaries, each containing ‘query_selector’ and the result of the operation.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<dl class="simple">
+<dt>entries = [</dt><dd><p>{“query_selector”: “#username”, “text”: “test_user”},
+{“query_selector”: “#password”, “text”: “test_password”}</p>
+</dd>
+</dl>
+<p>]
+results = await bulk_enter_text(entries)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Each entry in the ‘entries’ list should be a dictionary with ‘query_selector’ and ‘text’ keys.</p></li>
+<li><p>The result is a list of dictionaries, where each dictionary contains the ‘query_selector’ and the result of the operation.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.custom_fill_element">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_using_selector.</span></span><span class="sig-name descname"><span class="pre">custom_fill_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_to_enter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.custom_fill_element" title="Link to this definition"></a></dt>
+<dd><p>Sets the value of a DOM element to a specified text without triggering keyboard input events.</p>
+<p>This function directly sets the ‘value’ property of a DOM element identified by the given CSS selector,
+effectively changing its current value to the specified text. This approach bypasses the need for
+simulating keyboard typing, providing a more efficient and reliable way to fill in text fields,
+especially in automated testing scenarios where speed and accuracy are paramount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>Page</em>) – The Playwright Page object representing the browser tab in which the operation will be performed.</p></li>
+<li><p><strong>selector</strong> (<em>str</em>) – The CSS selector string used to locate the target DOM element. The function will apply the
+text change to the first element that matches this selector.</p></li>
+<li><p><strong>text_to_enter</strong> (<em>str</em>) – The text value to be set in the target element. Existing content will be overwritten.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>await custom_fill_element(page, ‘#username’, ‘test_user’)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function does not trigger input-related events (like ‘input’ or ‘change’). If application logic
+relies on these events being fired, additional steps may be needed to simulate them.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.do_entertext">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_using_selector.</span></span><span class="sig-name descname"><span class="pre">do_entertext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text_to_enter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_keyboard_fill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.do_entertext" title="Link to this definition"></a></dt>
+<dd><p>Performs the text entry operation on a DOM element.</p>
+<p>This function performs the text entry operation on a DOM element identified by the given CSS selector.
+It applies a pulsating border effect to the element during the operation for visual feedback.
+The function supports both direct setting of the ‘value’ property and simulating keyboard typing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>Page</em>) – The Playwright Page object representing the browser tab in which the operation will be performed.</p></li>
+<li><p><strong>selector</strong> (<em>str</em>) – The CSS selector string used to locate the target DOM element.</p></li>
+<li><p><strong>text_to_enter</strong> (<em>str</em>) – The text value to be set in the target element. Existing content will be overwritten.</p></li>
+<li><p><strong>use_keyboard_fill</strong> (<em>bool</em><em>, </em><em>optional</em>) – Determines whether to simulate keyboard typing or not.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Explanation of the outcome of this operation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>result = await do_entertext(page, ‘#username’, ‘test_user’)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The ‘use_keyboard_fill’ parameter determines whether to simulate keyboard typing or not.</p></li>
+<li><p>If ‘use_keyboard_fill’ is set to True, the function uses the ‘page.keyboard.type’ method to enter the text.</p></li>
+<li><p>If ‘use_keyboard_fill’ is set to False, the function uses the ‘custom_fill_element’ method to enter the text.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.enter_text_using_selector.entertext">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.enter_text_using_selector.</span></span><span class="sig-name descname"><span class="pre">entertext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry" title="ae.core.skills.enter_text_using_selector.EnterTextEntry"><span class="pre">EnterTextEntry</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.enter_text_using_selector.entertext" title="Link to this definition"></a></dt>
+<dd><p>Enters text into a DOM element identified by a CSS selector.</p>
+<p>This function enters the specified text into a DOM element identified by the given CSS selector.
+It uses the Playwright library to interact with the browser and perform the text entry operation.
+The function supports both direct setting of the ‘value’ property and simulating keyboard typing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry</strong> (<a class="reference internal" href="#ae.core.skills.enter_text_using_selector.EnterTextEntry" title="ae.core.skills.enter_text_using_selector.EnterTextEntry"><em>EnterTextEntry</em></a>) – An object containing ‘query_selector’ (DOM selector query using mmid attribute)
+and ‘text’ (text to enter on the element).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Explanation of the outcome of this operation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>entry = EnterTextEntry(query_selector=’#username’, text=’test_user’)
+result = await entertext(entry)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The ‘query_selector’ should be a valid CSS selector that uniquely identifies the target element.</p></li>
+<li><p>The ‘text’ parameter specifies the text to be entered into the element.</p></li>
+<li><p>The function uses the PlaywrightManager to manage the browser instance.</p></li>
+<li><p>If no active page is found, an error message is returned.</p></li>
+<li><p>The function internally calls the ‘do_entertext’ function to perform the text entry operation.</p></li>
+<li><p>The ‘do_entertext’ function applies a pulsating border effect to the target element during the operation.</p></li>
+<li><p>The ‘use_keyboard_fill’ parameter in ‘do_entertext’ determines whether to simulate keyboard typing or not.</p></li>
+<li><p>If ‘use_keyboard_fill’ is set to True, the function uses the ‘page.keyboard.type’ method to enter the text.</p></li>
+<li><p>If ‘use_keyboard_fill’ is set to False, the function uses the ‘custom_fill_element’ method to enter the text.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.get_dom_with_content_type">
+<span id="ae-core-skills-get-dom-with-content-type-module"></span><h2>ae.core.skills.get_dom_with_content_type module<a class="headerlink" href="#module-ae.core.skills.get_dom_with_content_type" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.get_dom_with_content_type.get_dom_with_content_type">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.get_dom_with_content_type.</span></span><span class="sig-name descname"><span class="pre">get_dom_with_content_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ae.core.skills.get_dom_with_content_type.get_dom_with_content_type" title="Link to this definition"></a></dt>
+<dd><p>Retrieves and processes the DOM of the active page in a browser instance based on the specified content type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content_type</strong> (<em>str</em>) – The type of content to extract. Possible values are:
+- ‘text_only’: Extracts the innerText of the highest element in the document and responds with text.
+- ‘input_fields’: Extracts the interactive elements in the DOM and responds with a JSON object.
+- ‘all_fields’: Extracts all the fields in the DOM and responds with a JSON object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The processed content based on the specified content type. This could be:
+- A JSON object for ‘input_fields’ with just inputs.
+- Plain text for ‘text_only’.
+- A minified DOM represented as a JSON object for ‘all_fields’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, Any] | str | None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unsupported content_type is provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.get_url">
+<span id="ae-core-skills-get-url-module"></span><h2>ae.core.skills.get_url module<a class="headerlink" href="#module-ae.core.skills.get_url" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.get_url.geturl">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.get_url.</span></span><span class="sig-name descname"><span class="pre">geturl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.get_url.geturl" title="Link to this definition"></a></dt>
+<dd><p>Returns the full URL of the current page</p>
+<p>Parameters:</p>
+<p>Returns:
+- Full URL the browser’s active page.</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.get_user_input">
+<span id="ae-core-skills-get-user-input-module"></span><h2>ae.core.skills.get_user_input module<a class="headerlink" href="#module-ae.core.skills.get_user_input" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.get_user_input.get_user_input">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.get_user_input.</span></span><span class="sig-name descname"><span class="pre">get_user_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">questions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ae.core.skills.get_user_input.get_user_input" title="Link to this definition"></a></dt>
+<dd><p>Asks the user a list of questions and returns the answers in a dictionary.</p>
+<p>Parameters:
+- questions: A list of questions to ask the user [“What is Username?”, “What is your password?”].</p>
+<p>Returns:
+- Newline separated list of questions to ask the user</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.open_url">
+<span id="ae-core-skills-open-url-module"></span><h2>ae.core.skills.open_url module<a class="headerlink" href="#module-ae.core.skills.open_url" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.open_url.openurl">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.open_url.</span></span><span class="sig-name descname"><span class="pre">openurl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.open_url.openurl" title="Link to this definition"></a></dt>
+<dd><p>Opens a specified URL in the active browser instance. Waits for an initial load event, then waits for either
+the ‘domcontentloaded’ event or a configurable timeout, whichever comes first.</p>
+<p>Parameters:
+- url: The URL to navigate to.
+- timeout: Additional time in seconds to wait after the initial load before considering the navigation successful.</p>
+<p>Returns:
+- URL of the new page.</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills.press_key_combination">
+<span id="ae-core-skills-press-key-combination-module"></span><h2>ae.core.skills.press_key_combination module<a class="headerlink" href="#module-ae.core.skills.press_key_combination" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.press_key_combination.do_press_key_combination">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.press_key_combination.</span></span><span class="sig-name descname"><span class="pre">do_press_key_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_combination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ae.core.skills.press_key_combination.do_press_key_combination" title="Link to this definition"></a></dt>
+<dd><p>Presses a key combination on the provided page.</p>
+<p>This function simulates the pressing of a key or a combination of keys on a web page.
+The <cite>key_combination</cite> should be a string that represents the keys to be pressed, separated by ‘+’ if it’s a combination.
+For example, ‘Control+C’ to copy or ‘Alt+F4’ to close a window on Windows.</p>
+<p>Parameters:
+- page (Page): The Playwright page instance.
+- key_combination (str): The key combination to press, represented as a string. For combinations, use ‘+’ as a separator.</p>
+<p>Returns:
+bool: True if success and False if failed</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.press_key_combination.press_enter_key">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.press_key_combination.</span></span><span class="sig-name descname"><span class="pre">press_enter_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.press_key_combination.press_enter_key" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.skills.press_key_combination.press_key_combination">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.skills.press_key_combination.</span></span><span class="sig-name descname"><span class="pre">press_key_combination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_combination</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.skills.press_key_combination.press_key_combination" title="Link to this definition"></a></dt>
+<dd><p>Presses a key combination on the current active page managed by PlaywrightManager.</p>
+<p>This function simulates the pressing of a key or a combination of keys on the current active web page.
+The <cite>key_combination</cite> should be a string that represents the keys to be pressed, separated by ‘+’ if it’s a combination.
+For example, ‘Control+C’ to copy or ‘Alt+F4’ to close a window on Windows.</p>
+<p>Parameters:
+- key_combination (Annotated[str, “The key combination to press, e.g., ‘Control+C’.”]): The key combination to press, represented as a string. For combinations, use ‘+’ as a separator.</p>
+<p>Raises:
+- ValueError: If no active page is found.</p>
+<p>Returns:
+str: status of the operation expressed as a string</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.skills">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ae.core.skills" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Merlyn Mind Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

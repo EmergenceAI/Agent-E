@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ae.utils package &mdash; Agent-E  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Agent-E
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ae.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ae.utils.cli_helper">ae.utils.cli_helper module</a><ul>
+<li><a class="reference internal" href="#ae.utils.cli_helper.answer_questions_over_cli"><code class="docutils literal notranslate"><span class="pre">answer_questions_over_cli()</span></code></a></li>
+<li><a class="reference internal" href="#ae.utils.cli_helper.async_input"><code class="docutils literal notranslate"><span class="pre">async_input()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.utils.dom_helper">ae.utils.dom_helper module</a><ul>
+<li><a class="reference internal" href="#ae.utils.dom_helper.wait_for_non_loading_dom_state"><code class="docutils literal notranslate"><span class="pre">wait_for_non_loading_dom_state()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.utils.get_detailed_accessibility_tree">ae.utils.get_detailed_accessibility_tree module</a><ul>
+<li><a class="reference internal" href="#ae.utils.get_detailed_accessibility_tree.do_get_accessibility_info"><code class="docutils literal notranslate"><span class="pre">do_get_accessibility_info()</span></code></a></li>
+<li><a class="reference internal" href="#ae.utils.get_detailed_accessibility_tree.get_dom_with_accessibility_info"><code class="docutils literal notranslate"><span class="pre">get_dom_with_accessibility_info()</span></code></a></li>
+<li><a class="reference internal" href="#ae.utils.get_detailed_accessibility_tree.get_element_attributes"><code class="docutils literal notranslate"><span class="pre">get_element_attributes()</span></code></a></li>
+<li><a class="reference internal" href="#ae.utils.get_detailed_accessibility_tree.get_node_dom_element"><code class="docutils literal notranslate"><span class="pre">get_node_dom_element()</span></code></a></li>
+<li><a class="reference internal" href="#ae.utils.get_detailed_accessibility_tree.is_space_delimited_mmid"><code class="docutils literal notranslate"><span class="pre">is_space_delimited_mmid()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.utils.js_helper">ae.utils.js_helper module</a><ul>
+<li><a class="reference internal" href="#ae.utils.js_helper.escape_js_message"><code class="docutils literal notranslate"><span class="pre">escape_js_message()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.utils.logger">ae.utils.logger module</a><ul>
+<li><a class="reference internal" href="#ae.utils.logger.set_log_level"><code class="docutils literal notranslate"><span class="pre">set_log_level()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Agent-E</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ae.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/ae.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ae-utils-package">
+<h1>ae.utils package<a class="headerlink" href="#ae-utils-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ae.utils.cli_helper">
+<span id="ae-utils-cli-helper-module"></span><h2>ae.utils.cli_helper module<a class="headerlink" href="#module-ae.utils.cli_helper" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.cli_helper.answer_questions_over_cli">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.cli_helper.</span></span><span class="sig-name descname"><span class="pre">answer_questions_over_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">questions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ae.utils.cli_helper.answer_questions_over_cli" title="Link to this definition"></a></dt>
+<dd><p>Asks a question over the command line and awaits the user’s response.</p>
+<p>Parameters:
+- questions: A list of questions to ask the user, e.g., [“What is your favorite site?”, “What do you want to search for?”].</p>
+<p>Returns:
+- A dictionary where each key is a question and each value is the user’s response.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.cli_helper.async_input">
+<span class="sig-prename descclassname"><span class="pre">ae.utils.cli_helper.</span></span><span class="sig-name descname"><span class="pre">async_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Future</span></span></span><a class="headerlink" href="#ae.utils.cli_helper.async_input" title="Link to this definition"></a></dt>
+<dd><p>Display a prompt to the user and wait for input in an asynchronous manner.</p>
+<p>Parameters:
+- prompt: The message to display to the user.</p>
+<p>Returns:
+- A Future object that will be fulfilled with the user’s input.</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.utils.dom_helper">
+<span id="ae-utils-dom-helper-module"></span><h2>ae.utils.dom_helper module<a class="headerlink" href="#module-ae.utils.dom_helper" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.dom_helper.wait_for_non_loading_dom_state">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.dom_helper.</span></span><span class="sig-name descname"><span class="pre">wait_for_non_loading_dom_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_wait_millis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.utils.dom_helper.wait_for_non_loading_dom_state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-ae.utils.get_detailed_accessibility_tree">
+<span id="ae-utils-get-detailed-accessibility-tree-module"></span><h2>ae.utils.get_detailed_accessibility_tree module<a class="headerlink" href="#module-ae.utils.get_detailed_accessibility_tree" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.get_detailed_accessibility_tree.do_get_accessibility_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.get_detailed_accessibility_tree.</span></span><span class="sig-name descname"><span class="pre">do_get_accessibility_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_input_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.utils.get_detailed_accessibility_tree.do_get_accessibility_info" title="Link to this definition"></a></dt>
+<dd><p>Retrieves the accessibility information of a web page and saves it as JSON files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>Page</em>) – The page object representing the web page.</p></li>
+<li><p><strong>only_input_fields</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only retrieves accessibility information for input fields.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The enhanced accessibility tree as a dictionary, or None if an error occurred.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, Any] or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.get_detailed_accessibility_tree.get_dom_with_accessibility_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.get_detailed_accessibility_tree.</span></span><span class="sig-name descname"><span class="pre">get_dom_with_accessibility_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ae.utils.get_detailed_accessibility_tree.get_dom_with_accessibility_info" title="Link to this definition"></a></dt>
+<dd><p>Retrieves, processes, and minifies the Accessibility tree of the active page in a browser instance.
+Strictly follow the name and role tag for any interaction with the nodes.</p>
+<p>Returns:
+- The minified JSON content of the browser’s active page.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.get_detailed_accessibility_tree.get_element_attributes">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.get_detailed_accessibility_tree.</span></span><span class="sig-name descname"><span class="pre">get_element_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.utils.get_detailed_accessibility_tree.get_element_attributes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.get_detailed_accessibility_tree.get_node_dom_element">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.utils.get_detailed_accessibility_tree.</span></span><span class="sig-name descname"><span class="pre">get_node_dom_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.utils.get_detailed_accessibility_tree.get_node_dom_element" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.get_detailed_accessibility_tree.is_space_delimited_mmid">
+<span class="sig-prename descclassname"><span class="pre">ae.utils.get_detailed_accessibility_tree.</span></span><span class="sig-name descname"><span class="pre">is_space_delimited_mmid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ae.utils.get_detailed_accessibility_tree.is_space_delimited_mmid" title="Link to this definition"></a></dt>
+<dd><p>Check if the given string matches the the mmid pattern of number space repeated.</p>
+<p>Parameters:
+- s (str): The string to check against the pattern.</p>
+<p>Returns:
+- bool: True if the string matches the pattern, False otherwise.</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.utils.js_helper">
+<span id="ae-utils-js-helper-module"></span><h2>ae.utils.js_helper module<a class="headerlink" href="#module-ae.utils.js_helper" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.js_helper.escape_js_message">
+<span class="sig-prename descclassname"><span class="pre">ae.utils.js_helper.</span></span><span class="sig-name descname"><span class="pre">escape_js_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.utils.js_helper.escape_js_message" title="Link to this definition"></a></dt>
+<dd><p>Escape a message for use in JavaScript code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message to escape.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The escaped message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ae.utils.logger">
+<span id="ae-utils-logger-module"></span><h2>ae.utils.logger module<a class="headerlink" href="#module-ae.utils.logger" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.utils.logger.set_log_level">
+<span class="sig-prename descclassname"><span class="pre">ae.utils.logger.</span></span><span class="sig-name descname"><span class="pre">set_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ae.utils.logger.set_log_level" title="Link to this definition"></a></dt>
+<dd><p>Set the log level for the logger.</p>
+<p>Parameters:
+- level (Union[str, int]): A string or logging level such as ‘debug’, ‘info’, ‘warning’, ‘error’, or ‘critical’, or the corresponding logging constants like logging.DEBUG, logging.INFO, etc.</p>
+</dd></dl>
+
+</section>
+<section id="module-ae.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ae.utils" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Merlyn Mind Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

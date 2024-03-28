@@ -1,0 +1,911 @@
+[
+    {
+        "sites": null,
+        "task_id": 0,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://google.com",
+        "geolocation": null,
+        "intent_template": "find {{item}} on {{site}} and sort the results by {{sort_by}}",
+        "instantiation_dict": {
+            "item": "nothing phone 2",
+            "site": "amazon",
+            "sort_by": "best seller"
+        },
+        "intent": "find nothing phone 2 on amazon and sort the results by best seller",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.amazon.com/s?k=nothing+phone+2&s=exact-aware-popularity-rank",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 1,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com",
+        "geolocation": null,
+        "intent_template": "find {{item}} on {{site}} and sort the results by {{sort_by}}",
+        "instantiation_dict": {
+            "item": "nothing phone 2",
+            "site": "amazon",
+            "sort_by": "price highest first"
+        },
+        "intent": "find nothing phone 2 on amazon and sort the results by price highest first",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.amazon.com/s?k=nothing+phone+2&s=price-desc-rank",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 2,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com",
+        "geolocation": null,
+        "intent_template": "find {{item}} on {{site}}",
+        "instantiation_dict": {
+            "item": "soccer",
+            "site": "espn"
+        },
+        "intent": "find soccer on espn",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.espn.com/soccer/ |OR| https://www.espn.com/search/_/q/soccer",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 3,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://google.com",
+        "geolocation": null,
+        "intent_template": "What is the price of {{item}} on {{site}}?",
+        "instantiation_dict": {
+            "item": "Rabbit R1",
+            "site": "https://www.rabbit.tech/"
+        },
+        "intent": "What is the price of Rabbit R1 on https://www.rabbit.tech/?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "$199"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 4,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://google.com",
+        "geolocation": null,
+        "intent_template": "{{factoid}}",
+        "instantiation_dict": {
+            "factoid": "what is the largest organ of the body?"
+        },
+        "intent": "what is the largest organ of the body?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "skin"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 5,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://google.com",
+        "geolocation": null,
+        "intent_template": "{{factoid}}",
+        "instantiation_dict": {
+            "factoid": "What are the names of the continents?"
+        },
+        "intent": "What are the names of the continents?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "Asia",
+                    "Africa",
+                    "North America",
+                    "South America",
+                    "Antarctica",
+                    "Europe",
+                    "Australia"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 6,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Find the {{information_type}} {{preposition1}} {{entity}} {{preposition2}} {{source}}",
+        "instantiation_dict": {
+            "information_type": "phone number",
+            "preposition1": "for",
+            "entity": "Center for Student Life",
+            "preposition2": "from",
+            "source": "NYU's site"
+        },
+        "intent": "Find the phone number for Center for Student Life from NYU's site",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "212",
+                    "998",
+                    "4411"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 7,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Find the {{information_type}} {{preposition1}} {{entity}} {{preposition2}} {{source}}",
+        "instantiation_dict": {
+            "information_type": "phone number",
+            "preposition1": "for",
+            "entity": "Admissions",
+            "preposition2": "from",
+            "source": "MIT's site"
+        },
+        "intent": "Find the phone number for Admissions from MIT's site",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "617",
+                    "253",
+                    "3400"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 8,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}} and navigate to {{entity}}",
+        "instantiation_dict": {
+            "site": "MIT",
+            "entity": "Alumni website"
+        },
+        "intent": "Go to MIT and navigate to Alumni website",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.mit.edu/alumni/",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 9,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}}",
+        "instantiation_dict": {
+            "site": "youtube"
+        },
+        "intent": "Go to youtube",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.youtube.com",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 10,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}}",
+        "instantiation_dict": {
+            "site": "national geographic"
+        },
+        "intent": "Go to national geographic",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.nationalgeographic.com",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 11,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "search {{site}} for {{item}}",
+        "instantiation_dict": {
+            "site": "the web",
+            "item": "the library of Alexandria"
+        },
+        "intent": "search the web for the library of Alexandria",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.google.com/search?q=library+of+Alexandria",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 12,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}}",
+        "instantiation_dict": {
+            "site": "amazon.com"
+        },
+        "intent": "Go to amazon.com",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.amazon.com",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 13,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Find {{item}} on {{site}} and {{action}}",
+        "instantiation_dict": {
+            "item": "funny turtle videos",
+            "site": "YouTube",
+            "action": "play the first one"
+        },
+        "intent": "Find funny turtle videos on YouTube and play the first one",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "program_html",
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.youtube.com/watch?v=",
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "document.querySelector(\"video\").paused.toString()",
+                    "required_contents": {
+                        "exact_match": "false"
+                    }
+                },
+                {
+                    "url": "last",
+                    "locator": "document.querySelector(\"#above-the-fold h1 yt-formatted-string\").innerText;",
+                    "required_contents": {
+                        "must_include": [
+                            "funny",
+                            "turtle"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 14,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.youtube.com/watch?v=F70I07zTs6k",
+        "geolocation": null,
+        "intent_template": "Put the video in {{viewing_mode}}",
+        "instantiation_dict": {
+            "viewing_mode": "full screen"
+        },
+        "intent": "Put the video in full screen",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "program_html",
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.youtube.com/watch?v=F70I07zTs6k",
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "jsblock:(document.fullscreenElement != null || document.webkitFullscreenElement != null).toString()",
+                    "required_contents": {
+                        "exact_match": "true"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 15,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.youtube.com/watch?v=F70I07zTs6k",
+        "geolocation": null,
+        "intent_template": "Mute video",
+        "instantiation_dict": {},
+        "intent": "Mute video",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "program_html",
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.youtube.com/watch?v=F70I07zTs6k",
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "document.querySelector('video').muted.toString()",
+                    "required_contents": {
+                        "exact_match": "true"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 16,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "find {{item}} on {{site}}",
+        "instantiation_dict": {
+            "item": "Nelson Mandela",
+            "site": "britanica"
+        },
+        "intent": "find Nelson Mandela on britanica",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.britannica.com/search?query=Nelson+Mandela |OR| https://www.britannica.com/biography/Nelson-Mandela",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 17,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "go to {{item}} on {{site}}",
+        "instantiation_dict": {
+            "item": "the travel section",
+            "site": "BBC"
+        },
+        "intent": "go to the travel section on BBC",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.bbc.com/travel",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 18,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Find the {{information_type}} {{preposition1}} {{source}} {{preposition2}} {{destination}}",
+        "instantiation_dict": {
+            "information_type": "distance",
+            "preposition1": "between",
+            "source": "JFK",
+            "preposition2": "and",
+            "destination": "LGA airports"
+        },
+        "intent": "Find the distance between JFK and LGA airports",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "13.24 miles"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 19,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/maps",
+        "geolocation": null,
+        "intent_template": "Find the {{information_type}} {{preposition1}} {{source}} {{preposition2}} {{destination}}",
+        "instantiation_dict": {
+            "information_type": "distance",
+            "preposition1": "from",
+            "source": "JFK",
+            "preposition2": "to",
+            "destination": "LGA"
+        },
+        "intent": "Find the distance from JFK to LGA",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.google.com/maps/dir/jfk/lga",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 20,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Find the {{information_type}} {{preposition1}} {{source}} {{preposition2}} {{destination}}",
+        "instantiation_dict": {
+            "information_type": "distance",
+            "preposition1": "between",
+            "source": "CMU",
+            "preposition2": "and",
+            "destination": "MIT"
+        },
+        "intent": "Find the distance between CMU and MIT",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "566"
+                ]
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 21,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "What are the {{information_type}} {{preposition}} {{location}}?",
+        "instantiation_dict": {
+            "information_type": "top restaurants",
+            "preposition": "near",
+            "location": "MIT"
+        },
+        "intent": "What are the top restaurants near MIT?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "some_matches": {
+                    "phrases": [
+                        "catalyst",
+                        "legal seafood",
+                        "row 34",
+                        "area four",
+                        "Shy Bird",
+                        "olio",
+                        "cava"
+                    ],
+                    "min_required": 2
+                }
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 22,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://jira.atlassian.com/projects/ATLAS/issues",
+        "geolocation": null,
+        "intent_template": "Filter by {{filter}} {{entity}}",
+        "instantiation_dict": {
+            "filter": "done",
+            "entity": "issues"
+        },
+        "intent": "Filter by done issues",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "program_html"
+            ],
+            "reference_answers": null,
+            "reference_url": null,
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "document.getElementById('issues-subnavigation-title').innerText",
+                    "required_contents": {
+                        "exact_match": "Done issues"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 23,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://jira.atlassian.com/secure/BrowseProjects.jspa?selectedCategory=all&selectedProjectType=all",
+        "geolocation": null,
+        "intent_template": "Go to {{location}} then filter by {{filter}} {{entity}}",
+        "instantiation_dict": {
+            "location": "project atlas",
+            "filter": "done",
+            "entity": "issues"
+        },
+        "intent": "Go to project atlas then filter by done issues",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "program_html"
+            ],
+            "reference_answers": null,
+            "reference_url": null,
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "document.getElementById('issues-subnavigation-title').innerText",
+                    "required_contents": {
+                        "exact_match": "Done issues"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 24,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.amazon.com/BLU-C0174WW-Unlocked-Android-Smartphone/dp/B0BSVCYYNC",
+        "geolocation": null,
+        "intent_template": "Based on the reviews what are top 5 reasons {{reason_type}}?",
+        "instantiation_dict": {
+            "reason_type": "for customer dissatisfaction"
+        },
+        "intent": "Based on the reviews what are top 5 reasons for customer dissatisfaction?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "some_matches": {
+                    "phrases": [
+                        "poor battery life",
+                        "slow performance",
+                        "charging issues",
+                        "app compatibility",
+                        "app incompatiblity",
+                        "audio quality"
+                    ],
+                    "min_required": 3
+                }
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 25,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.target.com/p/tracfone-prepaid-blu-view-mega-32gb-smartphone-black/-/A-80414013",
+        "geolocation": null,
+        "intent_template": "Based on the lowest reviews what are top 5 reasons {{reason_type}}?",
+        "instantiation_dict": {
+            "reason_type": "for customer dissatisfaction"
+        },
+        "intent": "Based on the lowest reviews what are top 5 reasons for customer dissatisfaction?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "some_matches": {
+                    "phrases": [
+                        "battery life",
+                        "performance",
+                        "speaker quality",
+                        "durability",
+                        "build quality",
+                        "compatibility"
+                    ],
+                    "min_required": 3
+                }
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 26,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.walmart.com/ip/BLU-G50-Plus-G0350WW-32GB-GSM-Unlocked-Android-Smart-Phone-Blue/245114689",
+        "geolocation": null,
+        "intent_template": "Based on the lowest reviews what are top 5 reasons {{reason_type}}?",
+        "instantiation_dict": {
+            "reason_type": "for customer dissatisfaction"
+        },
+        "intent": "Based on the lowest reviews what are top 5 reasons for customer dissatisfaction?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "some_matches": {
+                    "phrases": [
+                        "poor customer service",
+                        "compatibility issues",
+                        "product misrepresentation",
+                        "handling problems"
+                    ],
+                    "min_required": 2
+                }
+            },
+            "reference_url": "",
+            "program_html": [],
+            "string_note": "",
+            "reference_answer_raw_annotation": ""
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 27,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "I have a lot of Nintendo Switch game cards now, help me find the best storage option to fit all {{num}} cards",
+        "instantiation_dict": {
+            "num": 11
+        },
+        "intent": "I have a lot of Nintendo Switch game cards now, help me find the best storage option to fit all 11 cards",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage+case |OR| https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 28,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}} and navigate to {{entity}}",
+        "instantiation_dict": {
+            "site": "Apple",
+            "entity": "their return policy"
+        },
+        "intent": "Go to Apple and navigate to their return policy",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.apple.com/legal/sales-support/sales-policies/retail_us.html",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 29,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "What is {{query}}?",
+        "instantiation_dict": {
+            "query": "Apple's return policy"
+        },
+        "intent": "What is Apple's return policy?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "string_match"
+            ],
+            "reference_answers": {
+                "must_include": [
+                    "receipt",
+                    "14 days"
+                ]
+            },
+            "reference_url": null,
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 30,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "about:blank",
+        "geolocation": null,
+        "intent_template": "Go to {{site}} and navigate to {{entity}}",
+        "instantiation_dict": {
+            "site": "thredup",
+            "entity": "their return policy"
+        },
+        "intent": "Go to thredup and navigate to their return policy",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://help.thredup.com/en_us/what-is-thredup-s-return-policy",
+            "program_html": null
+        }
+    },
+    {
+        "sites": null,
+        "task_id": 31,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com",
+        "geolocation": null,
+        "intent_template": "find {{item}} on {{site}}",
+        "instantiation_dict": {
+            "item": "china",
+            "site": "BBC"
+        },
+        "intent": "find china on BBC",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "url_match"
+            ],
+            "reference_answers": null,
+            "reference_url": "https://www.bbc.com/search?q=china",
+            "program_html": null
+        }
+    }
+]

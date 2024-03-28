@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>test package &mdash; Agent-E  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Agent-E
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">test package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-test.evaluators">test.evaluators module</a><ul>
+<li><a class="reference internal" href="#test.evaluators.Evaluator"><code class="docutils literal notranslate"><span class="pre">Evaluator</span></code></a><ul>
+<li><a class="reference internal" href="#test.evaluators.Evaluator.eval_tag"><code class="docutils literal notranslate"><span class="pre">Evaluator.eval_tag</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#test.evaluators.EvaluatorComb"><code class="docutils literal notranslate"><span class="pre">EvaluatorComb</span></code></a><ul>
+<li><a class="reference internal" href="#test.evaluators.EvaluatorComb.evaluators"><code class="docutils literal notranslate"><span class="pre">EvaluatorComb.evaluators</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#test.evaluators.HTMLContentEvaluator"><code class="docutils literal notranslate"><span class="pre">HTMLContentEvaluator</span></code></a></li>
+<li><a class="reference internal" href="#test.evaluators.StringEvaluator"><code class="docutils literal notranslate"><span class="pre">StringEvaluator</span></code></a></li>
+<li><a class="reference internal" href="#test.evaluators.URLEvaluator"><code class="docutils literal notranslate"><span class="pre">URLEvaluator</span></code></a></li>
+<li><a class="reference internal" href="#test.evaluators.evaluator_router"><code class="docutils literal notranslate"><span class="pre">evaluator_router()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-test.run_tests">test.run_tests module</a><ul>
+<li><a class="reference internal" href="#test.run_tests.check_test_folders"><code class="docutils literal notranslate"><span class="pre">check_test_folders()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.dump_log"><code class="docutils literal notranslate"><span class="pre">dump_log()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.execute_test_task"><code class="docutils literal notranslate"><span class="pre">execute_test_task()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.extract_last_response"><code class="docutils literal notranslate"><span class="pre">extract_last_response()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.print_progress_bar"><code class="docutils literal notranslate"><span class="pre">print_progress_bar()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.print_test_result"><code class="docutils literal notranslate"><span class="pre">print_test_result()</span></code></a></li>
+<li><a class="reference internal" href="#test.run_tests.save_test_results"><code class="docutils literal notranslate"><span class="pre">save_test_results()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-test.test_config_auditor">test.test_config_auditor module</a><ul>
+<li><a class="reference internal" href="#test.test_config_auditor.process_tasks"><code class="docutils literal notranslate"><span class="pre">process_tasks()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_config_auditor.save_json_file"><code class="docutils literal notranslate"><span class="pre">save_json_file()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_config_auditor.substitute_intent_templates"><code class="docutils literal notranslate"><span class="pre">substitute_intent_templates()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_config_auditor.validate_and_update_task_ids"><code class="docutils literal notranslate"><span class="pre">validate_and_update_task_ids()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-test.test_utils">test.test_utils module</a><ul>
+<li><a class="reference internal" href="#test.test_utils.clean_answer"><code class="docutils literal notranslate"><span class="pre">clean_answer()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.evaluate_exact_match"><code class="docutils literal notranslate"><span class="pre">evaluate_exact_match()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.evaluate_fuzzy_match"><code class="docutils literal notranslate"><span class="pre">evaluate_fuzzy_match()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.evaluate_must_include"><code class="docutils literal notranslate"><span class="pre">evaluate_must_include()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.evaluate_ua_match"><code class="docutils literal notranslate"><span class="pre">evaluate_ua_match()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.generate_from_openai_chat_completion"><code class="docutils literal notranslate"><span class="pre">generate_from_openai_chat_completion()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.llm_fuzzy_match"><code class="docutils literal notranslate"><span class="pre">llm_fuzzy_match()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.llm_ua_match"><code class="docutils literal notranslate"><span class="pre">llm_ua_match()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li><a class="reference internal" href="#test.test_utils.task_config_validator"><code class="docutils literal notranslate"><span class="pre">task_config_validator()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-test">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Agent-E</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">test package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/test.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="test-package">
+<h1>test package<a class="headerlink" href="#test-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-test.evaluators">
+<span id="test-evaluators-module"></span><h2>test.evaluators module<a class="headerlink" href="#module-test.evaluators" title="Link to this heading"></a></h2>
+<p>base class for evaluation</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="test.evaluators.Evaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">Evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.evaluators.Evaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for evaluation strategies.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test.evaluators.Evaluator.eval_tag">
+<span class="sig-name descname"><span class="pre">eval_tag</span></span><a class="headerlink" href="#test.evaluators.Evaluator.eval_tag" title="Link to this definition"></a></dt>
+<dd><p>A tag to identify or categorize the evaluator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test.evaluators.EvaluatorComb">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">EvaluatorComb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator"><span class="pre">Evaluator</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.evaluators.EvaluatorComb" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluator</span></code></a></p>
+<p>Combines multiple evaluators to perform a comprehensive evaluation based on different criteria.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test.evaluators.EvaluatorComb.evaluators">
+<span class="sig-name descname"><span class="pre">evaluators</span></span><a class="headerlink" href="#test.evaluators.EvaluatorComb.evaluators" title="Link to this definition"></a></dt>
+<dd><p>A list of evaluator instances to be used for evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator">Evaluator</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test.evaluators.HTMLContentEvaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">HTMLContentEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.evaluators.HTMLContentEvaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluator</span></code></a></p>
+<p>Evaluates if specified HTML content or elements appear on the webpage.</p>
+<p>This involves navigating to URLs specified in the configuration and checking for the presence of HTML elements or content using various strategies.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test.evaluators.StringEvaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">StringEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.evaluators.StringEvaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluator</span></code></a></p>
+<p>Evaluates string-based answers using various matching criteria.</p>
+<p>Supports exact matches, some matches, fuzzy matching using LLM, and unachievable task matching.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test.evaluators.URLEvaluator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">URLEvaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.evaluators.URLEvaluator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#test.evaluators.Evaluator" title="test.evaluators.Evaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Evaluator</span></code></a></p>
+<p>Evaluates if the given URL matches the expected URL criteria defined in the configuration.</p>
+<p>This includes checking if the base path of the URL and its query parameters match those specified in the reference URLs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.evaluators.evaluator_router">
+<span class="sig-prename descclassname"><span class="pre">test.evaluators.</span></span><span class="sig-name descname"><span class="pre">evaluator_router</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#test.evaluators.EvaluatorComb" title="test.evaluators.EvaluatorComb"><span class="pre">EvaluatorComb</span></a></span></span><a class="headerlink" href="#test.evaluators.evaluator_router" title="Link to this definition"></a></dt>
+<dd><p>Creates and configures a composite evaluator based on the evaluation types specified in the configuration file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict</strong><strong>[</strong><strong>str</strong> (<em>task_config</em>) – configuration specifying the evaluation types to use.</p></li>
+<li><p><strong>Any</strong><strong>]</strong> – configuration specifying the evaluation types to use.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A composite evaluator configured with the specified types of individual evaluators.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#test.evaluators.EvaluatorComb" title="test.evaluators.EvaluatorComb">EvaluatorComb</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unsupported evaluation type is specified in the configuration file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-test.run_tests">
+<span id="test-run-tests-module"></span><h2>test.run_tests module<a class="headerlink" href="#module-test.run_tests" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.check_test_folders">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">check_test_folders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test.run_tests.check_test_folders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.dump_log">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">dump_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">messages_str_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.run_tests.dump_log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.execute_test_task">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">execute_test_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">browser_manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ae.core.html#ae.core.playwright_manager.PlaywrightManager" title="ae.core.playwright_manager.PlaywrightManager"><span class="pre">PlaywrightManager</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="ae.core.html#ae.core.autogen_wrapper.AutogenWrapper" title="ae.core.autogen_wrapper.AutogenWrapper"><span class="pre">AutogenWrapper</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#test.run_tests.execute_test_task" title="Link to this definition"></a></dt>
+<dd><p>Executes a test task based on a specified task configuration and evaluates its performance.</p>
+<p>Parameters:
+- index (int): The index of the task to be executed, used to identify the task configuration file.
+- task_config (dict): The task configuration dictionary containing all th necessary parameters for the task.
+- browser_manager (PlaywrightManager): The manager handling browser interactions, responsible for page navigation and control.
+- ag (AutogenWrapper): The automation generator wrapper that processes commands and interacts with the web page.
+- page (Page): The Playwright page object representing the browser tab where the task is executed.</p>
+<p>Returns:
+- dict: A dictionary containing the task’s evaluation results, including task ID, intent, score, total command time (tct),</p>
+<blockquote>
+<div><p>the last statement from the chat agent, and the last URL accessed during the task.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.extract_last_response">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">extract_last_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#test.run_tests.extract_last_response" title="Link to this definition"></a></dt>
+<dd><p>Extract the last response message from chat history.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.main">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_task_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_task_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_results_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.run_tests.main" title="Link to this definition"></a></dt>
+<dd><p>The main function to run the test suite with specified range of test tasks.</p>
+<p>This function initializes necessary components, iterates over test tasks within the specified range,
+executes them, and prints individual test results and a summary report at the end. It uses a progress bar
+to indicate the overall progress of the test suite.</p>
+<p>The range of test tasks to be executed can be specified via command line parameters. If not provided,
+default values are used.</p>
+<p>Parameters:
+- min_task_index (int): The index of the first test task to execute (inclusive).</p>
+<blockquote>
+<div><p>Command line parameter: –min_task_index or -min. Default is 0.</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>max_task_index (int): The index of the last test task to execute (non-inclusive).</dt><dd><p>Command line parameter: –max_task_index or -max.</p>
+</dd>
+</dl>
+</li>
+<li><p>test_results_id (str): A unique identifier for the test results. If not provided, a timestamp is used.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.print_progress_bar">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">print_progress_bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.run_tests.print_progress_bar" title="Link to this definition"></a></dt>
+<dd><p>Prints a progress bar to the console.</p>
+<p>Parameters:
+- current (int): The current progress of the task.
+- total (int): The total number of tasks to complete.
+- bar_length (int): The character length of the progress bar (default is 50).</p>
+<p>This function dynamically updates a single line in the console to reflect current progress.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.print_test_result">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">print_test_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.run_tests.print_test_result" title="Link to this definition"></a></dt>
+<dd><p>Prints the result of a single test task in a tabulated format.</p>
+<p>Parameters:
+- task_result (dict): A dictionary containing the task’s evaluation results, including task ID, intent, score, and total command time.
+- index (int): The current index of the test in the sequence of all tests being run.
+- total (int): The total number of tests to be run.</p>
+<p>The function determines the test status (Pass/Fail) based on the ‘score’ key in task_result and prints the result with colored status.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.run_tests.save_test_results">
+<span class="sig-prename descclassname"><span class="pre">test.run_tests.</span></span><span class="sig-name descname"><span class="pre">save_test_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_results_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test.run_tests.save_test_results" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-test.test_config_auditor">
+<span id="test-test-config-auditor-module"></span><h2>test.test_config_auditor module<a class="headerlink" href="#module-test.test_config_auditor" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_config_auditor.process_tasks">
+<span class="sig-prename descclassname"><span class="pre">test.test_config_auditor.</span></span><span class="sig-name descname"><span class="pre">process_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.test_config_auditor.process_tasks" title="Link to this definition"></a></dt>
+<dd><p>Load, process, and save tasks from/to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The path to the JSON file containing tasks.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_config_auditor.save_json_file">
+<span class="sig-prename descclassname"><span class="pre">test.test_config_auditor.</span></span><span class="sig-name descname"><span class="pre">save_json_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.test_config_auditor.save_json_file" title="Link to this definition"></a></dt>
+<dd><p>Save the modified list of tasks back to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – The list of modified tasks.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em>) – The path to save the JSON file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_config_auditor.substitute_intent_templates">
+<span class="sig-prename descclassname"><span class="pre">test.test_config_auditor.</span></span><span class="sig-name descname"><span class="pre">substitute_intent_templates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.test_config_auditor.substitute_intent_templates" title="Link to this definition"></a></dt>
+<dd><p>Substitute intent_template patterns with values from instantiation_dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tasks</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – The list of tasks to process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_config_auditor.validate_and_update_task_ids">
+<span class="sig-prename descclassname"><span class="pre">test.test_config_auditor.</span></span><span class="sig-name descname"><span class="pre">validate_and_update_task_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test.test_config_auditor.validate_and_update_task_ids" title="Link to this definition"></a></dt>
+<dd><p>Ensure that task IDs match their positions in the list and update them if necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tasks</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – The list of tasks to process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-test.test_utils">
+<span id="test-test-utils-module"></span><h2>test.test_utils module<a class="headerlink" href="#module-test.test_utils" title="Link to this heading"></a></h2>
+<p>Implements helper functions to assist evaluation cases where other evaluators are not suitable.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.clean_answer">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">clean_answer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#test.test_utils.clean_answer" title="Link to this definition"></a></dt>
+<dd><p>Cleans and preprocesses the answer string for evaluation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>answer</strong> (<em>str</em>) – The answer string to clean.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cleaned and lowercased answer string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.evaluate_exact_match">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_exact_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.evaluate_exact_match" title="Link to this definition"></a></dt>
+<dd><p>Evaluates if the predicted answer exactly matches the reference answer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref</strong> (<em>str</em>) – The reference answer.</p></li>
+<li><p><strong>pred</strong> (<em>str</em>) – The predicted answer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0 if the answers match exactly, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.evaluate_fuzzy_match">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_fuzzy_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.evaluate_fuzzy_match" title="Link to this definition"></a></dt>
+<dd><p>Evaluates if the predicted answer is semantically similar to the reference answer.</p>
+<p>Uses a large language model to assess similarity based on the intent of the question.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref</strong> (<em>str</em>) – The reference answer.</p></li>
+<li><p><strong>pred</strong> (<em>str</em>) – The predicted answer.</p></li>
+<li><p><strong>intent</strong> (<em>str</em>) – The intent or context of the question.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0 if the answers are considered semantically similar, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.evaluate_must_include">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_must_include</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokenize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.evaluate_must_include" title="Link to this definition"></a></dt>
+<dd><p>Checks if the predicted answer includes all phrases from the reference answer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref</strong> (<em>str</em>) – The reference answer containing phrases that must be included.</p></li>
+<li><p><strong>pred</strong> (<em>str</em>) – The predicted answer to be evaluated.</p></li>
+<li><p><strong>tokenize</strong> (<em>bool</em><em>, </em><em>optional</em>) – Tokenizes the answers before evaluation if True. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0 if all phrases are included, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.evaluate_ua_match">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_ua_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.evaluate_ua_match" title="Link to this definition"></a></dt>
+<dd><p>Evaluates if the predicted reason for a task being unachievable matches the reference reason.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref</strong> (<em>str</em>) – The reference reason why the task is unachievable.</p></li>
+<li><p><strong>pred</strong> (<em>str</em>) – The predicted reason reported by the model.</p></li>
+<li><p><strong>intent</strong> (<em>str</em>) – The intent or context of the task.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1.0 if the reasons match, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.generate_from_openai_chat_completion">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">generate_from_openai_chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#test.test_utils.generate_from_openai_chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Generates a response from OpenAI’s chat completions based on a conversation constructed from a list of messages.</p>
+<p>This function makes a call to the OpenAI API using specified parameters to control the generation.
+It requires an API key to be set in the environment variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> (<em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>]</em>) – A list of messages to construct the conversation context.</p></li>
+<li><p><strong>model</strong> (<em>str</em>) – The model name to use for generating the completion.</p></li>
+<li><p><strong>temperature</strong> (<em>float</em>) – Sampling temperature for generation.</p></li>
+<li><p><strong>max_tokens</strong> (<em>int</em>) – Maximum number of tokens to generate.</p></li>
+<li><p><strong>top_p</strong> (<em>float</em>) – Nucleus sampling parameter controlling the size of the probability mass to sample from.</p></li>
+<li><p><strong>context_length</strong> (<em>int</em>) – The maximum number of tokens from <cite>messages</cite> to use for context.</p></li>
+<li><p><strong>stop_token</strong> (<em>str</em><em>, </em><em>optional</em>) – A token at which to stop generating further tokens.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated response as a string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the ‘OPENAI_API_KEY’ environment variable is not set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.llm_fuzzy_match">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">llm_fuzzy_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">question</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.llm_fuzzy_match" title="Link to this definition"></a></dt>
+<dd><p>Evaluates if a predicted answer matches a reference answer semantically, considering the context of a question.</p>
+<p>This function simulates a grading scenario, understanding that a student’s answer may use different wording or phrasing from the reference answer. It uses GPT-4-turbo model to assess semantic equivalence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pred</strong> (<em>str</em>) – The student’s predicted answer.</p></li>
+<li><p><strong>reference</strong> (<em>str</em>) – The reference answer to compare against.</p></li>
+<li><p><strong>question</strong> (<em>str</em>) – The question related to the answers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns 1.0 if the predicted answer is semantically equivalent to the reference, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.llm_ua_match">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">llm_ua_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">question</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#test.test_utils.llm_ua_match" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the alignment between a reported reason for a task being unachievable and the actual reason.</p>
+<p>This function reviews both the actual and reported reasons for a task’s unachievability within the context of the task.
+It assesses if the reported reason is implicitly or explicitly in line with the actual reason, using GPT-turbo model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pred</strong> (<em>str</em>) – The reported unachievable reason by an individual.</p></li>
+<li><p><strong>reference</strong> (<em>str</em>) – The actual reason why the task is unachievable.</p></li>
+<li><p><strong>question</strong> (<em>str</em>) – The task in question.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns 1.0 if the reported reason aligns with the actual reason, otherwise 0.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.load_config">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#test.test_utils.load_config" title="Link to this definition"></a></dt>
+<dd><p>Load the confiufiguration for the test cases</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_file</strong> (<em>Path</em><em> | </em><em>str</em>) – Path to the config file</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>All the test cases in the config file</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[dict[str, Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test.test_utils.task_config_validator">
+<span class="sig-prename descclassname"><span class="pre">test.test_utils.</span></span><span class="sig-name descname"><span class="pre">task_config_validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#test.test_utils.task_config_validator" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-test">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-test" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Merlyn Mind Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

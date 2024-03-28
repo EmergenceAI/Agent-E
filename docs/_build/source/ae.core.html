@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ae.core package &mdash; Agent-E  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Agent-E
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ae.core package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ae.core.autogen_wrapper">ae.core.autogen_wrapper module</a><ul>
+<li><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper"><code class="docutils literal notranslate"><span class="pre">AutogenWrapper</span></code></a><ul>
+<li><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper.number_of_rounds"><code class="docutils literal notranslate"><span class="pre">AutogenWrapper.number_of_rounds</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper.agents_map"><code class="docutils literal notranslate"><span class="pre">AutogenWrapper.agents_map</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper.create"><code class="docutils literal notranslate"><span class="pre">AutogenWrapper.create()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper.process_command"><code class="docutils literal notranslate"><span class="pre">AutogenWrapper.process_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.playwright_manager">ae.core.playwright_manager module</a><ul>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager</span></code></a><ul>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.browser_type"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.browser_type</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.isheadless"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.isheadless</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.async_initialize"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.async_initialize()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.close_all_tabs"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.close_all_tabs()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.close_except_specified_tab"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.close_except_specified_tab()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.command_completed"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.command_completed()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.create_browser_context"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.create_browser_context()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.ensure_browser_context"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.ensure_browser_context()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.get_browser_context"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.get_browser_context()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.get_current_page"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.get_current_page()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.get_current_url"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.get_current_url()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.go_to_homepage"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.go_to_homepage()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.highlight_element"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.highlight_element()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.log_system_message"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.log_system_message()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.log_user_message"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.log_user_message()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.notify_user"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.notify_user()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.overlay_state_handler"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.overlay_state_handler()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.prompt_user"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.prompt_user()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.receive_user_response"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.receive_user_response()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.set_navigation_handler"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.set_navigation_handler()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.set_overlay_state_handler"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.set_overlay_state_handler()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.set_user_response_handler"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.set_user_response_handler()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.setup_handlers"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.setup_handlers()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.start_playwright"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.start_playwright()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager.stop_playwright"><code class="docutils literal notranslate"><span class="pre">PlaywrightManager.stop_playwright()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.post_process_responses">ae.core.post_process_responses module</a><ul>
+<li><a class="reference internal" href="#ae.core.post_process_responses.final_reply_callback_browser_agent"><code class="docutils literal notranslate"><span class="pre">final_reply_callback_browser_agent()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.post_process_responses.final_reply_callback_user_proxy"><code class="docutils literal notranslate"><span class="pre">final_reply_callback_user_proxy()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.prompts">ae.core.prompts module</a></li>
+<li><a class="reference internal" href="#module-ae.core.system_orchestrator">ae.core.system_orchestrator module</a><ul>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator</span></code></a><ul>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.agent_scenario"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.agent_scenario</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.input_mode"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.input_mode</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.browser_manager"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.browser_manager</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.autogen_wrapper"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.autogen_wrapper</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.is_running"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.is_running</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.shutdown_event"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.shutdown_event</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.command_prompt_loop"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.command_prompt_loop()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.initialize"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.process_command"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.process_command()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.receive_command"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.receive_command()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.save_chat_messages"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.save_chat_messages()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.shutdown"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.shutdown()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.start"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.start()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.system_orchestrator.SystemOrchestrator.wait_for_exit"><code class="docutils literal notranslate"><span class="pre">SystemOrchestrator.wait_for_exit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core.ui_manager">ae.core.ui_manager module</a><ul>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager"><code class="docutils literal notranslate"><span class="pre">UIManager</span></code></a><ul>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.overlay_is_collapsed"><code class="docutils literal notranslate"><span class="pre">UIManager.overlay_is_collapsed</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.conversation_history"><code class="docutils literal notranslate"><span class="pre">UIManager.conversation_history</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.__update_overlay_chat_history_running"><code class="docutils literal notranslate"><span class="pre">UIManager.__update_overlay_chat_history_running</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.add_default_system_messages"><code class="docutils literal notranslate"><span class="pre">UIManager.add_default_system_messages()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.command_completed"><code class="docutils literal notranslate"><span class="pre">UIManager.command_completed()</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">UIManager.conversation_history</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.get_conversation_history"><code class="docutils literal notranslate"><span class="pre">UIManager.get_conversation_history()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.handle_navigation"><code class="docutils literal notranslate"><span class="pre">UIManager.handle_navigation()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.new_system_message"><code class="docutils literal notranslate"><span class="pre">UIManager.new_system_message()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.new_user_message"><code class="docutils literal notranslate"><span class="pre">UIManager.new_user_message()</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">UIManager.overlay_is_collapsed</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.show_overlay"><code class="docutils literal notranslate"><span class="pre">UIManager.show_overlay()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.update_overlay_chat_history"><code class="docutils literal notranslate"><span class="pre">UIManager.update_overlay_chat_history()</span></code></a></li>
+<li><a class="reference internal" href="#ae.core.ui_manager.UIManager.update_overlay_state"><code class="docutils literal notranslate"><span class="pre">UIManager.update_overlay_state()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-ae.core">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Agent-E</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ae.core package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/ae.core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ae-core-package">
+<h1>ae.core package<a class="headerlink" href="#ae-core-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ae.core.agents.html">ae.core.agents package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.agents.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.agents.html#module-ae.core.agents.browser_nav_agent">ae.core.agents.browser_nav_agent module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.agents.html#ae.core.agents.browser_nav_agent.BrowserNavAgent"><code class="docutils literal notranslate"><span class="pre">BrowserNavAgent</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.agents.html#module-ae.core.agents.browser_nav_agent_no_skills">ae.core.agents.browser_nav_agent_no_skills module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.agents.html#ae.core.agents.browser_nav_agent_no_skills.BrowserNavAgentNoSkills"><code class="docutils literal notranslate"><span class="pre">BrowserNavAgentNoSkills</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.agents.html#module-ae.core.agents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ae.core.skills.html">ae.core.skills package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.click_using_selector">ae.core.skills.click_using_selector module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.click_using_selector.click"><code class="docutils literal notranslate"><span class="pre">click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.click_using_selector.do_click"><code class="docutils literal notranslate"><span class="pre">do_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.click_using_selector.is_element_present"><code class="docutils literal notranslate"><span class="pre">is_element_present()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.click_using_selector.perform_javascript_click"><code class="docutils literal notranslate"><span class="pre">perform_javascript_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.click_using_selector.perform_playwright_click"><code class="docutils literal notranslate"><span class="pre">perform_playwright_click()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.enter_text_and_click">ae.core.skills.enter_text_and_click module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_and_click.enter_text_and_click"><code class="docutils literal notranslate"><span class="pre">enter_text_and_click()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.enter_text_using_selector">ae.core.skills.enter_text_using_selector module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.EnterTextEntry"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.EnterTextEntry.query_selector"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.query_selector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.EnterTextEntry.text"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.text</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ae.core.skills.html#id0"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.query_selector</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="ae.core.skills.html#id1"><code class="docutils literal notranslate"><span class="pre">EnterTextEntry.text</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.bulk_enter_text"><code class="docutils literal notranslate"><span class="pre">bulk_enter_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.custom_fill_element"><code class="docutils literal notranslate"><span class="pre">custom_fill_element()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.do_entertext"><code class="docutils literal notranslate"><span class="pre">do_entertext()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.enter_text_using_selector.entertext"><code class="docutils literal notranslate"><span class="pre">entertext()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.get_dom_with_content_type">ae.core.skills.get_dom_with_content_type module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.get_dom_with_content_type.get_dom_with_content_type"><code class="docutils literal notranslate"><span class="pre">get_dom_with_content_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.get_url">ae.core.skills.get_url module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.get_url.geturl"><code class="docutils literal notranslate"><span class="pre">geturl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.get_user_input">ae.core.skills.get_user_input module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.get_user_input.get_user_input"><code class="docutils literal notranslate"><span class="pre">get_user_input()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.open_url">ae.core.skills.open_url module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.open_url.openurl"><code class="docutils literal notranslate"><span class="pre">openurl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills.press_key_combination">ae.core.skills.press_key_combination module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.press_key_combination.do_press_key_combination"><code class="docutils literal notranslate"><span class="pre">do_press_key_combination()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.press_key_combination.press_enter_key"><code class="docutils literal notranslate"><span class="pre">press_enter_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ae.core.skills.html#ae.core.skills.press_key_combination.press_key_combination"><code class="docutils literal notranslate"><span class="pre">press_key_combination()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ae.core.skills.html#module-ae.core.skills">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ae.core.autogen_wrapper">
+<span id="ae-core-autogen-wrapper-module"></span><h2>ae.core.autogen_wrapper module<a class="headerlink" href="#module-ae.core.autogen_wrapper" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ae.core.autogen_wrapper.AutogenWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.autogen_wrapper.</span></span><span class="sig-name descname"><span class="pre">AutogenWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_chat_round</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.autogen_wrapper.AutogenWrapper" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A wrapper class for interacting with the Autogen library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_chat_round</strong> (<em>int</em>) – The maximum number of chat rounds.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.autogen_wrapper.AutogenWrapper.number_of_rounds">
+<span class="sig-name descname"><span class="pre">number_of_rounds</span></span><a class="headerlink" href="#ae.core.autogen_wrapper.AutogenWrapper.number_of_rounds" title="Link to this definition"></a></dt>
+<dd><p>The maximum number of chat rounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.autogen_wrapper.AutogenWrapper.agents_map">
+<span class="sig-name descname"><span class="pre">agents_map</span></span><a class="headerlink" href="#ae.core.autogen_wrapper.AutogenWrapper.agents_map" title="Link to this definition"></a></dt>
+<dd><p>A dictionary of the agents that are instantiated in this autogen instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.autogen_wrapper.AutogenWrapper.create">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agents_needed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_chat_round</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.autogen_wrapper.AutogenWrapper.create" title="Link to this definition"></a></dt>
+<dd><p>Create an instance of AutogenWrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>agents_needed</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – The list of agents needed. If None, then [“user_proxy”, “browser_nav_agent”] will be used.</p></li>
+<li><p><strong>max_chat_round</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of chat rounds. Defaults to 50.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of AutogenWrapper.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper" title="ae.core.autogen_wrapper.AutogenWrapper">AutogenWrapper</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.autogen_wrapper.AutogenWrapper.process_command">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.autogen_wrapper.AutogenWrapper.process_command" title="Link to this definition"></a></dt>
+<dd><p>Process a command by sending it to one or more agents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<em>str</em>) – The command to be processed.</p></li>
+<li><p><strong>current_url</strong> (<em>str</em><em>, </em><em>optional</em>) – The current URL of the browser. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ae.core.playwright_manager">
+<span id="ae-core-playwright-manager-module"></span><h2>ae.core.playwright_manager module<a class="headerlink" href="#module-ae.core.playwright_manager" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.playwright_manager.</span></span><span class="sig-name descname"><span class="pre">PlaywrightManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A singleton class to manage Playwright instances and browsers.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.browser_type">
+<span class="sig-name descname"><span class="pre">browser_type</span></span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.browser_type" title="Link to this definition"></a></dt>
+<dd><p>The type of browser to use (‘chromium’, ‘firefox’, ‘webkit’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.isheadless">
+<span class="sig-name descname"><span class="pre">isheadless</span></span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.isheadless" title="Link to this definition"></a></dt>
+<dd><p>Flag to launch the browser in headless mode or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>The class ensures only one instance of itself, Playwright, and the browser is created during the application lifecycle.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.async_initialize">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.async_initialize" title="Link to this definition"></a></dt>
+<dd><p>Asynchronously initialize necessary components and handlers for the browser context.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.close_all_tabs">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close_all_tabs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_first_tab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.close_all_tabs" title="Link to this definition"></a></dt>
+<dd><p>Closes all tabs in the browser context, except for the first tab if <cite>keep_first_tab</cite> is set to True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keep_first_tab</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep the first tab open. Defaults to True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.close_except_specified_tab">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close_except_specified_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_to_keep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.close_except_specified_tab" title="Link to this definition"></a></dt>
+<dd><p>Closes all tabs in the browser context, except for the specified tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>page_to_keep</strong> (<em>Page</em>) – The Playwright page object representing the tab that should remain open.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.command_completed">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elapsed_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.command_completed" title="Link to this definition"></a></dt>
+<dd><p>Notify the overlay that the command has been completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.create_browser_context">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_browser_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.create_browser_context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.ensure_browser_context">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ensure_browser_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.ensure_browser_context" title="Link to this definition"></a></dt>
+<dd><p>Ensure that a browser context exists, creating it if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.get_browser_context">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_browser_context</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.get_browser_context" title="Link to this definition"></a></dt>
+<dd><p>Returns the existing browser context, or creates a new one if it doesn’t exist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.get_current_page">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_current_page</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Page</span></span></span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.get_current_page" title="Link to this definition"></a></dt>
+<dd><p>Get the current page of the browser</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current page if any.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Page</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.get_current_url">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_current_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.get_current_url" title="Link to this definition"></a></dt>
+<dd><p>Get the current URL of current page</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current URL if any.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.go_to_homepage">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">go_to_homepage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.go_to_homepage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.highlight_element">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">highlight_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_highlight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.highlight_element" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.log_system_message">
+<span class="sig-name descname"><span class="pre">log_system_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.log_system_message" title="Link to this definition"></a></dt>
+<dd><p>Log a system message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The system message to log.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.log_user_message">
+<span class="sig-name descname"><span class="pre">log_user_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.log_user_message" title="Link to this definition"></a></dt>
+<dd><p>Log the user’s message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The user’s message to log.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.notify_user">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">notify_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.notify_user" title="Link to this definition"></a></dt>
+<dd><p>Notify the user with a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message to notify the user with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.overlay_state_handler">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">overlay_state_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_collapsed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.overlay_state_handler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.prompt_user">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompt_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.prompt_user" title="Link to this definition"></a></dt>
+<dd><p>Prompt the user with a message and wait for a response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message to prompt the user with.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The user’s response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.receive_user_response">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">receive_user_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.receive_user_response" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.set_navigation_handler">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_navigation_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.set_navigation_handler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.set_overlay_state_handler">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_overlay_state_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.set_overlay_state_handler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.set_user_response_handler">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_user_response_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.set_user_response_handler" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.setup_handlers">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setup_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.setup_handlers" title="Link to this definition"></a></dt>
+<dd><p>Setup various handlers after the browser context has been ensured.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.start_playwright">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_playwright</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.start_playwright" title="Link to this definition"></a></dt>
+<dd><p>Starts the Playwright instance if it hasn’t been started yet. This method is idempotent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.playwright_manager.PlaywrightManager.stop_playwright">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop_playwright</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.playwright_manager.PlaywrightManager.stop_playwright" title="Link to this definition"></a></dt>
+<dd><p>Stops the Playwright instance and resets it to None. This method should be called to clean up resources.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ae.core.post_process_responses">
+<span id="ae-core-post-process-responses-module"></span><h2>ae.core.post_process_responses module<a class="headerlink" href="#module-ae.core.post_process_responses" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.post_process_responses.final_reply_callback_browser_agent">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.post_process_responses.</span></span><span class="sig-name descname"><span class="pre">final_reply_callback_browser_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConversableAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Agent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.post_process_responses.final_reply_callback_browser_agent" title="Link to this definition"></a></dt>
+<dd><p>Callback function that is called each time the browser agent receives a message.
+It picks the last message from the list of messages and checks if it contains the termination signal.
+If the termination signal is found, it extracts the final response and outputs it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipient</strong> (<em>autogen.ConversableAgent</em>) – The recipient of the message.</p></li>
+<li><p><strong>messages</strong> (<em>Optional</em><em>[</em><em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – The list of messages received by the agent.</p></li>
+<li><p><strong>sender</strong> (<em>Optional</em><em>[</em><em>autogen.Agent</em><em>]</em>) – The sender of the message.</p></li>
+<li><p><strong>config</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – Additional configuration parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple indicating whether the processing should stop and the response to be sent.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ae.core.post_process_responses.final_reply_callback_user_proxy">
+<span class="sig-prename descclassname"><span class="pre">ae.core.post_process_responses.</span></span><span class="sig-name descname"><span class="pre">final_reply_callback_user_proxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ConversableAgent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Agent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.post_process_responses.final_reply_callback_user_proxy" title="Link to this definition"></a></dt>
+<dd><p>Callback function that is called each time the user proxy agent receives a message.
+It picks the last message from the list of messages and checks if it contains the termination signal.
+If the termination signal is found, it extracts the final response and outputs it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipient</strong> (<em>autogen.ConversableAgent</em>) – The recipient of the message.</p></li>
+<li><p><strong>messages</strong> (<em>Optional</em><em>[</em><em>list</em><em>[</em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – The list of messages received by the agent.</p></li>
+<li><p><strong>sender</strong> (<em>Optional</em><em>[</em><em>autogen.Agent</em><em>]</em>) – The sender of the message.</p></li>
+<li><p><strong>config</strong> (<em>Optional</em><em>[</em><em>Any</em><em>]</em>) – Additional configuration parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple indicating whether the processing should stop and the response to be sent.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ae.core.prompts">
+<span id="ae-core-prompts-module"></span><h2>ae.core.prompts module<a class="headerlink" href="#module-ae.core.prompts" title="Link to this heading"></a></h2>
+</section>
+<section id="module-ae.core.system_orchestrator">
+<span id="ae-core-system-orchestrator-module"></span><h2>ae.core.system_orchestrator module<a class="headerlink" href="#module-ae.core.system_orchestrator" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.system_orchestrator.</span></span><span class="sig-name descname"><span class="pre">SystemOrchestrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'user_proxy,browser_nav_agent'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'GUI_ONLY'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Orchestrates the system’s operation, handling input from both a command prompt and a web interface,
+and coordinating between the Autogen wrapper and the Playwright manager.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.agent_scenario">
+<span class="sig-name descname"><span class="pre">agent_scenario</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.agent_scenario" title="Link to this definition"></a></dt>
+<dd><p>The agent scenario to use for command processing. Defaults to “user_proxy,browser_nav_agent”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.input_mode">
+<span class="sig-name descname"><span class="pre">input_mode</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.input_mode" title="Link to this definition"></a></dt>
+<dd><p>The input mode of the system, determining whether command prompt input is enabled. Defaults to “GUI_ONLY”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.browser_manager">
+<span class="sig-name descname"><span class="pre">browser_manager</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.browser_manager" title="Link to this definition"></a></dt>
+<dd><p>The Playwright manager instance for web interaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ae.core.playwright_manager.PlaywrightManager" title="ae.core.playwright_manager.PlaywrightManager">PlaywrightManager</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.autogen_wrapper">
+<span class="sig-name descname"><span class="pre">autogen_wrapper</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.autogen_wrapper" title="Link to this definition"></a></dt>
+<dd><p>The Autogen wrapper instance for agent-based command processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#ae.core.autogen_wrapper.AutogenWrapper" title="ae.core.autogen_wrapper.AutogenWrapper">AutogenWrapper</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.is_running">
+<span class="sig-name descname"><span class="pre">is_running</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.is_running" title="Link to this definition"></a></dt>
+<dd><p>Flag indicating whether the system is currently processing a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.shutdown_event">
+<span class="sig-name descname"><span class="pre">shutdown_event</span></span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.shutdown_event" title="Link to this definition"></a></dt>
+<dd><p>Event to wait for an exit command to be processed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>asyncio.Event</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.command_prompt_loop">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command_prompt_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.command_prompt_loop" title="Link to this definition"></a></dt>
+<dd><p>Continuously reads and processes commands from the command prompt until an ‘exit’ command is received.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.initialize">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.initialize" title="Link to this definition"></a></dt>
+<dd><p>Initializes the components required for the system’s operation, including the Autogen wrapper and the Playwright manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.process_command">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">process_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.process_command" title="Link to this definition"></a></dt>
+<dd><p>Processes a given command, coordinating with the Autogen wrapper for execution and handling special commands like ‘exit’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<em>str</em>) – The command to process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.receive_command">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">receive_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.receive_command" title="Link to this definition"></a></dt>
+<dd><p>Callback function to process commands received from the web interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<em>str</em>) – The command received from the web interface.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.save_chat_messages">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_chat_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.save_chat_messages" title="Link to this definition"></a></dt>
+<dd><p>Saves the chat messages from the Autogen wrapper’s agents to a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.shutdown">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.shutdown" title="Link to this definition"></a></dt>
+<dd><p>Shuts down the system orchestrator, stopping the Playwright manager and exiting the command prompt loop.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.start">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.start" title="Link to this definition"></a></dt>
+<dd><p>Starts the system orchestrator, initializing components and starting the command prompt loop if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.system_orchestrator.SystemOrchestrator.wait_for_exit">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_for_exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.system_orchestrator.SystemOrchestrator.wait_for_exit" title="Link to this definition"></a></dt>
+<dd><p>Waits for an exit command to be processed, keeping the system active in the meantime.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ae.core.ui_manager">
+<span id="ae-core-ui-manager-module"></span><h2>ae.core.ui_manager module<a class="headerlink" href="#module-ae.core.ui_manager" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ae.core.ui_manager.</span></span><span class="sig-name descname"><span class="pre">UIManager</span></span><a class="headerlink" href="#ae.core.ui_manager.UIManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages the UI overlay for this application. The application uses playwright for the browser driver.
+This includes handling navigation events, showing or hiding overlays, and maintaining
+a conversation history within the UI overlay.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.overlay_is_collapsed">
+<span class="sig-name descname"><span class="pre">overlay_is_collapsed</span></span><a class="headerlink" href="#ae.core.ui_manager.UIManager.overlay_is_collapsed" title="Link to this definition"></a></dt>
+<dd><p>Indicates if the overlay is currently collapsed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.conversation_history">
+<span class="sig-name descname"><span class="pre">conversation_history</span></span><a class="headerlink" href="#ae.core.ui_manager.UIManager.conversation_history" title="Link to this definition"></a></dt>
+<dd><p>The chat history between user and system. Each entry contains ‘from’ and ‘message’ keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.__update_overlay_chat_history_running">
+<span class="sig-name descname"><span class="pre">__update_overlay_chat_history_running</span></span><a class="headerlink" href="#ae.core.ui_manager.UIManager.__update_overlay_chat_history_running" title="Link to this definition"></a></dt>
+<dd><p>A flag to prevent concurrent updates to the chat history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.add_default_system_messages">
+<span class="sig-name descname"><span class="pre">add_default_system_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.add_default_system_messages" title="Link to this definition"></a></dt>
+<dd><p>Adds default system messages to the conversation history to greet the user or provide initial instructions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.command_completed">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command_completed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elapsed_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.command_completed" title="Link to this definition"></a></dt>
+<dd><p>Handles the completion of a command, focusing on the overlay input and indicating that the command has finished.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>Page</em>) – The Playwright Page object where the command was executed.</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – The command that was completed.</p></li>
+<li><p><strong>elapsed_time</strong> (<em>float</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – The time taken to complete the command, if relevant.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">conversation_history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.get_conversation_history">
+<span class="sig-name descname"><span class="pre">get_conversation_history</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.get_conversation_history" title="Link to this definition"></a></dt>
+<dd><p>Returns the current conversation history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The conversation history.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[dict[str, str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.handle_navigation">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle_navigation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.handle_navigation" title="Link to this definition"></a></dt>
+<dd><p>Handles navigation events by injecting JavaScript code into the frame to manage the overlay state
+and updating the overlay chat history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> (<em>Frame</em>) – The Playwright Frame object to inject JavaScript into and manage.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.new_system_message">
+<span class="sig-name descname"><span class="pre">new_system_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.new_system_message" title="Link to this definition"></a></dt>
+<dd><p>Adds a new system message to the conversation history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message text to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.new_user_message">
+<span class="sig-name descname"><span class="pre">new_user_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.new_user_message" title="Link to this definition"></a></dt>
+<dd><p>Adds a new user message to the conversation history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The message text to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">overlay_is_collapsed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.show_overlay">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">show_overlay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Page</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.show_overlay" title="Link to this definition"></a></dt>
+<dd><p>Displays the overlay in an expanded state on the given page if it’s currently collapsed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>page</strong> (<em>Page</em>) – The Playwright Page object on which to show the overlay.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.update_overlay_chat_history">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_overlay_chat_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_or_page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Frame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Page</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.update_overlay_chat_history" title="Link to this definition"></a></dt>
+<dd><p>Updates the chat history in the overlay. If the overlay is expanded and not currently being updated,
+it clears existing messages and adds them fresh from the conversation history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame_or_page</strong> (<em>Frame</em><em> | </em><em>Page</em>) – The Playwright Frame or Page object to update the chat history in.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ae.core.ui_manager.UIManager.update_overlay_state">
+<span class="sig-name descname"><span class="pre">update_overlay_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_collapsed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ae.core.ui_manager.UIManager.update_overlay_state" title="Link to this definition"></a></dt>
+<dd><p>Updates the state of the overlay to either collapsed or expanded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>is_collapsed</strong> (<em>bool</em>) – True to collapse the overlay, False to expand it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ae.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ae.core" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Merlyn Mind Inc.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
