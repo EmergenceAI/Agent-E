@@ -11,7 +11,7 @@ This provides a natural language way to interacting with a web browser:
 - Manage and automate tasks on project management platforms (like JIRA) by filtering issues, easing the workflow for users.
 - Provide personal shopping assistance, suggesting products based on the user's needs, such as storage options for game cards.
 
-While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it.
+While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it. For more information see our [blog article](https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html).
 
 
 ## Quick Start
@@ -55,10 +55,10 @@ Once the program is running,  you should see an icon on the browser. The icon ex
 
 | Video | Command | Description |
 |-----------|-------------|-------------|
-| [![Example 1: Find and play specific video on youtube](docs/images/play-video-on-youtube-thumbnail.png) ](docs/videos/play-video-on-youtube.mp4) | There is an Oppenheimer video on youtube by Veritasium, can you find it and play it? | <ul> <li>Navigates to www.youtube.com </li> <li>Searches for Oppenheimer Veritasium using the searchbar </li> <li> Plays the correct video </li></ul>|
-| [![Example 2: Use information to fill forms](docs/images/form-filling-thumbnail.png)](docs/videos/form-filling.mp4) | Can you do this task? Wait for me to review before submitting. | Takes the highlighted text from the email as part of the instruction. <ul> <li>Navigates to the form URL </li> <li>Identifies elements in the form to fill </li> <li> Fills the form using information from memory defined in user preferences.txt </li> <li>Waits for user to review before submitting the form </li> | 
-| [![Example 3: Find and add specific product to amazon cart](docs/images/amazon-add-to-cart-thumbnail.png)](docs/videos/amazon-add-to-cart.mp4) | Find Finish dishwasher detergent tablets on amazon, sort by best seller and add the first one to my cart | <ul> <li> Navigates to www.amazon.com </li> <li>Searches for Finish dishwasher detergent tablets using amazon search feature </li> <li> Sorts the search results by best seller </li> <li>Selects the first product to navigate to the the product page of the first product. </li> <li> Adds the product to cart </li></ul> (_Note: sometimes add to cart part does not execute, but a simple `add first one to my shopping cart` works_) |
-| [![Example 4: Verify truthfulness of info using primary source](docs/images/tweet-verify-thumbnail.png)](docs/videos/tweet-verify.mp4) | Is this information about free courses true? | **Manually navigate to**: https://twitter.com/aisolopreneur/status/1772686923045413123. Then give the command. <ul><li> Navigates to NVDIA homepage. </li> <li> Clicks on the developer link to navigate to developer page. </li> <li> Clicks on the free courses link to navigate to courses page. </li> <li> Validates availability of free courses and answers the user </li>|
+| [![Oppenheimer Video](docs/images/play-video-on-youtube-thumbnail.png)](https://www.youtube.com/embed/zjYeULZW4Ao) | There is an Oppenheimer video on youtube by Veritasium, can you find it and play it? | <ul> <li>Navigates to www.youtube.com </li> <li>Searches for Oppenheimer Veritasium using the searchbar </li> <li> Plays the correct video </li></ul>|
+| [![Example 2: Use information to fill forms](docs/images/form-filling-thumbnail.png)](https://www.youtube.com/embed/B5PWBNBbmQU) | Can you do this task? Wait for me to review before submitting. | Takes the highlighted text from the email as part of the instruction. <ul> <li>Navigates to the form URL </li> <li>Identifies elements in the form to fill </li> <li> Fills the form using information from memory defined in user preferences.txt </li> <li>Waits for user to review before submitting the form </li> | 
+| [![Example 3: Find and add specific product to amazon cart](docs/images/amazon-add-to-cart-thumbnail.png)](https://www.youtube.com/embed/VU3AQWGFMls) | Find Finish dishwasher detergent tablets on amazon, sort by best seller and add the first one to my cart | <ul> <li> Navigates to www.amazon.com </li> <li>Searches for Finish dishwasher detergent tablets using amazon search feature </li> <li> Sorts the search results by best seller </li> <li>Selects the first product to navigate to the the product page of the first product. </li> <li> Adds the product to cart </li></ul> (_Note: sometimes add to cart part does not execute, but a simple `add first one to my shopping cart` works_) |
+| [![Example 4: Verify truthfulness of info using primary source](docs/images/tweet-verify-thumbnail.png)](https://www.youtube.com/embed/q2QjcdeTsCo) | Is this information about free courses true? | **Manually navigate to**: https://twitter.com/aisolopreneur/status/1772686923045413123. Then give the command. <ul><li> Navigates to NVDIA homepage. </li> <li> Clicks on the developer link to navigate to developer page. </li> <li> Clicks on the free courses link to navigate to courses page. </li> <li> Validates availability of free courses and answers the user </li>|
 
 
 ## Architecture
@@ -169,3 +169,18 @@ html_theme = 'sphinx_rtd_theme'
 Thank you for your interest in contributing! We welcome involvement from the community.
 
 Please visit our [contributing guidelines](CONTRIBUTING.md) for more details on how to get involved.
+
+## Citation
+
+If you use this work, please cite our blog:
+
+```
+@misc{emergence2024distilling,
+  title={Distilling the web for multi-agent automation},
+  author={Emergence},
+  howpublished={\url{https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html}},
+  journal={Emergence Journal Blog},
+  year={2024},
+  month={Mar}
+}
+```
