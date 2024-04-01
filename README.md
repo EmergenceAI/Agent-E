@@ -11,7 +11,7 @@ This provides a natural language way to interacting with a web browser:
 - Manage and automate tasks on project management platforms (like JIRA) by filtering issues, easing the workflow for users.
 - Provide personal shopping assistance, suggesting products based on the user's needs, such as storage options for game cards.
 
-While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it.
+While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it. For more information see our [blog article](https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html).
 
 
 ## Quick Start
@@ -169,3 +169,18 @@ html_theme = 'sphinx_rtd_theme'
 Thank you for your interest in contributing! We welcome involvement from the community.
 
 Please visit our [contributing guidelines](CONTRIBUTING.md) for more details on how to get involved.
+
+## Citation
+
+If you use this work, please cite our blog:
+
+```
+@misc{emergence2024distilling,
+  title={Distilling the web for multi-agent automation},
+  author={Emergence},
+  howpublished={\url{https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html}},
+  journal={Emergence Journal Blog},
+  year={2024},
+  month={Mar}
+}
+```
