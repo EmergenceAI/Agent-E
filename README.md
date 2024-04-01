@@ -169,3 +169,18 @@ html_theme = 'sphinx_rtd_theme'
 Thank you for your interest in contributing! We welcome involvement from the community.
 
 Please visit our [contributing guidelines](CONTRIBUTING.md) for more details on how to get involved.
+
+## Citation
+
+If you use this work, please cite our blog:
+
+```
+@misc{emergence2024distilling,
+  title={Distilling the web for multi-agent automation},
+  author={Emergence},
+  howpublished={\url{https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html}},
+  journal={Emergence Journal Blog},
+  year={2024},
+  month={Mar}
+}
+```
