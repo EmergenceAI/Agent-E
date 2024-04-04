@@ -7,6 +7,7 @@ from typing import List  # noqa: UP035
 from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
+from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
 
 
@@ -103,8 +104,8 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.highlight_element(query_selector, True)
     result = await do_entertext(page, query_selector, text_to_enter)
-    await browser_manager.notify_user(result)
-    return result
+    await browser_manager.notify_user(result["summary_message"])
+    return result["detailed_message"]
 
 
 async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=False):
@@ -123,7 +124,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
                                             Defaults to False.
 
     Returns:
-        str: Explanation of the outcome of this operation.
+        dict[str, str]: Explanation of the outcome of this operation represented as a dictionary with 'summary_message' and 'detailed_message'.
 
     Example:
         result = await do_entertext(page, '#username', 'test_user')
@@ -139,9 +140,11 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         elem = await page.query_selector(selector)
 
         if elem is None:
-            return f"Error: Selector {selector} not found. Unable to continue."
+            error = f"Error: Selector {selector} not found. Unable to continue."
+            return {"summary_message": error, "detailed_message": error}
 
         logger.info(f"Found selector {selector} to enter text")
+        element_outer_html = await get_element_outer_html(elem, page)
 
         if use_keyboard_fill:
             await elem.focus()
@@ -153,12 +156,14 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         await elem.focus()
         await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
         await asyncio.sleep(1)
-
-        return f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
+        success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
+        
+        return {"summary_message": success_msg, "detailed_message": f"{success_msg} and outer HTML: {element_outer_html}."}
 
     except Exception as e:
         traceback.print_exc()
-        return f"Error entering text in selector {selector}. Error: {str(e)}"
+        error = f"Error entering text in selector {selector}."
+        return {"summary_message": error, "detailed_message": f"{error} Error: {e}"}
 
 
 async def bulk_enter_text(
