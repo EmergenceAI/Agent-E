@@ -32,7 +32,7 @@ async def get_element_outer_html(element: ElementHandle, page: Page, element_tag
     tag_name: str = element_tag_name if element_tag_name else await page.evaluate("element => element.tagName.toLowerCase()", element)
 
     attributes_of_interest: list[str] = ['id', 'name', 'aria-label', 'placeholder', 'href', 'src', 'autocomplete', 'role', 'type', 
-                                         'data-testid', 'value', 'selected', 'aria-labelledby', 'aria-describedby',]
+                                         'data-testid', 'value', 'selected', 'aria-labelledby', 'aria-describedby']
     opening_tag: str = f'<{tag_name}'
 
     for attr in attributes_of_interest:
