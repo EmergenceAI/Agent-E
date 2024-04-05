@@ -6,6 +6,7 @@ from playwright.async_api import ElementHandle
 from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
+from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
 
 
@@ -33,11 +34,11 @@ async def click(selector: Annotated[str, "The properly formed query selector str
 
     await browser_manager.highlight_element(selector, True)
     result = await do_click(page, selector, wait_before_execution)
-    await browser_manager.notify_user(result)
-    return result
+    await browser_manager.notify_user(result["summary_message"])
+    return result["detailed_message"]
 
 
-async def do_click(page: Page, selector: str, wait_before_execution: float) -> str:
+async def do_click(page: Page, selector: str, wait_before_execution: float) -> dict[str, str]:
     """
     Executes the click action on the element with the given selector within the provided page.
 
@@ -47,7 +48,7 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> s
     - wait_before_execution: Optional wait time in seconds before executing the click event logic.
 
     Returns:
-    - A message indicating success or failure of the click.
+    dict[str,str] - Explanation of the outcome of this operation represented as a dictionary with 'summary_message' and 'detailed_message'.
     """
     logger.info(f"Executing ClickElement with \"{selector}\" as the selector. Wait time before execution: {wait_before_execution} seconds.")
 
@@ -82,6 +83,8 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> s
             pass
 
         element_tag_name = await element.evaluate("element => element.tagName.toLowerCase()")
+        element_outer_html = await get_element_outer_html(element, page, element_tag_name)
+        
 
         if element_tag_name == "option":
             element_value = await element.get_attribute("value") # get the text that is in the value of the option
@@ -90,17 +93,21 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> s
             await parent_element.select_option(value=element_value) # type: ignore
 
             logger.info(f'Select menu option "{element_value}" selected')
-            return f'Select menu option "{element_value}" selected'
+            
+            return {"summary_message": f'Select menu option "{element_value}" selected', 
+                    "detailed_message": f'Select menu option "{element_value}" selected. The select element\'s outer HTML is: {element_outer_html}.'}
+        
         await element.focus()
         #Playwright click seems to fail more often than not, disabling it for now and just going with JS click
         #await perform_playwright_click(element, selector)
         await perform_javascript_click(page, selector)
-
-        return f"Element with selector: \"{selector}\" clicked."
+        msg = f"Element with selector: \"{selector}\" clicked."
+        return {"summary_message": msg, "detailed_message": f"{msg} The clicked element's outer HTML is: {element_outer_html}."}
     except Exception as e:
         logger.error(f"Unable to click element with selector: \"{selector}\". Error: {e}")
         traceback.print_exc()
-        return f"Unable to click element with selector: \"{selector}\" since the selector is invalid. Proceed by retrieving DOM again."
+        msg = f"Unable to click element with selector: \"{selector}\" since the selector is invalid. Proceed by retrieving DOM again."
+        return {"summary_message": msg, "detailed_message": f"{msg}. Error: {e}"}
 
 
 async def is_element_present(page: Page, selector: str) -> bool:
