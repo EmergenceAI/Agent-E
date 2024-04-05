@@ -44,25 +44,25 @@ async def enter_text_and_click(
 
     await browser_manager.highlight_element(text_selector, True)
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
-    await browser_manager.notify_user(text_entry_result)
-    if not text_entry_result.startswith("Success"):
+    await browser_manager.notify_user(text_entry_result["summary_message"])
+    if not text_entry_result["summary_message"].startswith("Success"):
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
 
-    result: str = text_entry_result
+    result = text_entry_result
 
     #if the text_selector is the same as the click_selector, press the Enter key instead of clicking
     if text_selector == click_selector:
         do_press_key_combination_result = await do_press_key_combination(page, "Enter")
         if do_press_key_combination_result:
-            result += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
+            result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
             await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
         else:
-            result += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
+            result["detailed_message"] += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
             await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
     else:
         await browser_manager.highlight_element(click_selector, True)
         do_click_result = await do_click(page, click_selector, wait_before_click_execution)
-        result += f" {do_click_result}"
-        await browser_manager.notify_user(do_click_result)
+        result["detailed_message"] += f' {do_click_result["detailed_message"]}'
+        await browser_manager.notify_user(do_click_result["summary_message"])
 
-    return result
+    return result["detailed_message"]
