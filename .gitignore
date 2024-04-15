@@ -155,3 +155,6 @@ cython_debug/
 ae/log_files/*
 test/logs/*
 test/results/*
+Pipfile.lock
+requirements.txt
+Pipfile

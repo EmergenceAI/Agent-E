@@ -16,6 +16,8 @@ LLM_PROMPTS = {
     Since your knowledge can be outdated, if a URL that you provide is not found, use a different approach to find the correct website to navigate to.
     Do not solicit further user requests. If user response is lacking, terminate the conversation with ##TERMINATE##.$basic_user_information""",
 
+    "PLANNER_AGENT": """Given a task, you goal is break it down to smaller independent subtasks, such that when all the subtasks are completed, the task will be completed""",
+    "VERFICATION_AGENT": """Given a conversation and a task, your task is to analyse the conversation and tell if the task is completed. If not, you need to tell what is not completed and suggest next steps to complete the task.""", 
     "ENTER_TEXT_AND_CLICK_PROMPT": """This skill enters text into a specified element and clicks another element, both identified by their DOM selector queries.
     Ideal for seamless actions like submitting search queries, this integrated approach ensures superior performance over separate text entry and click commands.
     Successfully completes when both actions are executed without errors, returning True; otherwise, it provides False or an explanatory message of any failure encountered.

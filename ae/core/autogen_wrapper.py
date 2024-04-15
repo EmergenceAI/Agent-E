@@ -3,15 +3,16 @@ import os
 import tempfile
 import traceback
 from string import Template
-
 import autogen  # type: ignore
 import openai
-
+from autogen import GroupChat  
+from autogen import Agent  
 #from autogen import Cache
 from dotenv import load_dotenv
-
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.browser_nav_agent_no_skills import BrowserNavAgentNoSkills
+from ae.core.agents.high_level_planner_agent import PlannerAgent
+from ae.core.agents.task_verification_agent import VerificationAgent    
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
 
@@ -31,8 +32,9 @@ class AutogenWrapper:
 
     def __init__(self, max_chat_round: int = 50):
         self.number_of_rounds = max_chat_round
-        self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent] | None = None
-
+        self.group_chat_manager: autogen.GroupChatManager | None = None
+        self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
+        self.config_list: list[dict[str, str]] | None = None
 
     @classmethod
     async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 50):
@@ -48,7 +50,7 @@ class AutogenWrapper:
 
         """
         if agents_needed is None:
-            agents_needed = ["user_proxy", "browser_nav_agent"]
+            agents_needed = ["user_proxy", "browser_nav_agent", "planner_agent", "verification_agent"]
         # Create an instance of cls
         self = cls(max_chat_round)
         load_dotenv()
@@ -59,7 +61,20 @@ class AutogenWrapper:
             temp_file_path = temp.name
 
         self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {"gpt-4-turbo-preview"}}) # type: ignore
+        print()
         self.agents_map = await self.__initialize_agents(agents_needed)
+        agents_for_groupchat = [agent for agent in self.agents_map.values()]
+        group_chat = GroupChat(
+            agents=agents_for_groupchat, # type: ignore
+            messages=[],
+            speaker_selection_method=self.custom_speaker_selection_func, # type: ignore
+        )
+        self.group_chat_manager = autogen.GroupChatManager(
+            groupchat=group_chat,
+            llm_config=self.config_list[0], # type: ignore
+            code_execution_config=False,
+            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE##"), # type: ignore 
+        )
 
         return self
 
@@ -78,7 +93,7 @@ class AutogenWrapper:
         if "user_proxy" not in agents_needed:
             raise ValueError("user_proxy agent is required in the list of needed agents.")
 
-        agents_map: dict[str, autogen.AssistantAgent | autogen.UserProxyAgent]= {}
+        agents_map: dict[str, autogen.AssistantAgent | autogen.UserProxyAgent  | autogen.ConversableAgent]= {}
 
         user_proxy_agent = await self.__create_user_proxy_agent()
         user_proxy_agent.reset()
@@ -94,8 +109,17 @@ class AutogenWrapper:
                 browser_nav_agent_no_skills = self.__create_browser_nav_agent_no_skills(user_proxy_agent)
                 browser_nav_agent_no_skills.reset()
                 agents_map["browser_nav_agent_no_skills"] = browser_nav_agent_no_skills
+            elif agent_needed == "planner_agent":
+                planner_agent = self.__create_planner_agent()
+                planner_agent.reset()
+                agents_map["planner_agent"] = planner_agent
+            elif agent_needed == "verification_agent":
+                verification_agent = self.__create_verification_agent()
+                verification_agent.reset()
+                agents_map["verification_agent"] = verification_agent
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
+
 
         return agents_map
 
@@ -153,6 +177,27 @@ class AutogenWrapper:
         browser_nav_agent_no_skills = BrowserNavAgentNoSkills(self.config_list, user_proxy_agent) # type: ignore
         return browser_nav_agent_no_skills.agent
 
+    def __create_planner_agent(self):
+        """
+        Create a Planner Agent instance. This is mainly used for exploration at this point
+
+        Returns:
+            autogen.AssistantAgent: An instance of PlannerAgent.
+
+        """
+        planner_agent = PlannerAgent(self.config_list) # type: ignore
+        return planner_agent.agent
+
+    def __create_verification_agent(self):
+        """
+        Create a Verification Agent instance. This is mainly used for exploration at this point
+
+        Returns:
+            autogen.AssistantAgent: An instance of VerificationAgent.
+
+        """
+        verification_agent = VerificationAgent(self.config_list) # type: ignore
+        return verification_agent.agent
 
     async def process_command(self, command: str, current_url: str | None = None):
         """
@@ -173,16 +218,9 @@ class AutogenWrapper:
         try:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
-
-            if "browser_nav_no_skills" in self.agents_map:
-                browser_nav_agent = self.agents_map["browser_nav_agent_no_skills"]
-            elif "browser_nav_agent" in self.agents_map:
-                browser_nav_agent = self.agents_map["browser_nav_agent"]
-            else:
-                raise ValueError(f"No browser navigation agent found. in agents_map {self.agents_map}")
-
+            print(f">>> agents_map: {self.agents_map}") 
             await self.agents_map["user_proxy"].a_initiate_chat( # type: ignore
-                browser_nav_agent, # self.manager
+                self.group_chat_manager, # self.manager # type: ignore
                 #clear_history=True,
                 message=prompt,
                 silent=False,
@@ -191,3 +229,15 @@ class AutogenWrapper:
         except openai.BadRequestError as bre:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
+
+
+    def custom_speaker_selection_func(self, last_speaker: Agent, groupchat: autogen.GroupChat):
+        """Defines a customized speaker selection function.
+        A recommended way is to define a transition for each speaker in the groupchat.
+
+        Returns:
+            Return an `Agent` class or a string from ['auto', 'manual', 'random', 'round_robin'] to select a default method to use.
+        """
+        print(f">>> last_speaker: {last_speaker}")
+        return self.agents_map["browser_nav_agent"] # type: ignore
+    
