@@ -154,6 +154,7 @@ html_theme = 'sphinx_rtd_theme'
 - Action verification - Responding from every skill with changes that took place in the DOM (Mutation Observers) so that the LLM can judge whether the skill did execute properly or not
 - Execution Planner - The LLM can potentially decide on multiple steps ahead, but it typically just sticks with one at a time. A targeted planning agent can make execution faster
 - Memory + learn user preferences
+- Move user preferences to a local vector DB. Add a skill to query vector DB. Possibly send the user preferences keys into the prompt.
 - DOM distillation for content type links
 - Voice input
 - Replace use of deprecated `snapshot()` for DOM distillation
