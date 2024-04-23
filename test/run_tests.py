@@ -225,7 +225,6 @@ async def main(min_task_index: int, max_task_index: int, test_file: str="", test
         await browser_manager.close_except_specified_tab(page) #cleanup pages that are not the one we opened here
 
         if not browser_manager.isheadless: #no need to wait if we are running headless
-            print("Waiting for 5 seconds before starting the next test.")
             await asyncio.sleep(5)  # give time for switching between tasks in case there is a human observer
 
 
