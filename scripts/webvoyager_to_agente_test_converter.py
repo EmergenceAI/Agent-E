@@ -4,13 +4,11 @@ from typing import Any
 '''
 The script reads the Webvoyager dataset, combines it with WebVoyager reference answer
 to a format Agent-E can understand and run.
-All evaluations are manual for WebVoyager.
-
+All evaluations are manual.
 Run the code as follows:
 python WebVoyager_converter.py
-
-The script expects WebVoyager_data.jsonl and WebVoyager_reference_answer.json to be in the same directory.
-The script will generate a file named webvoyager_test.json in the tasks directory.
+The script expects WebVoyager_data.jsonl and WebVoyager_reference_answer.json (from webvoyager repo) to be in the same directory.
+The script will generate a file named webvoyager_test.json in the tasks directory. This file is compatible with Agent-E evaluation framework.
 '''
 
 
@@ -25,11 +23,11 @@ def get_reference_answer(domain:str, id:int, reference_answer_data:Any) -> Any |
     return None
 
 # Load webvoyager_data.jsonl
-with open('WebVoyager_data.jsonl', 'r') as f:
+with open('webvoyager_data.jsonl', 'r') as f:
     webvoyager_data = [json.loads(line) for line in f]
 
 # Load reference_answer.json
-with open('Webvoyager_reference_answer.json', 'r') as f:
+with open('webvoyager_reference_answer.json', 'r') as f:
     reference_answer_data = json.load(f)
 
 
