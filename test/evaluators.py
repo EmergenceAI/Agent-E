@@ -4,6 +4,7 @@ import html
 import time
 import urllib
 import urllib.parse
+from weakref import ref
 from test.test_utils import clean_answer
 from test.test_utils import evaluate_exact_match
 from test.test_utils import evaluate_fuzzy_match
@@ -14,6 +15,7 @@ from typing import Any
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
+from termcolor import colored
 
 
 class Evaluator:
@@ -314,11 +316,9 @@ class ManualContentEvaluator(Evaluator):
         reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
         answer_type=task_config["eval"]["reference_answers"]["manual_check"]["type"]
         id=task_config["task_id"]
-        print("Task ID: ",id)
-        print("Task: ",task)
-        print("Answer Type: ",answer_type)
-        print("Reference Answer: ",reference_answer)
-        user_response = input("Annotate the task as Pass or Fail? ")
+        logger.info(colored(f"Manual Evaluation Required for Task {id}: {task}", 'white'))
+        logger.info(colored(f"Reference Answer: Answer Type {answer_type}: {reference_answer}", 'white'))
+        user_response = input(colored("Annotate the task as Pass or Fail? ", 'yellow'))
         if(user_response.lower()=="pass"):
             return 1.0
         elif user_response.lower()=="fail":
