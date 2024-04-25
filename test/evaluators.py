@@ -4,7 +4,6 @@ import html
 import time
 import urllib
 import urllib.parse
-from weakref import ref
 from test.test_utils import clean_answer
 from test.test_utils import evaluate_exact_match
 from test.test_utils import evaluate_fuzzy_match
@@ -15,7 +14,6 @@ from typing import Any
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
-from termcolor import colored
 
 
 class Evaluator:
@@ -292,40 +290,6 @@ class HTMLContentEvaluator(Evaluator):
                 )
         return score
 
-class ManualContentEvaluator(Evaluator):
-    """Evaluation Route for Manual Evaluation."""
-    async def __call__(
-        self,
-        task_config: dict[str, Any],
-        page: Page,
-        client: CDPSession | None = None,
-        answer: str | None = None
-    ) -> float:
-        """Pauses Execution to get manual evaluation score from user.
-
-        Parameters:
-            task_config (dict[str, Any]): The task configuration containing evaluation criteria.
-            page (Page): The Playwright page object for the current webpage.
-            client (CDPSession | None, optional): The Chrome DevTools Protocol session object. Not used in this evaluator.
-            answer (str | None, optional): Not used in this evaluator.
-
-        Returns:
-            float: A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
-        """
-        task:str = task_config["intent"]
-        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
-        answer_type=task_config["eval"]["reference_answers"]["manual_check"]["type"]
-        id=task_config["task_id"]
-        logger.info(colored(f"Manual Evaluation Required for Task {id}: {task}", 'white'))
-        logger.info(colored(f"Reference Answer: Answer Type {answer_type}: {reference_answer}", 'white'))
-        user_response = input(colored("Annotate the task as Pass or Fail? ", 'yellow'))
-        if(user_response.lower()=="pass"):
-            return 1.0
-        elif user_response.lower()=="fail":
-            return 0.0
-        else:
-            raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
-       
 
 class EvaluatorComb(Evaluator):
     """Combines multiple evaluators to perform a comprehensive evaluation based on different criteria.
@@ -394,9 +358,6 @@ def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
             case "program_html":
                 logger.info("Adding HTML evaluator")
                 evaluators.append(HTMLContentEvaluator())
-            case "manual":
-                logger.info("Adding manual evaluator")
-                evaluators.append(ManualContentEvaluator())
             case _:
                 raise ValueError(f"eval_type {eval_type} is not supported")
 
