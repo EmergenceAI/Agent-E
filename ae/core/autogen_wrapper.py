@@ -53,12 +53,33 @@ class AutogenWrapper:
         self = cls(max_chat_round)
         load_dotenv()
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
-        env_var = [{'model': 'gpt-4-turbo-preview', 'api_key': os.environ['OPENAI_API_KEY']}]
+
+        autogen_model_name = os.getenv("AUTOGEN_MODEL_NAME")
+        if not autogen_model_name:
+            autogen_model_name = "gpt-4-turbo-preview"
+            logger.warning(f"Cannot find AUTOGEN_MODEL_NAME in the environment variables, setting it to default {autogen_model_name}.")
+
+        autogen_model_api_key = os.getenv("AUTOGEN_MODEL_API_KEY")
+        if autogen_model_api_key is None:
+            logger.warning("Cannot find AUTOGEN_MODEL_API_KEY in the environment variables.")
+            if not os.getenv('OPENAI_API_KEY'):
+                logger.error("Cannot find OPENAI_API_KEY in the environment variables.")
+                raise ValueError("You need to set either AUTOGEN_MODEL_API_KEY or OPENAI_API_KEY in the .env file.")
+            else:
+                autogen_model_api_key = os.environ['OPENAI_API_KEY']
+        else:
+            logger.info(f"Using model {autogen_model_name} for AutoGen from the environment variables.")
+        model_info = {'model': autogen_model_name, 'api_key': autogen_model_api_key}
+
+        if os.getenv("AUTOGEN_MODEL_BASE_URL"):
+            model_info["base_url"] = os.getenv("AUTOGEN_MODEL_BASE_URL") # type: ignore
+
+        env_var: list[dict[str, str]] = [model_info]
         with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp:
             json.dump(env_var, temp)
             temp_file_path = temp.name
 
-        self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {"gpt-4-turbo-preview"}}) # type: ignore
+        self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {autogen_model_name}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
 
         return self
