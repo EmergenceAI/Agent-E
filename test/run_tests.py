@@ -174,7 +174,7 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     ]
     print('\n' + tabulate(result_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
-async def main(min_task_index: int, max_task_index: int, test_file: str="", test_results_id: str = "") -> None:
+async def main(min_task_index: int, max_task_index: int, test_file: str="", test_results_id: str = "", wait_time_non_headless: int=5) -> None:
     """
     The main function to run the test suite with specified range of test tasks.
 
@@ -191,6 +191,7 @@ async def main(min_task_index: int, max_task_index: int, test_file: str="", test
     - max_task_index (int): The index of the last test task to execute (non-inclusive).
                             Command line parameter: --max_task_index or -max.
     - test_results_id (str): A unique identifier for the test results. If not provided, a timestamp is used.
+    - wait_time_non_headless (int): The time to wait between test tasks when running in non-headless mode.
 
     """
     if not test_file or test_file == "":
@@ -218,15 +219,14 @@ async def main(min_task_index: int, max_task_index: int, test_file: str="", test
 
     for index, task_config in enumerate(test_configurations[min_task_index:max_task_index], start=min_task_index):
         print_progress_bar(index - min_task_index, total_tests)
-        task_result = await execute_test_task(index, task_config, browser_manager, ag, page)
+        task_result = await execute_test_task(index, task_config, browser_manager, ag, page, agent_optimizer=None)
         test_results.append(task_result)
         save_test_results(test_results, test_results_id)
         print_test_result(task_result, index + 1, total_tests)
         await browser_manager.close_except_specified_tab(page) #cleanup pages that are not the one we opened here
 
         if not browser_manager.isheadless: #no need to wait if we are running headless
-            await asyncio.sleep(10)  # give time for switching between tasks in case there is a human observer
-
+            await asyncio.sleep(wait_time_non_headless)  # give time for switching between tasks in case there is a human observer
 
     print_progress_bar(total_tests, total_tests)  # Complete the progress bar
     print('\n\nAll tests completed.')
@@ -256,6 +256,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run test suite for specified range of test tasks.')
 
     # Add arguments
+    parser.add_argument('-wait', '--wait_time_non_headless', type=int, default=10,
+                        help='Time to wait between test tasks when running in non-headless mode (default: 10 seconds)')
     parser.add_argument('-min', '--min_task_index', type=int, default=0,
                         help='Minimum task index to start tests from (default: 0)')
     parser.add_argument('-max', '--max_task_index', type=int,
@@ -263,7 +265,7 @@ if __name__ == "__main__":
     parser.add_argument('-id', '--test_results_id', type=str, default="",
                         help='A unique identifier for the test results. If not provided, a timestamp is used.')
     parser.add_argument('-config', '--test_config_file', type=str,
-                    help='Path to the test configuration file. Default is "test/tasks/test.json" in the project root.')
+                        help='Path to the test configuration file. Default is "test/tasks/test.json" in the project root.')
 
     # Parse the command line arguments
     args = parser.parse_args()
