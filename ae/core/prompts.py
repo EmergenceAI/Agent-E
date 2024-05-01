@@ -88,4 +88,126 @@ LLM_PROMPTS = {
     By following these guidelines, you will enhance the efficiency, reliability, and user interaction of your web navigation tasks.
     Always aim for clear, concise, and well-structured code that aligns with best practices in asynchronous programming and web automation.
     """,
+
+    "SKILLS_HARVESTING_PROMPT": '''
+    Objective:
+    If possible, create one or more Python functions that encapsulates a new skill capable of automating a broad range of tasks identified from a chat session. Not all tasks can be automated. It is acceptable that function(s) you create can do only part of the work. The function should dynamically adapt to various user inputs such as search terms, ordinal numbers, etc., that may change from one execution to another. 
+
+    Input:
+    Chat Session: A detailed log of interactions, highlighting user commands, skills/tools responses and system actions. Review these logs to identify parts of the user commands that are likely to change across different sessions (e.g., search terms, website URLs, ordinal numbers). Entries of the chat session have a "role" field, which can contain: user, assistant or tool.
+        user - the command the user gave.
+        assistant - The system instructing the skill to be used and the parameters to pass it.
+        tool - Captures the response from executing a skill.
+
+    Skills Documentation: Descriptions of existing skills, detailing their functions, inputs, outputs, and usage. Use this documentation to understand how to leverage existing capabilities to compose the new task(s).
+
+    Final URL: The final URL reached when completing this task. This is the URL that the user would have reached if they had completed the task manually.
+
+
+    Process:
+    Analyze User Command: From the chat session identify the user command. Examine the command identifying the elements of it that can change. For example: search terms, ordinal numbers, and etc.
+
+    Define Dynamic Parameters: Based on the identified variable elements, define input parameters for a new skill. These parameters should be designed to accept inputs that could vary with each execution of the skill.
+    For example, "search wikipedia for cats and open the third link". wikipedia can remain as part of the new skill, however, cats is a search terms and link number being 3 are all things that will change and therefore need to be skill parameters. The new skill can be:
+    search_wikipedia_and_open_link_by_ordinal(search_term: Annotated[str, "The search term to use."], ordinal: Annotated[int, "The link number to open"])->str
+
+    Sequence Skill Calls: Determine the sequence in which existing skills should be called to perform the identified task. Integrate the dynamic parameters into these skill calls to adapt to variable inputs.
+
+    Implement Glue Code: Where necessary, write glue code to bridge between skill calls, ensuring smooth data flow and handling variations in input effectively.
+
+
+    Output:
+    Python function(s) that define one or more new skills, incorporating parameters for all identified variable elements. This function should call existing skills in a sequence that achieves the desired task, using the dynamic parameters to adapt to different inputs.
+
+    Example Function Skeleton:
+
+    python
+    from typing import Annotated, Any
+    #import existing_skill1
+    #import existing_skill2
+
+    def new_skill1(variable1: Annotated[Type, "Description of variable1"],
+                variable2: Annotated[Type, "Description of variable2"],
+                ...) -> Any:
+        """
+        Automates a task identified from a chat session, capable of handling variable inputs like search terms, website URLs, ordinal numbers, etc.
+
+        Parameters:
+        - variable1: Description of the first variable input.
+        - variable2: Description of the second variable input.
+        ...
+
+        Returns:
+        - The result of the automated task, potentially varying based on the input and the nature of the task.
+        """
+        # Example sequence of skill calls using dynamic parameters
+        result1 = existing_skill1(variable1)
+        # Glue code if needed
+        result2 = existing_skill2(result1, variable2)
+        # Further processing and skill calls as required
+
+        return final_result
+
+    This function skeleton should be adapted based on the specific user command, with parameters and logic reflecting the variability and requirements identified in the chat session analysis.
+
+    Rules:
+    Examine the provided final url for patterns. In some cases the final URL has a pattern that is sufficient to be used to fulfill the task. For example, if the user command was to "look for sharp batteries on acme site and sort by most popular" and the final url is: https://acme.com/search?query=sharp+batteries&sort=emp-top-stuff, then the task can be completed by creating a function that takes a search term the URL accordingly. For example, https://acme.com/search?query={search term}&sort=emp-top-stuff and the function (new skill) would just receive the search term.
+    Do not provide placeholder functions. If that is the case omit them and adjust the new skill name and documentation to be true to what it can do.
+    Do not add functions that you do not provide implementation for with the exception of the existing skills that are provided to you.
+    Ensure that the appropriate imports are used for the existing skills that are called in the new skill you have harvested/created.
+    Ensure proper use of "async" in function defintions where needed. For example when calling existing skills that require "await".
+    Respond only with the new skill(s) if any or "NO NEW SKILLS"
+    The name of the new function should be matching to the function's doc string not the chat session.
+    Do not use "mmid" as input to any of the functions because it changes every time a site is visited. For example, this is an example of an invalid selector [mmid='123']. Only use html element attributes that are not ephemeral for example, "id", "aria-label", etc. You should look for them in the "outer HTML" provided in "tool" content provided in the chat logs. If only mmid is available as a selector, then there is no skill to harvest here. 
+    All the skills have return information. It is a good practice to include this in what you return from functions that you create. This helps give a more complete view of the transaction. If the function can not complete the request, do not return success. Ensure the return message accurately describes what steps were performed versus not performed/failed.
+    Do not use the function/skill get_dom_with_content_type.
+    Do not create functions that expect selectors in the inputs, for example, filter_option_selector. The selectors should be obtained from the chat session otherwise this is not a valid function/skill to create.
+    Do not anticipate the user to provide a value that you can use in a DOM selector. Any DOM selector values you must obtain from the given chat session.
+    When looking for the appropriate DOM selectors, look to see if an "outer HTML" is provided in the "content" field of chat session entries with role "tool".
+    The function(s) that you create do not have to complete the entire task that is in the chat session. If there are unknowns, especially DOM selectors or URLs, that is a sign that this can not be completed in one shot and the DOM of the page needs to be consulted in realtime. For example, if you need to click on an element and you do not have a strong confidence in the DOM query selector, this is a good indicator that the function needs to stop there.
+    Only respond with the complete python code, no other text.
+    Make sure the code does not have a lot of unnecessary new lines.
+    ''',
+
+    "HARVESTED_SKILLS_CLEANUP_PROMPT": """Given the embedded python code, extract from it the python function and their appropriate imports. 
+    If there are interdependencies between the functions then they should be considered one unit (for example, helper functions). 
+    Respond back with a properly formatted json array containing each grouped python code. The entries should have the appropriate imports in them.
+
+    Example input:
+
+    from a import b
+    from x import y
+    from z import w
+    def function1(text: str) -> str:
+        text = b.transform(text)
+        return text
+
+    def function2(text: str) -> str:
+        return function1(text)
+
+    def function3(text: str) -> str:
+        return function2(y.transition(text))
+
+    def function4(text: str) -> str:
+        return w.cleanup(text)
+
+    Example output:
+
+        [
+            {
+                "code": [
+                    "def function1(text: str) -> str:\n    text = b.transform(text)\n    return text",
+                    def function2(text: str) -> str:\n    return function1(text)",
+                    "def function3(text: str) -> str:\n    return function2(y.transition(text))"
+                ],
+                "imports": ["from a import b", "from x import y"]
+            },
+            {
+                "code": ["def function4(text: str) -> str:\n    return w.cleanup(text)"],
+                "imports": ["from z import w"]
+            }
+        ]
+
+    Ensure that your response is in proper json format.
+    """
 }

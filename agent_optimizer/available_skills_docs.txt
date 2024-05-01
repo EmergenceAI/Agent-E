@@ -1,0 +1,215 @@
+async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
+
+                wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
+
+async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
+
+                wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
+
+    """
+
+    Executes a click action on the element matching the given query selector string within the currently open web page.
+
+    If there is no page open, it will raise a ValueError. An optional wait time can be specified before executing the click logic. Use this to wait for the page to load especially when the last action caused the DOM/Page to load.
+
+    Parameters:
+
+    - selector: The query selector string to identify the element for the click action.
+
+    - wait_before_execution: Optional wait time in seconds before executing the click event logic. Defaults to 0.0 seconds.
+
+    Returns:
+
+    - Success if the click was successful, Appropropriate error message otherwise.
+
+    """
+
+async def enter_text_and_click(
+
+    text_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use mmid attribute."],
+
+    text_to_enter: Annotated[str, "The text that will be entered into the element specified by text_selector."],
+
+    click_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], for the element that will be clicked after text entry."],
+
+    wait_before_click_execution: Annotated[float, "Optional wait time in seconds before executing the click.", float] = 0.0
+
+) -> Annotated[str, "A message indicating success or failure of the text entry and click."]:
+
+    """
+
+    Enters text into an element and then clicks on another element.
+
+    Parameters:
+
+    - text_selector: The selector for the element to enter text into. It should be a properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use the mmid attribute.
+
+    - text_to_enter: The text to enter into the element specified by text_selector.
+
+    - click_selector: The selector for the element to click. It should be a properly formatted DOM selector query, for example [mmid='1234'].
+
+    - wait_before_click_execution: Optional wait time in seconds before executing the click action. Default is 0.0.
+
+    Returns:
+
+    - A message indicating the success or failure of the text entry and click.
+
+    Raises:
+
+    - ValueError: If no active page is found. The OpenURL command opens a new page.
+
+    Example usage:
+
+    ```
+
+    await enter_text_and_click("[mmid='1234']", "Hello, World!", "[mmid='5678']", wait_before_click_execution=1.5)
+
+    ```
+
+    """
+
+async def get_user_input(questions: Annotated[List[str], "List of questions to ask the user each one represented as a string"] ) -> dict[str, str]: 
+
+    """
+
+    Asks the user a list of questions and returns the answers in a dictionary.
+
+    Parameters:
+
+    - questions: A list of questions to ask the user ["What is Username?", "What is your password?"].
+
+    Returns:
+
+    - Newline separated list of questions to ask the user
+
+    """
+
+async def openurl(url: Annotated[str, "The URL to navigate to."],
+
+            timeout: Annotated[int, "Additional wait time in seconds after initial load."] = 3) -> Annotated[str, "Returns the result of this request in text form"]:
+
+    """
+
+    Opens a specified URL in the active browser instance. Waits for an initial load event, then waits for either
+
+    the 'domcontentloaded' event or a configurable timeout, whichever comes first.
+
+    Parameters:
+
+    - url: The URL to navigate to.
+
+    - timeout: Additional time in seconds to wait after the initial load before considering the navigation successful.
+
+    Returns:
+
+    - URL of the new page.
+
+    """
+
+async def geturl() -> Annotated[str, "Returns the full URL of the current active web site/page."]:
+
+    """
+
+    Returns the full URL of the current page
+
+    Parameters:
+
+    Returns:
+
+    - Full URL the browser's active page.
+
+    """
+
+async def bulk_enter_text(
+
+    entries: Annotated[List[dict[str, str]], "List of objects, each containing 'query_selector' and 'text'."]  # noqa: UP006
+
+) -> Annotated[List[dict[str, str]], "List of dictionaries, each containing 'query_selector' and the result of the operation."]:
+
+    """
+
+    Enters text into multiple DOM elements using a bulk operation.
+
+    This function enters text into multiple DOM elements using a bulk operation.
+
+    It takes a list of dictionaries, where each dictionary contains a 'query_selector' and 'text' pair.
+
+    The function internally calls the 'entertext' function to perform the text entry operation for each entry.
+
+    Args:
+
+        entries: List of objects, each containing 'query_selector' and 'text'.
+
+    Returns:
+
+        List of dictionaries, each containing 'query_selector' and the result of the operation.
+
+    Example:
+
+        entries = [
+
+            {"query_selector": "#username", "text": "test_user"},
+
+            {"query_selector": "#password", "text": "test_password"}
+
+        ]
+
+        results = await bulk_enter_text(entries)
+
+    Note:
+
+        - Each entry in the 'entries' list should be a dictionary with 'query_selector' and 'text' keys.
+
+        - The result is a list of dictionaries, where each dictionary contains the 'query_selector' and the result of the operation.
+
+    """
+
+async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
+
+    """
+
+    Enters text into a DOM element identified by a CSS selector.
+
+    This function enters the specified text into a DOM element identified by the given CSS selector.
+
+    It uses the Playwright library to interact with the browser and perform the text entry operation.
+
+    The function supports both direct setting of the 'value' property and simulating keyboard typing.
+
+    Args:
+
+        entry (EnterTextEntry): An object containing 'query_selector' (DOM selector query using mmid attribute)
+
+                                and 'text' (text to enter on the element).
+
+    Returns:
+
+        str: Explanation of the outcome of this operation.
+
+    Example:
+
+        entry = EnterTextEntry(query_selector='#username', text='test_user')
+
+        result = await entertext(entry)
+
+    Note:
+
+        - The 'query_selector' should be a valid CSS selector that uniquely identifies the target element.
+
+        - The 'text' parameter specifies the text to be entered into the element.
+
+        - The function uses the PlaywrightManager to manage the browser instance.
+
+        - If no active page is found, an error message is returned.
+
+        - The function internally calls the 'do_entertext' function to perform the text entry operation.
+
+        - The 'do_entertext' function applies a pulsating border effect to the target element during the operation.
+
+        - The 'use_keyboard_fill' parameter in 'do_entertext' determines whether to simulate keyboard typing or not.
+
+        - If 'use_keyboard_fill' is set to True, the function uses the 'page.keyboard.type' method to enter the text.
+
+        - If 'use_keyboard_fill' is set to False, the function uses the 'custom_fill_element' method to enter the text.
+
+    """
