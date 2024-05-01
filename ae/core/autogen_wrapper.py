@@ -175,13 +175,16 @@ class AutogenWrapper:
         return browser_nav_agent_no_skills.agent
 
 
-    async def process_command(self, command: str, current_url: str | None = None):
+    async def process_command(self, command: str, current_url: str | None = None) -> autogen.ChatResult | None:
         """
         Process a command by sending it to one or more agents.
 
         Args:
             command (str): The command to be processed.
             current_url (str, optional): The current URL of the browser. Defaults to None.
+
+        Returns:
+            autogen.ChatResult | None: The result of the command processing, or None if an error occurred. Contains chat log, cost(tokens/price)
 
         """
         current_url_prompt_segment = ""
@@ -202,13 +205,14 @@ class AutogenWrapper:
             else:
                 raise ValueError(f"No browser navigation agent found. in agents_map {self.agents_map}")
 
-            await self.agents_map["user_proxy"].a_initiate_chat( # type: ignore
+            result = await self.agents_map["user_proxy"].a_initiate_chat( # type: ignore
                 browser_nav_agent, # self.manager
                 #clear_history=True,
                 message=prompt,
                 silent=False,
                 cache=None,
             )
+            return result
         except openai.BadRequestError as bre:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
