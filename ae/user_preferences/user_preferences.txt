@@ -3,9 +3,9 @@ First Name: John
 Last Name: Doe
 Date of birth: 10/10/2010
 Occupation: Software Engineer
-Address: 123 Main Street, Anytown, Anystate, United Kingdom 00123
+Address: 49 Featherstone Street, LONDON, EC1Y 8SY, UNITED KINGDOM
 Email: myemail@gmail.com
-Phone Number: +1 123-456-7890
+Phone Number: 123-456-7890
 Here are some of my preferences:
 Psychiatric Progress Note URL: https://www.jotform.com/form/240716774071154
 Shopping Preferences: www.amazon.com
