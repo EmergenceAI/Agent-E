@@ -174,7 +174,7 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     ]
     print('\n' + tabulate(result_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
-async def main(min_task_index: int, max_task_index: int, test_file: str="", test_results_id: str = "", wait_time_non_headless: int=10) -> None:
+async def main(min_task_index: int, max_task_index: int, test_file: str="", test_results_id: str = "", wait_time_non_headless: int=5) -> None:
     """
     The main function to run the test suite with specified range of test tasks.
 
