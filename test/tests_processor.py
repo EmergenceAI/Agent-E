@@ -91,9 +91,12 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     """
     status = 'Pass' if task_result['score'] == 1 else 'Fail'
     color = 'green' if status == 'Pass' else 'red'
-    result_table = [ # type: ignore
-        ['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)'],
-        [index, task_result['task_id'], task_result['intent'], colored(status, color), round(task_result['tct'], 2)] # type: ignore
+    cost = task_result["compute_cost"]
+    total_cost = round(cost.get("cost", -1), 4) # type: ignore
+    total_tokens = cost.get("total_tokens", -1) # type: ignore
+    result_table = [  # type: ignore
+        ['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
+        [index, task_result['task_id'], task_result['intent'], colored(status, color), round(task_result['tct'], 2), total_tokens, total_cost]  # type: ignore
     ]
     print('\n' + tabulate(result_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
@@ -259,21 +262,36 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     # Aggregate and print individual test results
     print("\nDetailed Test Results:")
-    detailed_results_table = [['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)']]
+    detailed_results_table = [['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)', 'Total Tokens', 'Total Cost ($)']]
     for idx, result in enumerate(test_results, 1):
         status = 'Pass' if result['score'] == 1 else 'Fail'
         color = 'green' if status == 'Pass' else 'red'
+
+        cost = result["compute_cost"]
+        total_cost = round(cost.get("cost", -1), 4) # type: ignore
+        total_tokens = cost.get("total_tokens", -1) # type: ignore
+
         detailed_results_table.append([
-            idx, result['task_id'], result['intent'], colored(status, color), round(result['tct'], 2) # type: ignore
+            idx, result['task_id'], result['intent'], colored(status, color), round(result['tct'], 2), # type: ignore
+            total_tokens, total_cost
         ])
     print(tabulate(detailed_results_table, headers='firstrow', tablefmt='grid'))
 
     # Summary report
+
+    # Calculate aggregated cost and token totals
+    total_cost = sum(result["compute_cost"].get("cost", 0) for result in test_results) # type: ignore
+    total_tokens = sum(result["compute_cost"].get("total_tokens", 0) for result in test_results) # type: ignore
+
     passed_tests = [result for result in test_results if result['score'] == 1]
     summary_table = [ # type: ignore
-        ['Total Tests', 'Passed', 'Failed', 'Average Time Taken (s)', 'Total Time Taken (s)'],
-        [total_tests, len(passed_tests), total_tests - len(passed_tests), round(sum(test['tct'] for test in test_results) / total_tests, 2), round(sum(test['tct'] for test in test_results), 2)] # type: ignore
+        ['Total Tests', 'Passed', 'Failed', 'Average Time Taken (s)', 'Total Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
+        [total_tests, len(passed_tests), total_tests - len(passed_tests),
+         round(sum(test['tct'] for test in test_results) / total_tests, 2), # type: ignore
+         round(sum(test['tct'] for test in test_results), 2),  # type: ignore
+         total_tokens, total_cost]
     ]
+
     print('\nSummary Report:')
     print(tabulate(summary_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
