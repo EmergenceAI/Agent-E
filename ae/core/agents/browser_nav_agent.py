@@ -59,14 +59,14 @@ class BrowserNavAgent:
         Register all the skills that the agent can perform.
         """
         # Register get_user_input skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(get_user_input)
+        self.user_proxy_agent.register_for_execution()(get_user_input) # type: ignore
         # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input) # type: ignore
 
         # Register openurl skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(openurl)
+        self.user_proxy_agent.register_for_execution()(openurl) # type: ignore
         # Register openurl skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl)
+        self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl) # type: ignore
 
         # Register enter_text_and_click skill for execution by user_proxy_agent
         self.user_proxy_agent.register_for_execution()(enter_text_and_click)

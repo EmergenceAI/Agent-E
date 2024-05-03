@@ -290,6 +290,43 @@ class HTMLContentEvaluator(Evaluator):
                 )
         return score
 
+class ManualContentEvaluator(Evaluator):
+    """Evaluation Route for Manual Evaluation."""
+    async def __call__(
+        self,
+        task_config: dict[str, Any],
+        page: Page,
+        client: CDPSession | None = None,
+        answer: str | None = None
+    ) -> float:
+        """Pauses Execution to get manual evaluation score from user.
+
+        Parameters:
+            task_config (dict[str, Any]): The task configuration containing evaluation criteria.
+            page (Page): The Playwright page object for the current webpage.
+            client (CDPSession | None, optional): The Chrome DevTools Protocol session object. Not used in this evaluator.
+            answer (str | None, optional): Not used in this evaluator.
+
+        Returns:
+            float: A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
+        """
+        task:str = task_config["intent"]
+        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
+        answer_type=task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        id=task_config["task_id"]
+        print("Task ID: ",id)
+        print("Task: ",task)
+        print("Answer Type: ",answer_type)
+        print("Reference Answer: ",reference_answer)
+        user_response = input("Annotate the task as Pass or Fail? ")
+        if(user_response.lower()=="pass"):
+            return 1.0
+        elif user_response.lower()=="fail":
+            return 0.0
+        else:
+            raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
+       
+
 
 class EvaluatorComb(Evaluator):
     """Combines multiple evaluators to perform a comprehensive evaluation based on different criteria.
@@ -358,6 +395,9 @@ def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
             case "program_html":
                 logger.info("Adding HTML evaluator")
                 evaluators.append(HTMLContentEvaluator())
+            case "manual":
+                logger.info("Adding manual evaluator")
+                evaluators.append(ManualContentEvaluator())
             case _:
                 raise ValueError(f"eval_type {eval_type} is not supported")
 
