@@ -219,7 +219,7 @@ async def main(min_task_index: int, max_task_index: int, test_file: str="", test
 
     for index, task_config in enumerate(test_configurations[min_task_index:max_task_index], start=min_task_index):
         print_progress_bar(index - min_task_index, total_tests)
-        task_result = await execute_test_task(index, task_config, browser_manager, ag, page, agent_optimizer=None)
+        task_result = await execute_test_task(index, task_config, browser_manager, ag, page)
         test_results.append(task_result)
         save_test_results(test_results, test_results_id)
         print_test_result(task_result, index + 1, total_tests)
