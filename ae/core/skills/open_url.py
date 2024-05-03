@@ -1,9 +1,7 @@
 from typing import Annotated
-
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 
-#Annotated[Page, "The page instance that navigated to the specified URL."]
 
 async def openurl(url: Annotated[str, "The URL to navigate to."],
             timeout: Annotated[int, "Additional wait time in seconds after initial load."] = 3) -> Annotated[str, "Returns the result of this request in text form"]:
@@ -19,7 +17,7 @@ async def openurl(url: Annotated[str, "The URL to navigate to."],
     - URL of the new page.
     """
     logger.info(f"Opening URL: {url}")
-
+    print(f"Opening URL: {url}")
     browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
     await browser_manager.get_browser_context()
     page = await browser_manager.get_current_page()

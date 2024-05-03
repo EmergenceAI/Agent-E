@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    level=logging.INFO, # change level here or use set_log_level() to change it
+    level=logging.DEBUG, # change level here or use set_log_level() to change it
     format="[%(asctime)s] %(levelname)s {%(filename)s:%(lineno)d}  - %(message)s",
 )
 

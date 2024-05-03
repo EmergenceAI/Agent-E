@@ -1,13 +1,10 @@
 from string import Template
 
 import autogen  # type: ignore
-from typing import List, Dict
-from typing import Tuple, Optional
-from typing import Union
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.prompts import LLM_PROMPTS
-from autogen import Agent  
-from autogen import OpenAIWrapper  
+from autogen import Agent  # type: ignore
+from autogen import OpenAIWrapper  # type: ignore
 class PlannerAgent:
     def __init__(self, config_list): # type: ignore
         """
@@ -26,16 +23,15 @@ class PlannerAgent:
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
 
-        self.agent = autogen.ConversableAgent(
+        self.agent = autogen.AssistantAgent(
             name="planner_agent",
             system_message=system_message,
             llm_config={
                 "config_list": config_list,
-                "cache_seed": 2,
+                "cache_seed": None,
                 "temperature": 0.0
             },
         )
-        self.agent.generate_oai_reply = self._generate_oai_reply # type: ignore
 
 
     def __get_ltm(self):
@@ -45,13 +41,3 @@ class PlannerAgent:
         """
         return get_user_ltm()
 
-
-    def _generate_oai_reply(self, # type: ignore
-        messages: Optional[List[Dict]] = None, # type: ignore
-        Header: Optional[Agent] = None, # type: ignore
-        config: Optional[OpenAIWrapper] = None # type: ignore
-    ) -> Tuple[bool, Union[str, Dict, None]] : # type: ignore
-        
-        print(f">>> generate_oai_reply: {messages}")
-        print(f">>> Header: {Header}")
-        return True, "Hello from PlannerAgent"

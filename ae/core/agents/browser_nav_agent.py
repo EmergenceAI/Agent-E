@@ -1,7 +1,7 @@
 from string import Template
 
 import autogen  # type: ignore
-
+from autogen.agentchat.conversable_agent import register_function  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.post_process_responses import final_reply_callback_browser_agent as print_message_from_user_proxy  # type: ignore
 from ae.core.post_process_responses import final_reply_callback_user_proxy as print_message_from_browser_agent  # type: ignore
@@ -17,7 +17,7 @@ from ae.core.skills.open_url import openurl
 
 
 class BrowserNavAgent:
-    def __init__(self, config_list, user_proxy_agent: autogen.UserProxyAgent): # type: ignore
+    def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
         """
         Initialize the BrowserNavAgent and store the AssistantAgent instance
         as an instance attribute for external access.
@@ -26,7 +26,7 @@ class BrowserNavAgent:
         - config_list: A list of configuration parameters required for AssistantAgent.
         - user_proxy_agent: An instance of the UserProxyAgent class.
         """
-        self.user_proxy_agent = user_proxy_agent
+        self.browser_nav_executor = browser_nav_executor
         user_ltm = self.__get_ltm()
         system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
 
@@ -58,55 +58,25 @@ class BrowserNavAgent:
         """
         Register all the skills that the agent can perform.
         """
-        # Register get_user_input skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(get_user_input)
-        # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+        print(">>> Registering skills for BrowserNavAgent")
 
-        # Register openurl skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(openurl)
-        # Register openurl skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl)
+        skills = [
+            (get_user_input, "GET_USER_INPUT_PROMPT"),
+            (openurl, "OPEN_URL_PROMPT"),
+            (enter_text_and_click, "ENTER_TEXT_AND_CLICK_PROMPT"),
+            (get_dom_with_content_type, "GET_DOM_WITH_CONTENT_TYPE_PROMPT"),
+            (click_element, "CLICK_PROMPT"),
+            (geturl, "GET_URL_PROMPT"),
+            (bulk_enter_text, "BULK_ENTER_TEXT_PROMPT"),
+            (entertext, "ENTER_TEXT_PROMPT"),
+        ]
 
-        # Register enter_text_and_click skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(enter_text_and_click)
-        # Register enter_text_and_click skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
+        for skill, prompt in skills:
+            register_function( # type: ignore
+                skill,    # type: ignore
+                caller=self.agent, # type: ignore
+                executor=self.browser_nav_executor,  # type: ignore
+                description=LLM_PROMPTS[prompt], # type: ignore
+            ) # type: ignore
 
-        # Register get_dom_with_content_type skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(get_dom_with_content_type)
-        # Register get_dom_with_content_type skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
-
-        # Register click_element skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(click_element)
-        # Register click_element skill for LLM by assistant agent
-        #self.agent.register_for_llm(description=LLM_PROMPTS["CLICK_PROMPT_ACCESSIBILITY"])(click_element)
-        self.agent.register_for_llm(description=LLM_PROMPTS["CLICK_PROMPT"])(click_element)
-
-        # Register geturl skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(geturl)
-        # Register geturl skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_URL_PROMPT"])(geturl)
-
-        # Register bulk_enter_text skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(bulk_enter_text)
-        # Register bulk_enter_text skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"])(bulk_enter_text)
-
-        # Register entertext skill for execution by user_proxy_agent
-        self.user_proxy_agent.register_for_execution()(entertext)
-        # Register entertext skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)
-
-        # Register reply function for printing messages
-        self.user_proxy_agent.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_user_proxy,
-            config={"callback": None},
-        )
-        self.agent.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_browser_agent,
-            config={"callback": None},
-        )
+        print(">>> Registered skills for BrowserNavAgent and BrowserNavExecutorAgent")

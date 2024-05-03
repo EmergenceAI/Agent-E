@@ -1,6 +1,8 @@
 LLM_PROMPTS = {
     "USER_AGENT_PROMPT": """A proxy for the user for executing the user commands.""",
-
+    "BROWSER_NAV_EXECUTOR_PROMPT": """A proxy for the user for executing the user commands.""",
+    "PLANNER_AGENT_PROMPT": """Given a complex task, you goal is think step by step and break it down to smaller independent subtasks. Each subtask will be at granularity of user tasks (search for information or sort information etc). 
+    You will update the plan as you complete the subtasks or as new information becomes available. You will respond with list of subtasks if the task is relatively complex, otherwise you will return the task itself.""",
     "BROWSER_AGENT_PROMPT": """You will perform web navigation tasks, which may include logging into websites.
     Use the provided JSON DOM representation for element location or text summarization.
     Interact with pages using only the "mmid" attribute in DOM elements.

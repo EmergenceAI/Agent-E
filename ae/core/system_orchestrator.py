@@ -24,7 +24,7 @@ class SystemOrchestrator:
         shutdown_event (asyncio.Event): Event to wait for an exit command to be processed.
     """
 
-    def __init__(self, agent_scenario:str="user_proxy,browser_nav_agent,planner_agent,verification_agent", input_mode:str="GUI_ONLY"):
+    def __init__(self, agent_scenario:str="user_proxy,planner_agent,browser_nav_agent,browser_nav_executor", input_mode:str="GUI_ONLY"):
         """
         Initializes the system orchestrator with the specified agent scenario and input mode.
 
