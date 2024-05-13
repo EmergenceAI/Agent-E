@@ -45,7 +45,7 @@ class AutogenWrapper:
 
         """
         if agents_needed is None:
-            agents_needed = ["user_proxy", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
+            agents_needed = ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
         # Create an instance of cls
         self = cls(max_chat_round)
         load_dotenv()
@@ -58,27 +58,32 @@ class AutogenWrapper:
         self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {"gpt-4-turbo-preview"}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
         
-        def nested_chat_message(
-            recipient: autogen.AssistantAgent, 
-            messages: list[dict[str, str]], 
-            sender: autogen.UserProxyAgent, 
-            config: dict[str, str]
-        ) -> str: # type: ignore
-            print("************ inside nested_chat_message ************")
-            return f"{messages[0]['content']}"
+        def trigger_nested_chat(manager: autogen.ConversableAgent):
+            print(f"Checking if nested chat should be triggered for Agent {manager}")
+            return True
 
-        self.agents_map["user_proxy"].register_nested_chats( # type: ignore
+        def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
+            print("Custom summary method called")
+            last_message=recipient.last_message(sender)["content"] # type: ignore
+            if not last_message or last_message.strip() == "": # type: ignore
+                return "I received an empty message, try repeating."
+            elif "##TERMINATE TASK##" in last_message:
+                last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
+                return last_message #  type: ignore
+            return recipient.last_message(sender)["content"] # type: ignore
+        
+
+        print(f">>> Registering nested chat. Available agents: {self.agents_map}")
+        self.agents_map["user"].register_nested_chats( # type: ignore
             [
                 {
-                    "sender": self.agents_map["browser_nav_executor"],
-                    "recipient": self.agents_map["browser_nav_agent"],
-                    "message": nested_chat_message,
-                    "max_turns": 2,
-                    "summary_method": "last_msg",
-                }
-                    
+            "sender": self.agents_map["browser_nav_executor"],
+            "recipient": self.agents_map["browser_nav_agent"],
+            "max_turns": 100,
+            "summary_method": my_custom_summary_method,
+                }   
             ],
-            trigger=self.agents_map["planner_agent"],
+            trigger=trigger_nested_chat, # type: ignore
         )
 
         return self
@@ -98,49 +103,45 @@ class AutogenWrapper:
         if "user_proxy" not in agents_needed:
             raise ValueError("user_proxy agent is required in the list of needed agents.")
 
-        agents_map: dict[str, autogen.AssistantAgent | autogen.UserProxyAgent  | autogen.ConversableAgent]= {}
+        agents_map: dict[str, autogen.UserProxyAgent  | autogen.ConversableAgent]= {}
 
-        user_proxy_agent = await self.__create_user_proxy_agent()
-        user_proxy_agent.reset()
-        agents_map["user_proxy"] = user_proxy_agent
+        user_proxy_agent = await self.__create_user_delegate_agent()
+        agents_map["user"] = user_proxy_agent
         agents_needed.remove("user_proxy")
         
         browser_nav_executor = self.__create_browser_nav_executor_agent()
         agents_map["browser_nav_executor"] = browser_nav_executor
-        browser_nav_executor.reset()
         agents_needed.remove("browser_nav_executor")
         
         for agent_needed in agents_needed:
             if agent_needed == "browser_nav_agent":
-                browser_nav_agent: autogen.AssistantAgent = self.__create_browser_nav_agent(browser_nav_executor)
-                browser_nav_agent.reset()
+                browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
                 agents_map["browser_nav_agent"] = browser_nav_agent
             elif agent_needed == "planner_agent":
                 planner_agent = self.__create_planner_agent()
-                planner_agent.reset()
                 agents_map["planner_agent"] = planner_agent
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
         return agents_map
 
 
-    async def __create_user_proxy_agent(self):
+    async def __create_user_delegate_agent(self) -> autogen.ConversableAgent:
         """
-        Create a UserProxyAgent instance.
+        Create a ConversableAgent instance.
 
         Returns:
-            autogen.UserProxyAgent: An instance of UserProxyAgent.
+            autogen.ConversableAgent: An instance of ConversableAgent.
 
         """
-        user_proxy_agent = autogen.UserProxyAgent(
-            name="user_proxy",
+        task_delegate_agent = autogen.ConversableAgent(
+            name="user",
+            llm_config=False, 
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
             is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE##"), # type: ignore
             human_input_mode="NEVER",
             max_consecutive_auto_reply=self.number_of_rounds,
         )
-        print(">>> user_proxy_agent:", user_proxy_agent)
-        return user_proxy_agent
+        return task_delegate_agent
 
     def __create_browser_nav_executor_agent(self):
         """
@@ -152,9 +153,9 @@ class AutogenWrapper:
         """
         browser_nav_executor_agent = autogen.UserProxyAgent(
             name="browser_nav_executor",
-            system_message=LLM_PROMPTS["BROWSER_NAV_EXECUTOR_PROMPT"],
-            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE SUBTASK##"), # type: ignore
+            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE TASK##"), # type: ignore
             human_input_mode="NEVER",
+            llm_config=None,
             max_consecutive_auto_reply=self.number_of_rounds,
             code_execution_config={
                                 "last_n_messages": 1,
@@ -163,9 +164,10 @@ class AutogenWrapper:
                                 },
         )
         print(">>> Created browser_nav_executor_agent:", browser_nav_executor_agent)
+        print(browser_nav_executor_agent.function_map) # type: ignore
         return browser_nav_executor_agent
 
-    def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.AssistantAgent:
+    def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.ConversableAgent:
         """
         Create a BrowserNavAgent instance.
 
@@ -213,7 +215,10 @@ class AutogenWrapper:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
             print(f">>> agents_map: {self.agents_map}") 
-            await self.agents_map["user_proxy"].a_initiate_chat( # type: ignore
+            print(f">>> browser_nav_executor: {self.agents_map['browser_nav_executor']}")
+            print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
+            
+            await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
                 #clear_history=True,
                 message=prompt,
