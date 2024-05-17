@@ -120,6 +120,8 @@ The distillation process is a work in progress. We look to refine this process a
 We build on the work done by [Web Arena](https://github.com/web-arena-x/webarena) for testing and evaluation. The `test` directory contains a `tasks` sub directory with a JSON file, which contains test cases that also act as examples. Not all of them will pass.
 While Web Arena creates a set of static and controlled sites, we opted for using the wild web to bring the experience closer to what we all experience on a daily basis. This comes with pluses and minuses of course.
 
+Note: WebArena uses openai for some test validation strategies, for that reason `OPENAI_API_KEY` must be set in `.env` file
+
 ### Run examples/tests:
 This will take time to run. Alternatlively to run a particular example(s), modify the min and max task indicies.
 `python -m test.run_tests` (if you are on a Mac `python -u -m test.run_tests`)
@@ -129,6 +131,7 @@ This will take time to run. Alternatlively to run a particular example(s), modif
     - `--max_task_index`: Maximum task index to end tests with, non-inclusive
     - `--test_results_id`: A unique identifier for the test results. If not provided, a timestamp is used
     - `--test_config_file`: Path to the test configuration file. Default is "test/tasks/test.json" in the project root.
+    - `wait_time_non_headless`: The amount of time to wait between headless tests
 For example: `python -m test.run_tests --min_task_index 0 --max_task_index 28 --test_results_id first_28_tests` _(add `-u` for Mac)_
 
 
