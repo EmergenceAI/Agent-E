@@ -4,6 +4,8 @@ import time
 from typing import Annotated
 from typing import Any
 
+from playwright.async_api import Page
+
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import wait_for_non_loading_dom_state
@@ -61,7 +63,7 @@ async def get_dom_with_content_type(
     elif content_type == 'text_only':
         # Extract text from the body or the highest-level element
         logger.debug('Fetching DOM for text_only')
-        text_content = await page.evaluate("""() => document?.body?.innerText || document?.documentElement?.innerText || "" """)
+        text_content = await get_filtered_text_content(page)
         with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'text_only_dom.txt'), 'w',  encoding='utf-8') as f:
             f.write(text_content)
         extracted_data = text_content
@@ -76,3 +78,33 @@ async def get_dom_with_content_type(
     return extracted_data
 
 
+async def get_filtered_text_content(page: Page) -> str:
+    text_content = await page.evaluate("""
+        () => {
+            // Array of query selectors to filter out
+            const selectorsToFilter = ['#agentDriveAutoOverlay'];
+
+            // Store the original visibility values to revert later
+            const originalStyles = [];
+
+            // Hide the elements matching the query selectors
+            selectorsToFilter.forEach(selector => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    originalStyles.push({ element: element, originalStyle: element.style.visibility });
+                    element.style.visibility = 'hidden';
+                });
+            });
+
+            // Get the text content of the page
+            const textContent = document?.body?.innerText || document?.documentElement?.innerText || "";
+
+            // Revert the visibility changes
+            originalStyles.forEach(entry => {
+                entry.element.style.visibility = entry.originalStyle;
+            });
+
+            return textContent;
+        }
+    """)
+    return text_content
