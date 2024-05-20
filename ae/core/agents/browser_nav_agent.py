@@ -58,8 +58,6 @@ class BrowserNavAgent:
         """
         Register all the skills that the agent can perform.
         """
-        print(">>> Registering skills for BrowserNavAgent")
-
 
         # Register get_user_input skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)

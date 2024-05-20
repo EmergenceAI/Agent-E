@@ -28,7 +28,9 @@ While Agent-E is growing, it is already equipped to handle a versatile range of 
 - To install extras/dev dependancies: `uv pip install -r pyproject.toml --extra dev`
 - If you do not have Google Chrome locally (and don't want to install it), install playwright drivers: `playwright install`
 - .env file in project root is needed with the following (sample `.env-example` is included for convience):
-    - `OPENAI_API_KEY=put_you-openai_key_here`
+    - Follow the directions in the sample file
+    - You will need to set `AUTOGEN_MODEL_NAME` (for example `gpt-4-turbo-preview`) and `AUTOGEN_MODEL_API_KEY`
+    - If you are using a model other than OpenAI, you need to set `AUTOGEN_MODEL_BASE_URL` for example `https://api.groq.com/openai/v1`
     - If you want to use local chrome browser over playwright browser, go to chrome://version/ in chrome, find the path to your profile and set `BROWSER_STORAGE_DIR` to the path value
 
 ### pip issues
@@ -118,6 +120,8 @@ The distillation process is a work in progress. We look to refine this process a
 We build on the work done by [Web Arena](https://github.com/web-arena-x/webarena) for testing and evaluation. The `test` directory contains a `tasks` sub directory with a JSON file, which contains test cases that also act as examples. Not all of them will pass.
 While Web Arena creates a set of static and controlled sites, we opted for using the wild web to bring the experience closer to what we all experience on a daily basis. This comes with pluses and minuses of course.
 
+Note: WebArena uses openai for some test validation strategies, for that reason `OPENAI_API_KEY` must be set in `.env` file
+
 ### Run examples/tests:
 This will take time to run. Alternatlively to run a particular example(s), modify the min and max task indicies.
 `python -m test.run_tests` (if you are on a Mac `python -u -m test.run_tests`)
@@ -127,6 +131,7 @@ This will take time to run. Alternatlively to run a particular example(s), modif
     - `--max_task_index`: Maximum task index to end tests with, non-inclusive
     - `--test_results_id`: A unique identifier for the test results. If not provided, a timestamp is used
     - `--test_config_file`: Path to the test configuration file. Default is "test/tasks/test.json" in the project root.
+    - `wait_time_non_headless`: The amount of time to wait between headless tests
 For example: `python -m test.run_tests --min_task_index 0 --max_task_index 28 --test_results_id first_28_tests` _(add `-u` for Mac)_
 
 
@@ -154,6 +159,7 @@ html_theme = 'sphinx_rtd_theme'
 - Action verification - Responding from every skill with changes that took place in the DOM (Mutation Observers) so that the LLM can judge whether the skill did execute properly or not
 - Execution Planner - The LLM can potentially decide on multiple steps ahead, but it typically just sticks with one at a time. A targeted planning agent can make execution faster
 - Memory + learn user preferences
+- Move user preferences to a local vector DB. Add a skill to query vector DB. Possibly send the user preferences keys into the prompt.
 - DOM distillation for content type links
 - Voice input
 - Replace use of deprecated `snapshot()` for DOM distillation
