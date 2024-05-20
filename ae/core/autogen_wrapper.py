@@ -11,7 +11,10 @@ from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
-
+import asyncio
+import nest_asyncio # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
+nest_asyncio.apply()  # type: ignore
 
 class AutogenWrapper:
     """
@@ -60,6 +63,15 @@ class AutogenWrapper:
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             print(f"Checking if nested chat should be triggered for Agent {manager}")
+            messages=manager.chat_messages # type: ignore
+            manager_messages=messages[self.agents_map["user"]] # type: ignore
+            manager_last_message=manager_messages[-1]["content"] # type: ignore
+            print("***")
+            print(f"Manager Messages: {manager_last_message}")
+            print("***")
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(print_message_from_planner("Planner: "+manager_last_message)) # type: ignore
+
             return True
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
@@ -71,7 +83,6 @@ class AutogenWrapper:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
-        
 
         print(f">>> Registering nested chat. Available agents: {self.agents_map}")
         self.agents_map["user"].register_nested_chats( # type: ignore

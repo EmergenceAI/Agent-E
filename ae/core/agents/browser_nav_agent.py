@@ -102,7 +102,7 @@ class BrowserNavAgent:
         # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(entertext)
 
-        ''' 
+        '''
         # Register reply function for printing messages
         self.browser_nav_executor.register_reply( # type: ignore
             [autogen.Agent, None],

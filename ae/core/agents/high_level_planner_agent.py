@@ -1,5 +1,5 @@
 from string import Template
-
+from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
 import autogen  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.prompts import LLM_PROMPTS
@@ -33,6 +33,12 @@ class PlannerAgent:
             },
         )
 
+        self.agent.register_reply( # type: ignore
+            [autogen.AssistantAgent, None],
+            reply_func=print_message_as_planner,
+            config={"callback": None},
+            ignore_async_in_sync_chat=True
+        )
 
     def __get_ltm(self):
         """
