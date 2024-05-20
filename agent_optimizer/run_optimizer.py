@@ -1,3 +1,4 @@
+import ast
 import asyncio
 import json
 import os
@@ -96,6 +97,90 @@ def add_test_cards_to_chat_logs(test_tasks_file: str, task_id_to_chat_logs: dict
 
     return chat_logs_and_test_tasks
 
+def convert_harvested_skills_to_function(harvested_skills: list[str]):
+    """
+    Convert harvested skills to a function.
+    """
+    pass
+
+
+
+def convert_harvested_skill_to_function(harvested_skill: str) -> dict[str, Any]:
+    """
+    Analyzes and executes a string of Python code to determine the main function and retrieve all defined functions.
+
+    The main function is defined as the one that calls other functions but is not called by any other.
+
+    Args:
+        harvested_skill (str): The string containing the Python code with function definitions.
+
+    Returns:
+        dict[str, Any]: A dictionary containing:
+            - "main_function_name": The name of the main function (str) or None if not determinable.
+            - "functions": A dictionary where keys are function names and values are the function objects.
+    """
+    # Parse the code string into an AST
+    tree = ast.parse(harvested_skill)
+
+    # Initialize a dictionary to keep track of which functions call other functions
+    function_calls = {node.name: [] for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)}
+
+    # If there's only one function, we can immediately set it as the main function
+    if len(function_calls) == 1:
+        main_function_name = next(iter(function_calls))
+    else:
+        # Walk the tree to find all function definitions and their calls
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                # For each function definition, check its body for function calls
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Call) and isinstance(child.func, ast.Name):
+                        # If a function call is found, add it to the dictionary
+                        function_calls[node.name].append(child.func.id) # type: ignore
+
+        # Find the main function
+        all_called_functions = set()  # type: ignore
+        for calls in function_calls.values(): # type: ignore
+            for func in calls: # type: ignore
+                all_called_functions.add(func)  # type: ignore
+
+        # Identify candidate main functions
+        main_function_candidates = []
+        for func in function_calls:
+            if func not in all_called_functions:
+                main_function_candidates.append(func) # type: ignore
+
+        # Determine the main function name if there is one candidate
+        main_function_name = main_function_candidates[0] if len(main_function_candidates) == 1 else None  # type: ignore
+
+    # Create a local namespace dictionary to execute the code
+    local_namespace: dict[str, Any] = {}
+    exec(harvested_skill, local_namespace)
+
+    # Extract only the functions from the local namespace
+    functions = {name: obj for name, obj in local_namespace.items() if callable(obj)}
+
+    return {
+        "main_function_name": main_function_name,
+        "functions": functions
+    }
+
+def run_tests_with_harvested_skills(harvested_skills: list[str], test_task_config: dict[str, Any]):
+    """
+    Run tests with harvested skills.
+    """
+    if not harvested_skills:
+        logger.info(f"No harvested skills to run tests with, no need to rerun tests for task {test_task_config['task_id']}.")
+        return
+    #TODO: figure out how to create autogen wrapper and add the harvested skills to it, then run the test returning back the test results and chat logs
+    pass
+
+def did_test_pass_with_harvested_skills(test_results: dict[int, dict[str, Any]], chat_logs_and_test_tasks: list[dict[str, Any]]):
+    """
+    Determine if the test passed and the harvested skills were used.
+    """
+    pass
+    #TODO: determine that the test passed then figure out how to get the name of the harvested skills (maybe that should be passed in)
 
 async def main():
     start_time = time.time()
@@ -108,9 +193,15 @@ async def main():
     print(">>> harvested_skills\n", json.dumps(harvested_skills, indent=2))
 
     #STOPPED HERE. Need to register the function and do the same test with it to see if it will pass or not.
-    # tests_processor should now allow for the passing of autogen_wrapper. This is where the harvested skill needs to be registered.
+    # tests_processor.execute_single_task should now allow for the passing of autogen_wrapper. This is where the harvested skill needs to be registered.
         # The pass must have less steps than the original chat log and the new skill should be used. (maybe we should add this as an attribute of the chat log or the general entry that has test results and chat log)
         # otherwise it could be that it passed but without using the skill, as in we need to ensure that the chat results of the new test have the new skill in it
+    #This function convert_harvested_skill_to_function needs to be used to get the functions and the main function. The thinking is maybe just create a dir for temp 
+    #harvested skills and dump the string containing harvested skill in it. Then we need to somehow import the new file and register that function with the autogen_wrapper
+    #Not sure how this will work with importing the function that may have dependancy on some imports .
+    #One idea is to change the autogen wrapper code to look for some file called harvested functions and add them if a flag is passed?
+    #Finally since we have the name of the main function we need to search the chatlog (as a string for "name": "main_function_name here". Alternatively, we can go through the chat log 
+    # look for "role": "assistant" and then check the called functions. But the regex match should be sufficient.
 
     logger.info(f"Total time taken for skills harvesting: {time.time() - start_time} seconds.")
 

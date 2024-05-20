@@ -120,7 +120,7 @@ def get_command_exec_cost(command_exec_result: ChatResult):
     return output
 
 
-async def execute_single_task(task_config: dict[str, Any], browser_manager: PlaywrightManager, ag: AutogenWrapper, page: Page) -> dict[str, Any]:
+async def execute_single_task(task_config: dict[str, Any], browser_manager: PlaywrightManager, ag: AutogenWrapper, page: Page) -> dict[str, list[dict[str, Any]] | dict[str, Any]]:
     """
     Executes a single test task based on a specified task configuration and evaluates its performance.
 
@@ -131,12 +131,15 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     - page (Page): The Playwright page object representing the browser tab where the task is executed.
 
     Returns:
-    - dict: A dictionary containing the task's evaluation results, including task ID, intent, score, total command time (tct),
+    - dict: A dictionary containing the task_eval_results and chat_log.
+            task_eval_results contains the task evaluation results including task ID, intent, score, total command time (tct),
             the last statement from the chat agent, and the last URL accessed during the task.
+            chat_log contains a list of the chat message exchanges between the agents in the system while executing the task.
     """
     command = ""
     start_url = None
     task_id = None
+    chat_log: list[dict[str, Any]] = None # type: ignore
     try:
         task_config_validator(task_config)
 
@@ -165,17 +168,17 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
         last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
 
         dump_log(str(task_id), messages_str_keys)
-
+        chat_log = list(messages_str_keys.values())[0] # type: ignore
         evaluator = evaluator_router(task_config)
         cdp_session = await page.context.new_cdp_session(page)
         score = await evaluator(
             task_config=task_config,
-            page=page,
-            client=cdp_session,
+            page=page, # type: ignore
+            client=cdp_session, # type: ignore
             answer=last_agent_response,
         )
 
-        return {
+        task_eval_results = {
             "task_id": task_id,
             "start_url": start_url,
             "intent": str(command),
@@ -187,7 +190,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
         }
     except Exception as e:
         logger.error(f"Error executing task {task_id}: {e}")
-        return {
+        task_eval_results = {
             "task_id": task_id,
             "start_url": start_url,
             "intent": str(command),
@@ -197,6 +200,8 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
             "last_url": page.url,
             "error": str(e)
         }
+
+    return {"task_eval_results": task_eval_results, "chat_log": chat_log}
 
 
 async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_task_index: int, max_task_index: int,
@@ -248,7 +253,8 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     for index, task_config in enumerate(test_configurations[min_task_index:max_task_index], start=min_task_index):
         print_progress_bar(index - min_task_index, total_tests)
-        task_result = await execute_single_task(task_config, browser_manager, ag, page)
+        task_exec_result = await execute_single_task(task_config, browser_manager, ag, page)
+        task_result = task_exec_result["task_eval_results"]
         test_results.append(task_result)
         save_test_results(test_results, test_results_id)
         print_test_result(task_result, index + 1, total_tests)
