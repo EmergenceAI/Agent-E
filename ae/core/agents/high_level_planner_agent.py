@@ -2,11 +2,13 @@ from string import Template
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
 import autogen  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
+from ae.core.skills.get_user_input import get_user_input
 from ae.core.prompts import LLM_PROMPTS
 from autogen import Agent  # type: ignore
+from autogen import ConversableAgent # type: ignore
 from autogen import OpenAIWrapper  # type: ignore
 class PlannerAgent:
-    def __init__(self, config_list): # type: ignore
+    def __init__(self, config_list, user_proxy_agent:ConversableAgent): # type: ignore
         """
         Initialize the PlannerAgent and store the AssistantAgent instance
         as an instance attribute for external access.
@@ -32,6 +34,11 @@ class PlannerAgent:
                 "temperature": 0.0
             },
         )
+        # Register get_user_input skill for LLM by assistant agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+        
+        # Register get_user_input skill for execution by user_proxy_agent
+        user_proxy_agent.register_for_execution()(get_user_input)
 
         self.agent.register_reply( # type: ignore
             [autogen.AssistantAgent, None],

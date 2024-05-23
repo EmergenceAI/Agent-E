@@ -9,7 +9,7 @@ from playwright.async_api import Page
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
-
+from ae.core.skills.press_key_combination import press_key_combination
 
 @dataclass
 class EnterTextEntry:
@@ -148,6 +148,13 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
+            try:
+                await press_key_combination("Control+A")
+                await asyncio.sleep(0.2)
+                await press_key_combination("Backspace")
+            except Exception as e:
+                logger.error(f"Error clearing the text in the element with selector {selector}: {e}")
+
             logger.debug(f"Focused element with selector {selector} to enter text")
             await page.keyboard.type(text_to_enter, delay=2)
         else:

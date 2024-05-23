@@ -8,7 +8,7 @@ from ae.core.skills.click_using_selector import do_click
 from ae.utils.logger import logger
 
 
-async def press_key_combination(key_combination: Annotated[str, "The key combination to press using '+' as a separator, e.g., 'Control+C', Enter."]) -> str:
+async def press_key_combination(key_combination: Annotated[str, "The key combination to press using '+' as a separator, e.g., 'Control+C', Enter, PageDown etc"]) -> str:
     """
     Presses a key combination on the current active page managed by PlaywrightManager.
 

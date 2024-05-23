@@ -22,11 +22,11 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
 
         if not page:
             raise ValueError('No active page found. OpenURL command opens a new page.')
+        await page.wait_for_load_state()
 
         # Get the URL of the current page
-        url = page.url
-        logger.debug("Returning URL: "+url)
-        await browser_manager.notify_user("Grabbed the URL of the current page.")
-        return url
+        title = await page.title()
+        return f"Current page: {page.url.split('&')[0]}, Title: {title}" # type: ignore
+
     except Exception as e:
         raise ValueError('No active page found. OpenURL command opens a new page.') from e

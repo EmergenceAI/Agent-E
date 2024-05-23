@@ -11,10 +11,9 @@ from ae.core.skills.enter_text_and_click import enter_text_and_click
 from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
 from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
+from ae.core.skills.press_key_combination import press_key_combination
 from ae.core.skills.get_url import geturl
-from ae.core.skills.get_user_input import get_user_input
 from ae.core.skills.open_url import openurl
-
 
 class BrowserNavAgent:
     def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
@@ -59,12 +58,6 @@ class BrowserNavAgent:
         Register all the skills that the agent can perform.
         """
 
-        # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
-       # Register get_user_input skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(get_user_input)
-
-
         # Register openurl skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl)
         # Register openurl skill for execution by user_proxy_agent
@@ -99,6 +92,11 @@ class BrowserNavAgent:
         self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)
         # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(entertext)
+
+        # Register entertext skill for LLM by assistant agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["PRESS_KEY_COMBINATION_PROMPT"])(press_key_combination)
+        # Register entertext skill for execution by user_proxy_agent
+        self.browser_nav_executor.register_for_execution()(press_key_combination)
 
         '''
         # Register reply function for printing messages

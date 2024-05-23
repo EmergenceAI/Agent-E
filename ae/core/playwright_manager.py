@@ -266,7 +266,6 @@ class PlaywrightManager:
         self.ui_manager.new_system_message(safe_message)
         try:
             js_code = f"addSystemMessage({safe_message}, false);"
-
             page = await self.get_current_page()
             await page.evaluate(js_code)
             logger.debug("User notification completed")

@@ -3,6 +3,7 @@ import os
 import tempfile
 import traceback
 from string import Template
+from typing import Any
 import autogen  # type: ignore
 import openai
 #from autogen import Cache
@@ -11,9 +12,11 @@ from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
+
 import nest_asyncio # type: ignore
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
 nest_asyncio.apply()  # type: ignore
+
 
 class AutogenWrapper:
     """
@@ -28,7 +31,7 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 50):
+    def __init__(self, max_chat_round: int = 150):
         self.number_of_rounds = max_chat_round
         self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
         self.config_list: list[dict[str, str]] | None = None
@@ -85,18 +88,33 @@ class AutogenWrapper:
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             print(f"Checking if nested chat should be triggered for Agent {manager}")
             content=manager.last_message()["content"] # type: ignore
+            if content is None:
+                return False
             print_message_from_planner(content) # type: ignore
             return True
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
-            print("Custom summary method called")
             last_message=recipient.last_message(sender)["content"] # type: ignore
+            print(last_message) # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
-                return "I received an empty message, try repeating."
+                return "I received an empty message. Try a different approach."
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
+                print_message_from_planner("Response: "+ last_message) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
+        
+        def reflection_message(recipient, messages, sender, config): # type: ignore
+            print("Processing message before triggering nestedchat", "yellow")
+            print(f"Recipient: {recipient}")
+            last_message=messages[-1]["content"] # type: ignore
+            print(f"Last Message: {last_message}")
+            if("next step" in last_message.lower()): # type: ignore
+                start_index=last_message.lower().index("next step") # type: ignore
+                last_message=last_message[start_index:] # type: ignore
+                return last_message # type: ignore
+            else:
+                return last_message # type: ignore
 
         print(f">>> Registering nested chat. Available agents: {self.agents_map}")
         self.agents_map["user"].register_nested_chats( # type: ignore
@@ -104,6 +122,7 @@ class AutogenWrapper:
                 {
             "sender": self.agents_map["browser_nav_executor"],
             "recipient": self.agents_map["browser_nav_agent"],
+            "message":reflection_message,  
             "max_turns": 100,
             "summary_method": my_custom_summary_method,
                 }   
@@ -141,7 +160,7 @@ class AutogenWrapper:
                 browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
                 agents_map["browser_nav_agent"] = browser_nav_agent
             elif agent_needed == "planner_agent":
-                planner_agent = self.__create_planner_agent()
+                planner_agent = self.__create_planner_agent(user_delegate_agent)
                 agents_map["planner_agent"] = planner_agent
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
@@ -156,13 +175,16 @@ class AutogenWrapper:
             autogen.ConversableAgent: An instance of ConversableAgent.
 
         """
-        def is_planner_termination_message(x)->bool: # type: ignore
+        def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
              print(">>> Checking if planner message is a termination message:", x)
-             should_terminate:bool=x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE##") # type: ignore
-             content=x.get("content", "") # type: ignore
-             content=content.replace("##TERMINATE##", "").strip() # type: ignore
-             if(should_terminate and content != ""): # type: ignore
-                print_message_from_planner(content) # type: ignore
+             content:Any = x.get("content", "") 
+             if content is None:
+                content = ""
+             
+             should_terminate = content.strip().upper().endswith("##TERMINATE##")
+             content = content.replace("##TERMINATE##", "").strip()
+             if(content != "" and should_terminate): # type: ignore
+                print_message_from_planner("Planner: "+content) # type: ignore
              print(">>> Should terminate:", should_terminate) # type: ignore
              return should_terminate # type: ignore
         
@@ -170,7 +192,7 @@ class AutogenWrapper:
             name="user",
             llm_config=False, 
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
-            is_termination_msg=is_planner_termination_message,
+            is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
             max_consecutive_auto_reply=self.number_of_rounds,
         )
@@ -184,12 +206,26 @@ class AutogenWrapper:
             autogen.UserProxyAgent: An instance of UserProxyAgent.
 
         """
+        def is_browser_executor_termination_message(x: dict[str, str])->bool: # type: ignore
+             print(">>> Checking if Browser Executor message is a termination message:", x)
+             content:Any = x.get("content", "") 
+             tools_call:Any = x.get("tool_calls", "")
+             print(">>> Content:", content)
+             print(">>> Tools:", tools_call)
+             print(bool(tools_call))
+
+             if tools_call :
+                return False
+             else:
+                print(">>> Nested Chat: Should terminate:", True) # type: ignore
+                return True
+        
         browser_nav_executor_agent = autogen.UserProxyAgent(
             name="browser_nav_executor",
-            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE TASK##"), # type: ignore
+            is_termination_msg=is_browser_executor_termination_message,
             human_input_mode="NEVER",
             llm_config=None,
-            max_consecutive_auto_reply=2,
+            max_consecutive_auto_reply=self.number_of_rounds,
             code_execution_config={
                                 "last_n_messages": 1,
                                 "work_dir": "tasks",
@@ -216,7 +252,7 @@ class AutogenWrapper:
         print(">>> browser_nav_agent:", browser_nav_agent.agent)
         return browser_nav_agent.agent
 
-    def __create_planner_agent(self):
+    def __create_planner_agent(self, assistant_agent: autogen.ConversableAgent):
         """
         Create a Planner Agent instance. This is mainly used for exploration at this point
 
@@ -224,7 +260,7 @@ class AutogenWrapper:
             autogen.AssistantAgent: An instance of PlannerAgent.
 
         """
-        planner_agent = PlannerAgent(self.config_list) # type: ignore
+        planner_agent = PlannerAgent(self.config_list, assistant_agent) # type: ignore
         print(">>> planner_agent:", planner_agent.agent)
         return planner_agent.agent
 
@@ -256,7 +292,7 @@ class AutogenWrapper:
             
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
-
+                max_turns=self.number_of_rounds,
                 #clear_history=True,
                 message=prompt,
                 silent=False,
