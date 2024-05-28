@@ -32,8 +32,8 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     await browser_manager.notify_user(f"Opened URL: {url}")
         # Get the page title
     title = await page.title()
-    print(f"Page loaded: {page.url.split('&')[0]}, Title: {title}")
-    return f"Page loaded: {page.url.split('&')[0]}, Title: {title}" # type: ignore
+    url=page.url
+    return f"Page loaded: {url}, Title: {title}" # type: ignore
 
 def ensure_protocol(url: str) -> str:
     """

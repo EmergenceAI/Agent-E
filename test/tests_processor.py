@@ -91,9 +91,16 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     """
     status = 'Pass' if task_result['score'] == 1 else 'Fail'
     color = 'green' if status == 'Pass' else 'red'
-    cost = task_result["compute_cost"]
-    total_cost = round(cost.get("cost", -1), 4) # type: ignore
-    total_tokens = cost.get("total_tokens", -1) # type: ignore
+    print(f"\n\nTest {index}/{total} Results: {task_result}")
+
+    #Cost computation is not available in Autogen when using Nested chat agents
+    cost="NA" 
+    total_cost = "NA"
+    total_tokens = "NA"
+    if "compute_cost" in task_result:
+        cost = task_result["compute_cost"]
+        total_cost = round(cost.get("cost", -1), 4) # type: ignore
+        total_tokens = cost.get("total_tokens", -1) # type: ignore
     result_table = [  # type: ignore
         ['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
         [index, task_result['task_id'], task_result['intent'], colored(status, color), round(task_result['tct'], 2), total_tokens, total_cost]  # type: ignore
@@ -137,66 +144,57 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     command = ""
     start_url = None
     task_id = None
+
+    task_config_validator(task_config)
+
+    command: str = task_config.get('intent', "")
+    task_id = task_config.get('task_id')
+    start_url = task_config.get('start_url')
+    logger.info(f"Intent: {command}, Task ID: {task_id}")
+
+    if start_url:
+        await page.goto(start_url, wait_until='load', timeout=30000)
+
+    start_time = time.time()
+    current_url = await browser_manager.get_current_url()
+    command_exec_result = await ag.process_command(command, current_url)
+    end_time = time.time()
+    
+    logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
+    logger.info(f"Task {task_id} completed.")
+
+    messages = ag.agents_map["planner_agent"].chat_messages # type: ignore
+    messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
+    
+    agent_key = list(messages.keys())[0] # type: ignore
+
+    last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
+    dump_log(str(task_id), messages_str_keys)
+    evaluator = evaluator_router(task_config)
+
+    cdp_session = await page.context.new_cdp_session(page)
+    score = await evaluator(
+        task_config=task_config,
+        page=page,
+        client=cdp_session,
+        answer=last_agent_response,
+    )
     try:
-        task_config_validator(task_config)
-
-        command: str = task_config.get('intent', "")
-        task_id = task_config.get('task_id')
-        start_url = task_config.get('start_url')
-        logger.info(f"Intent: {command}, Task ID: {task_id}")
-
-        if start_url:
-            await page.goto(start_url, wait_until='load', timeout=30000)
-
-        start_time = time.time()
-        current_url = await browser_manager.get_current_url()
-        command_exec_result = await ag.process_command(command, current_url)
-        end_time = time.time()
-
         command_cost = get_command_exec_cost(command_exec_result)
         print(f"Command cost: {command_cost}")
-
-        logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
-        logger.info(f"Task {task_id} completed.")
-
-        messages = ag.agents_map["browser_nav_agent"].chat_messages # type: ignore
-        messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
-        agent_key = list(messages.keys())[0] # type: ignore
-        last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
-
-        dump_log(str(task_id), messages_str_keys)
-
-        evaluator = evaluator_router(task_config)
-        cdp_session = await page.context.new_cdp_session(page)
-        score = await evaluator(
-            task_config=task_config,
-            page=page,
-            client=cdp_session,
-            answer=last_agent_response,
-        )
-
-        return {
-            "task_id": task_id,
-            "start_url": start_url,
-            "intent": str(command),
-            "score": score,
-            "tct": end_time - start_time,
-            "last_statement": last_agent_response,
-            "last_url": page.url,
-            "compute_cost": command_cost
-        }
     except Exception as e:
-        logger.error(f"Error executing task {task_id}: {e}")
-        return {
-            "task_id": task_id,
-            "start_url": start_url,
-            "intent": str(command),
-            "score": -1,
-            "tct": 0,
-            "last_statement": None,
-            "last_url": page.url,
-            "error": str(e)
-        }
+        logger.error(f"Error getting command cost: {e}")
+        command_cost = {"cost": -1, "total_tokens": -1}
+    return {
+        "task_id": task_id,
+        "start_url": start_url,
+        "intent": str(command),
+        "score": score,
+        "tct": end_time - start_time,
+        "last_statement": last_agent_response,
+        "last_url": page.url,
+        "compute_cost": command_cost
+    }
 
 
 async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_task_index: int, max_task_index: int,
@@ -239,9 +237,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         browser_manager = browserManager.PlaywrightManager(headless=False)
         await browser_manager.async_initialize()
 
-    context = await browser_manager.get_browser_context()
-    page = await context.new_page() # type: ignore
-
+    page=await browser_manager.get_current_page()
     test_results = []
     max_task_index = len(test_configurations) if not max_task_index else max_task_index
     total_tests = max_task_index - min_task_index

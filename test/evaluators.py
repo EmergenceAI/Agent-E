@@ -318,12 +318,14 @@ class ManualContentEvaluator(Evaluator):
         print("Task: ",task)
         print("Answer Type: ",answer_type)
         print("Reference Answer: ",reference_answer)
+        print("WAITING FOR INPUT...")
         user_response = input("Annotate the task as Pass or Fail? ")
         if(user_response.lower()=="pass"):
             return 1.0
         elif user_response.lower()=="fail":
             return 0.0
         else:
+            print(f"Received response: {user_response}")
             raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
        
 

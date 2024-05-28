@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import tempfile
@@ -6,13 +7,14 @@ from string import Template
 from typing import Any
 import autogen  # type: ignore
 import openai
+import re
 #from autogen import Cache
 from dotenv import load_dotenv
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
-
+from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
 nest_asyncio.apply()  # type: ignore
@@ -31,13 +33,13 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 150):
+    def __init__(self, max_chat_round: int = 100):
         self.number_of_rounds = max_chat_round
         self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
         self.config_list: list[dict[str, str]] | None = None
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 50):
+    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
         """
         Create an instance of AutogenWrapper.
 
@@ -59,7 +61,7 @@ class AutogenWrapper:
 
         autogen_model_name = os.getenv("AUTOGEN_MODEL_NAME")
         if not autogen_model_name:
-            autogen_model_name = "gpt-4o"
+            autogen_model_name = "gpt-4-turbo"
             logger.warning(f"Cannot find AUTOGEN_MODEL_NAME in the environment variables, setting it to default {autogen_model_name}.")
 
         autogen_model_api_key = os.getenv("AUTOGEN_MODEL_API_KEY")
@@ -87,11 +89,17 @@ class AutogenWrapper:
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             print(f"Checking if nested chat should be triggered for Agent {manager}")
-            content=manager.last_message()["content"] # type: ignore
-            if content is None:
+            content:str=manager.last_message()["content"] # type: ignore
+            if content is None: 
+                print_message_from_planner("Received no response, terminating..") # type: ignore
                 return False
-            print_message_from_planner(content) # type: ignore
+            elif "next step" not in content.lower(): # type: ignore
+                print_message_from_planner("Planner: "+ content) # type: ignore
+                return False 
             return True
+        
+        def get_url() -> str:
+            return asyncio.run(geturl())
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
@@ -100,18 +108,22 @@ class AutogenWrapper:
                 return "I received an empty message. Try a different approach."
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
+                last_message=last_message+" "+  get_url() # type: ignore
                 print_message_from_planner("Response: "+ last_message) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
         
         def reflection_message(recipient, messages, sender, config): # type: ignore
-            print("Processing message before triggering nestedchat", "yellow")
-            print(f"Recipient: {recipient}")
             last_message=messages[-1]["content"] # type: ignore
             print(f"Last Message: {last_message}")
+            last_message=last_message+" "+ get_url() # type: ignore
             if("next step" in last_message.lower()): # type: ignore
-                start_index=last_message.lower().index("next step") # type: ignore
-                last_message=last_message[start_index:] # type: ignore
+                start_index=last_message.lower().index("next step:") # type: ignore
+                last_message:str=last_message[start_index:].strip() # type: ignore
+                last_message = last_message.replace("Next step:", "").strip() # type: ignore
+                if re.match(r'^\d+\.', last_message): # type: ignore
+                    last_message = re.sub(r'^\d+\.', '', last_message) # type: ignore
+                    last_message = last_message.strip() # type: ignore
                 return last_message # type: ignore
             else:
                 return last_message # type: ignore
@@ -181,8 +193,9 @@ class AutogenWrapper:
              if content is None:
                 content = ""
              
-             should_terminate = content.strip().upper().endswith("##TERMINATE##")
-             content = content.replace("##TERMINATE##", "").strip()
+             should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
+             content = content.replace("TERMINATE", "").strip()
+             content = content.replace("##", "").strip()
              if(content != "" and should_terminate): # type: ignore
                 print_message_from_planner("Planner: "+content) # type: ignore
              print(">>> Should terminate:", should_terminate) # type: ignore

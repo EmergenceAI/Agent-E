@@ -3,9 +3,9 @@ from typing import Annotated
 from ae.core.playwright_manager import PlaywrightManager
 from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
-from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
-
+from ae.utils.dom_mutation_observer import subscribe # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
 
 async def enter_text_and_click(
     text_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use mmid attribute."],
@@ -43,26 +43,27 @@ async def enter_text_and_click(
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await browser_manager.highlight_element(text_selector, True)
+    dom_changes_detected=None
+    def detect_dom_changes(changes): # type: ignore
+        nonlocal dom_changes_detected
+        dom_changes_detected = changes # type: ignore
+
+    subscribe(detect_dom_changes)
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
     await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
-
+    unsubscribe(detect_dom_changes)
     result = text_entry_result
-
-    #if the text_selector is the same as the click_selector, press the Enter key instead of clicking
-    if text_selector == click_selector:
-        do_press_key_combination_result = await do_press_key_combination(page, "Enter")
-        if do_press_key_combination_result:
-            result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
-            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
-        else:
-            result["detailed_message"] += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
-            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
-    else:
-        await browser_manager.highlight_element(click_selector, True)
-        do_click_result = await do_click(page, click_selector, wait_before_click_execution)
-        result["detailed_message"] += f' {do_click_result["detailed_message"]}'
-        await browser_manager.notify_user(do_click_result["summary_message"])
-
+    if dom_changes_detected:
+        result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
+        return result["summary_message"]
+    await browser_manager.highlight_element(click_selector, True)
+    subscribe(detect_dom_changes)
+    do_click_result = await do_click(page, click_selector, wait_before_click_execution)
+    result["detailed_message"] = f' {do_click_result["detailed_message"]}'
+    unsubscribe(detect_dom_changes)
+    await browser_manager.notify_user(do_click_result["summary_message"])
+    if dom_changes_detected:
+        return f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
     return result["detailed_message"]

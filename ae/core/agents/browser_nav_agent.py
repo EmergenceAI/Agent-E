@@ -14,6 +14,7 @@ from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.press_key_combination import press_key_combination
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
+from datetime import datetime
 
 class BrowserNavAgent:
     def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
@@ -28,7 +29,7 @@ class BrowserNavAgent:
         self.browser_nav_executor = browser_nav_executor
         user_ltm = self.__get_ltm()
         system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
-
+        system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
