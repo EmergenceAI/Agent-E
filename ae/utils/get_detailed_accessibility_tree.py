@@ -420,7 +420,7 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
         bool: True if the node should be pruned, False otherwise.
     """
     #If the request is for only interactive fields and this is not an input field, then mark the node for prunning
-    if node.get("role") != "WebArea" and only_input_fields and (not (node.get("tag") in ("input", "button", "textarea", "combobox") or  node.get("role") in ("button", "option", "link"))):
+    if node.get("role") != "WebArea" and only_input_fields and (not (node.get("tag") in ("input", "button", "textarea", "select","a") or  node.get("role") in ("button", "option", "link"))):
         return True
 
     if node.get('role') == 'generic' and 'children' not in node:  # The presence of 'children' is checked after potentially deleting it above
@@ -511,3 +511,26 @@ async def do_get_accessibility_info(page: Page, only_input_fields: bool = False)
         return None
 
 
+async def get_input_field_nodes(page: Page) -> dict[str, Any] | None:
+    """
+    Retrieves the input field only DOM nodes.
+    """
+    input_fields = await page.evaluate("""() => {
+    let elements = Array.from(document.querySelectorAll('*'));
+    let filtered_elements = elements.filter(element => {
+        return (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.tagName === "SELECT") ||
+            (element.tagName === "BUTTON" || element.tagName === "A" || (element.onclick != null) || window.getComputedStyle(element).cursor == "pointer") ||
+            (element.tagName === "IFRAME" || element.tagName === "VIDEO");
+    });
+    return filtered_elements.map(element => {
+        let children = Array.from(element.children).map(child => ({mmid: child.getAttribute('mmid'), text: child.innerText}));
+        return {
+            tag: element.tagName, 
+            mmid: element.getAttribute('mmid'), 
+            text: element.innerText, 
+            children: children.length > 0 ? children : undefined
+        };
+    });
+    }""")
+
+    return input_fields

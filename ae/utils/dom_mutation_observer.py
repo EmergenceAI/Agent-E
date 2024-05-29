@@ -26,7 +26,7 @@ async def add_mutation_observer(page:Page):
             for(let mutation of mutationsList) {
                 if (mutation.type === 'childList') {
                     for(let node of mutation.addedNodes) {
-                        if(node.tagName && node.innerText.trim() && window.getComputedStyle(node).display !== 'none' && !node.closest('#agentDriveAutoOverlay')) {
+                        if(node.tagName && node.tagName !== 'SCRIPT' && node.innerText.trim() && window.getComputedStyle(node).display !== 'none' && !node.closest('#agentDriveAutoOverlay')) {
                             changes_detected.push({tag: node.tagName, content: node.innerText.trim()});
                         }
                     }

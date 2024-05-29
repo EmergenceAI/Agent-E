@@ -51,6 +51,8 @@ async def get_dom_with_content_type(
     if content_type == 'all_fields':
         user_success_message = "Fetched all the fields in the DOM"
         extracted_data = await do_get_accessibility_info(page, only_input_fields=False)
+        if extracted_data is None:
+            return "Could not fetch input fields. Please try with all_fields or text_only."
     elif content_type == 'input_fields':
         logger.debug('Fetching DOM for input_fields')
         extracted_data = await do_get_accessibility_info(page, only_input_fields=True)
