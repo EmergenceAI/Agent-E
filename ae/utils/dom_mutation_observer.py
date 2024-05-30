@@ -26,7 +26,7 @@ async def add_mutation_observer(page:Page):
             for(let mutation of mutationsList) {
                 if (mutation.type === 'childList') {
                     for(let node of mutation.addedNodes) {
-                        if(node.tagName && node.tagName !== 'SCRIPT' && node.innerText.trim() && window.getComputedStyle(node).display !== 'none' && !node.closest('#agentDriveAutoOverlay')) {
+                        if(node.tagName && (node.tagName !== 'SCRIPT' || node.tagName !== 'STYLE') && node.innerText.trim() && window.getComputedStyle(node).display !== 'none' && !node.closest('#agentDriveAutoOverlay')) {
                             changes_detected.push({tag: node.tagName, content: node.innerText.trim()});
                         }
                     }
@@ -49,8 +49,9 @@ async def handle_navigation_for_mutation_observer(page:Page):
 
 async def dom_mutation_change_detected(changes_detected: str):
     changes_detected = json.loads(changes_detected.replace('\t', '').replace('\n', ''))
+    print(f"DOM changes detected 1: {changes_detected}")
     if len(changes_detected) > 0:
-        print(f"DOM changes detected: {changes_detected}")
+        print(f"DOM changes detected 2: {changes_detected}")
         # Emit the event to all subscribed callbacks
         for callback in DOM_change_callback:
             # If the callback is a coroutine function

@@ -135,6 +135,7 @@ LLM_PROMPTS = {
 
     "ADD_TO_MEMORY_PROMPT": """"Save any information that you may need later in this term memory. This could be useful for saving things to do, saving information for personalisation, or even saving information you may need in future for efficiency purposes E.g. Remember to call John at 5pm, This user likes Tesla company and considered buying shares, The user enrollment form is available in <url> etc.""",
     
+    "HOVER_PROMPT": """Hover on a element with the given mmid attribute value. Hovering on an element can reveal additional information such as a tooltip or trigger a dropdown menu with different navigation options.""",
     "GET_MEMORY_PROMPT": """Retrieve all the information previously stored in the memory""",
 
     "PRESS_ENTER_KEY_PROMPT": """Presses the enter key in the given html field. This is most useful on text input fields.""",

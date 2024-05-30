@@ -12,6 +12,7 @@ from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
 from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.press_key_combination import press_key_combination
+from ae.core.skills.hover import hover_on_element
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
 from datetime import datetime
@@ -98,6 +99,11 @@ class BrowserNavAgent:
         self.agent.register_for_llm(description=LLM_PROMPTS["PRESS_KEY_COMBINATION_PROMPT"])(press_key_combination)
         # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(press_key_combination)
+
+        # Register entertext skill for LLM by assistant agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["HOVER_PROMPT"])(hover_on_element)
+        # Register entertext skill for execution by user_proxy_agent
+        self.browser_nav_executor.register_for_execution()(hover_on_element)
 
         '''
         # Register reply function for printing messages
