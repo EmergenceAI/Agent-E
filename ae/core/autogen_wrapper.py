@@ -96,6 +96,7 @@ class AutogenWrapper:
             elif "next step" not in content.lower(): # type: ignore
                 print_message_from_planner("Planner: "+ content) # type: ignore
                 return False 
+            print_message_from_planner(content) # type: ignore
             return True
         
         def get_url() -> str:
@@ -196,6 +197,8 @@ class AutogenWrapper:
              should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
              content = content.replace("TERMINATE", "").strip()
              content = content.replace("##", "").strip()
+             if not should_terminate and "next step" not in content.lower(): # type: ignore
+                 should_terminate = True
              if(content != "" and should_terminate): # type: ignore
                 print_message_from_planner("Planner: "+content) # type: ignore
              print(">>> Should terminate:", should_terminate) # type: ignore
