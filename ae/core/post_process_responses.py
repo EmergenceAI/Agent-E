@@ -22,7 +22,6 @@ def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, message
         Tuple[bool, None]: A tuple indicating whether the processing should stop and the response to be sent.
     """
     global last_agent_response
-    print("Post Process Message (User Proxy):", messages[-1])
     last_message = messages[-1]
     logger.debug(f"Post Process Message (User Proxy):{last_message}")
     if last_message.get('content') and "##TERMINATE##" in last_message['content']:
@@ -53,9 +52,7 @@ async def final_reply_callback_browser_agent(recipient: autogen.ConversableAgent
         Tuple[bool, None]: A tuple indicating whether the processing should stop and the response to be sent.
     """
     global last_agent_response
-    print("Post Process Message (Browser Agent):", messages[-1])
     last_message = messages[-1]
-    print(f"Post Process Message (Browser Agent):{last_message}")
     if last_message.get('content') and "##TERMINATE##" in last_message['content']:
         last_agent_response = last_message['content'].replace("##TERMINATE##", "").strip()
         if last_agent_response:

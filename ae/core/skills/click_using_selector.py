@@ -41,10 +41,11 @@ async def click(selector: Annotated[str, "The properly formed query selector str
 
     subscribe(detect_dom_changes)
     result = await do_click(page, selector, wait_before_execution)
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. pressing Submit will likely select first."
     return result["detailed_message"]
 
 

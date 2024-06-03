@@ -7,7 +7,6 @@ from playwright.async_api import BrowserContext
 from playwright.async_api import Page
 from playwright.async_api import Playwright
 from ae.core.ui_manager import UIManager
-
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 
@@ -275,6 +274,13 @@ class PlaywrightManager:
         except Exception as e:
             logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
 
+    async def clear_messages(self):
+        """
+        Clear all messages from the chat history.
+        """
+        
+        await self.ui_manager.clear_conversation_history(await self.get_current_page())
+
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()
@@ -322,7 +328,6 @@ class PlaywrightManager:
 
         safe_message = escape_js_message(message)
         js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true);"
-        print(">>> nofiy user about to exec JS code:", js_code)
         await page.evaluate(js_code)
 
         await self.user_response_event.wait()

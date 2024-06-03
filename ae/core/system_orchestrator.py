@@ -107,6 +107,7 @@ class SystemOrchestrator:
             self.is_running = True
             start_time = time.time()
             current_url = await self.browser_manager.get_current_url() if self.browser_manager else None
+            self.browser_manager.clear_messages() # type: ignore
             self.browser_manager.log_user_message(command) # type: ignore
 
             if self.autogen_wrapper:

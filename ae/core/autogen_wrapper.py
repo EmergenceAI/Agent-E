@@ -88,7 +88,6 @@ class AutogenWrapper:
         self.agents_map = await self.__initialize_agents(agents_needed)
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
-            print(f"Checking if nested chat should be triggered for Agent {manager}")
             content:str=manager.last_message()["content"] # type: ignore
             if content is None: 
                 print_message_from_planner("Received no response, terminating..") # type: ignore
@@ -104,7 +103,6 @@ class AutogenWrapper:
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
-            print(last_message) # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
                 return "I received an empty message. Try a different approach."
             elif "##TERMINATE TASK##" in last_message:
@@ -116,7 +114,6 @@ class AutogenWrapper:
         
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
-            print(f"Last Message: {last_message}")
             last_message=last_message+" "+ get_url() # type: ignore
             if("next step" in last_message.lower()): # type: ignore
                 start_index=last_message.lower().index("next step:") # type: ignore
@@ -161,7 +158,6 @@ class AutogenWrapper:
 
         user_delegate_agent = await self.__create_user_delegate_agent()
         agents_map["user"] = user_delegate_agent
-        print(f"{agents_needed} agent created.")
         agents_needed.remove("user")
         
         browser_nav_executor = self.__create_browser_nav_executor_agent()
@@ -189,7 +185,6 @@ class AutogenWrapper:
 
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
-             print(">>> Checking if planner message is a termination message:", x)
              content:Any = x.get("content", "") 
              if content is None:
                 content = ""
@@ -201,7 +196,6 @@ class AutogenWrapper:
                  should_terminate = True
              if(content != "" and should_terminate): # type: ignore
                 print_message_from_planner("Planner: "+content) # type: ignore
-             print(">>> Should terminate:", should_terminate) # type: ignore
              return should_terminate # type: ignore
         
         task_delegate_agent = autogen.ConversableAgent(
@@ -223,17 +217,10 @@ class AutogenWrapper:
 
         """
         def is_browser_executor_termination_message(x: dict[str, str])->bool: # type: ignore
-             print(">>> Checking if Browser Executor message is a termination message:", x)
-             content:Any = x.get("content", "") 
              tools_call:Any = x.get("tool_calls", "")
-             print(">>> Content:", content)
-             print(">>> Tools:", tools_call)
-             print(bool(tools_call))
-
              if tools_call :
                 return False
              else:
-                print(">>> Nested Chat: Should terminate:", True) # type: ignore
                 return True
         
         browser_nav_executor_agent = autogen.UserProxyAgent(
@@ -249,7 +236,6 @@ class AutogenWrapper:
                                 },
         )
         print(">>> Created browser_nav_executor_agent:", browser_nav_executor_agent)
-        print(browser_nav_executor_agent.function_map) # type: ignore
         return browser_nav_executor_agent
 
     def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.ConversableAgent:
@@ -265,7 +251,6 @@ class AutogenWrapper:
         """
         browser_nav_agent = BrowserNavAgent(self.config_list, user_proxy_agent) # type: ignore
         #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2))
-        print(">>> browser_nav_agent:", browser_nav_agent.agent)
         return browser_nav_agent.agent
 
     def __create_planner_agent(self, assistant_agent: autogen.ConversableAgent):
@@ -277,7 +262,6 @@ class AutogenWrapper:
 
         """
         planner_agent = PlannerAgent(self.config_list, assistant_agent) # type: ignore
-        print(">>> planner_agent:", planner_agent.agent)
         return planner_agent.agent
 
     async def process_command(self, command: str, current_url: str | None = None) -> autogen.ChatResult | None:
@@ -302,8 +286,6 @@ class AutogenWrapper:
         try:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
-            print(f">>> agents_map: {self.agents_map}") 
-            print(f">>> browser_nav_executor: {self.agents_map['browser_nav_executor']}")
             print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
             
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore

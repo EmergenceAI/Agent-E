@@ -6,6 +6,7 @@ from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.utils.logger import logger
 from ae.utils.dom_mutation_observer import subscribe # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
+import asyncio 
 
 async def enter_text_and_click(
     text_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use mmid attribute."],
@@ -53,17 +54,21 @@ async def enter_text_and_click(
     await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     result = text_entry_result
+    
     if dom_changes_detected:
-        result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
+        result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
         return result["summary_message"]
+    
     await browser_manager.highlight_element(click_selector, True)
     subscribe(detect_dom_changes)
     do_click_result = await do_click(page, click_selector, wait_before_click_execution)
     result["detailed_message"] = f' {do_click_result["detailed_message"]}'
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.notify_user(do_click_result["summary_message"])
     if dom_changes_detected:
-        return f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
+        return f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. pressing Submit will likely select first."
     return result["detailed_message"]

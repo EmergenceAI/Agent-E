@@ -87,6 +87,7 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
+        
     async def update_overlay_chat_history(self, frame_or_page: Frame | Page):
         """
         Updates the chat history in the overlay. If the overlay is expanded and not currently being updated,
@@ -121,6 +122,16 @@ class UIManager:
             self.__update_overlay_chat_history_running = False
 
 
+    async def clear_conversation_history(self, page: Page):
+        """
+        Clears the conversation history.
+        """
+        print("***************Clearing Conversation History in UI***************")
+        self.conversation_history = []
+        self.add_default_system_messages()
+        await self.update_overlay_chat_history(page)
+        
+
     def get_conversation_history(self):
         """
         Returns the current conversation history.
@@ -129,6 +140,7 @@ class UIManager:
             list[dict[str, str]]: The conversation history.
         """
         return self.conversation_history
+
 
     def new_user_message(self, message: str):
         """

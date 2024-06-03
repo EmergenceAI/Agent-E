@@ -4,6 +4,7 @@ from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from ae.utils.dom_mutation_observer import subscribe # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
+import asyncio 
 
 async def press_key_combination(key_combination: Annotated[str, "The key to press, e.g., Enter, PageDown etc"]) -> str:
     """
@@ -50,11 +51,11 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
     # Release the modifier keys
     for key in keys[:-1]:
         await page.keyboard.up(key)
-    
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     
     if dom_changes_detected:
-        return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Typically, pressing Submit will close it."
+        return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
     
     return f"Key {key_combination} executed successfully"
 

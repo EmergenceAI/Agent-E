@@ -180,7 +180,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
         answer=last_agent_response,
     )
     try:
-        command_cost = get_command_exec_cost(command_exec_result)
+        command_cost = get_command_exec_cost(command_exec_result) # type: ignore
         print(f"Command cost: {command_cost}")
     except Exception as e:
         logger.error(f"Error getting command cost: {e}")
