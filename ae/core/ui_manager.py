@@ -120,17 +120,7 @@ class UIManager:
             traceback.print_exc()
         finally:
             self.__update_overlay_chat_history_running = False
-
-
-    async def clear_conversation_history(self, page: Page):
-        """
-        Clears the conversation history.
-        """
-        print("***************Clearing Conversation History in UI***************")
-        self.conversation_history = []
-        self.add_default_system_messages()
-        await self.update_overlay_chat_history(page)
-        
+  
 
     def get_conversation_history(self):
         """

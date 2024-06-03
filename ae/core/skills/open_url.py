@@ -17,7 +17,6 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     - URL of the new page.
     """
     logger.info(f"Opening URL: {url}")
-    print(f"Opening URL: {url}")
     browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
     await browser_manager.get_browser_context()
     page = await browser_manager.get_current_page()
