@@ -274,13 +274,6 @@ class PlaywrightManager:
         except Exception as e:
             logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
 
-    async def clear_messages(self):
-        """
-        Clear all messages from the chat history.
-        """
-        
-        await self.ui_manager.clear_conversation_history(await self.get_current_page())
-
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()
