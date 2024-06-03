@@ -21,7 +21,6 @@ def get_user_ltm():
 To add your preferences for this agent to use, create a file called "{user_preferences_file_name}" in directory "{USER_PREFERENCES_PATH}".\n""")
         return None
 
-def save_user_ltm(msg:str):
     """
     Save the user preferences to the user_preferences.txt file.
     Parameters: msg (str): The text to be saved in the memory.

@@ -3,8 +3,6 @@ from ae.core.post_process_responses import final_reply_callback_planner_agent as
 import autogen  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.skills.get_user_input import get_user_input
-from ae.core.skills.memory import add_to_memory
-from ae.core.skills.memory import get_memory
 from ae.core.prompts import LLM_PROMPTS
 from datetime import datetime
 from autogen import Agent  # type: ignore
@@ -43,17 +41,6 @@ class PlannerAgent:
         # Register get_user_input skill for execution by user_proxy_agent
         user_proxy_agent.register_for_execution()(get_user_input)
 
-        ''' 
-        # Register add_to_short_term_memory skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ADD_TO_MEMORY_PROMPT"])(add_to_memory)
-        # Register add_to_short_term_memory skill for execution by user_proxy_agent
-        user_proxy_agent.register_for_execution()(add_to_memory)
-
-        # Register get_memory skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_MEMORY_PROMPT"])(get_memory)
-        # Register get_memory skill for execution by user_proxy_agent
-        user_proxy_agent.register_for_execution()(get_memory)
-        '''
         self.agent.register_reply( # type: ignore
             [autogen.AssistantAgent, None],
             reply_func=print_message_as_planner,
