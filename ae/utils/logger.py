@@ -2,9 +2,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
-    level=logging.INFO, # change level here or use set_log_level() to change it
-    format="[%(asctime)s] %(levelname)s {%(filename)s:%(lineno)d}  - %(message)s",
+    level=logging.DEBUG, # change level here or use set_log_level() to change it
+    format="[%(asctime)s] %(levelname)s {%(filename)s:%(lineno)d}  - %(message)s", filename='app.log', filemode='a'
 )
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("matplotlib.pyplot").setLevel(logging.WARNING)
+logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
+logging.getLogger("PIL.Image").setLevel(logging.WARNING)
 
 def set_log_level(level: str | int) -> None:
     """

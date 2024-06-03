@@ -1,19 +1,23 @@
+import asyncio
 import json
 import os
 import tempfile
 import traceback
 from string import Template
-
+from typing import Any
 import autogen  # type: ignore
 import openai
-
+import re
 #from autogen import Cache
 from dotenv import load_dotenv
-
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
-from ae.core.agents.browser_nav_agent_no_skills import BrowserNavAgentNoSkills
+from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
+from ae.core.skills.get_url import geturl
+import nest_asyncio # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
+nest_asyncio.apply()  # type: ignore
 
 
 class AutogenWrapper:
@@ -29,26 +33,27 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 50):
+    def __init__(self, max_chat_round: int = 100):
         self.number_of_rounds = max_chat_round
-        self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent] | None = None
-
+        self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
+        self.config_list: list[dict[str, str]] | None = None
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 50):
+    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
         """
         Create an instance of AutogenWrapper.
 
         Args:
-            agents_needed (list[str], optional): The list of agents needed. If None, then ["user_proxy", "browser_nav_agent"] will be used.
+            agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
             max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
 
         Returns:
             AutogenWrapper: An instance of AutogenWrapper.
 
         """
+        print(f">>> Creating AutogenWrapper with {agents_needed} and {max_chat_round} rounds.")
         if agents_needed is None:
-            agents_needed = ["user_proxy", "browser_nav_agent"]
+            agents_needed = ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
         # Create an instance of cls
         self = cls(max_chat_round)
         load_dotenv()
@@ -56,7 +61,7 @@ class AutogenWrapper:
 
         autogen_model_name = os.getenv("AUTOGEN_MODEL_NAME")
         if not autogen_model_name:
-            autogen_model_name = "gpt-4-turbo-preview"
+            autogen_model_name = "gpt-4-turbo"
             logger.warning(f"Cannot find AUTOGEN_MODEL_NAME in the environment variables, setting it to default {autogen_model_name}.")
 
         autogen_model_api_key = os.getenv("AUTOGEN_MODEL_API_KEY")
@@ -81,6 +86,59 @@ class AutogenWrapper:
 
         self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {autogen_model_name}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
+        
+        def trigger_nested_chat(manager: autogen.ConversableAgent):
+            content:str=manager.last_message()["content"] # type: ignore
+            if content is None: 
+                print_message_from_planner("Received no response, terminating..") # type: ignore
+                return False
+            elif "next step" not in content.lower(): # type: ignore
+                print_message_from_planner("Planner: "+ content) # type: ignore
+                return False 
+            print_message_from_planner(content) # type: ignore
+            return True
+        
+        def get_url() -> str:
+            return asyncio.run(geturl())
+
+        def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
+            last_message=recipient.last_message(sender)["content"] # type: ignore
+            if not last_message or last_message.strip() == "": # type: ignore
+                return "I received an empty message. Try a different approach."
+            elif "##TERMINATE TASK##" in last_message:
+                last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
+                last_message=last_message+" "+  get_url() # type: ignore
+                print_message_from_planner("Response: "+ last_message) # type: ignore
+                return last_message #  type: ignore
+            return recipient.last_message(sender)["content"] # type: ignore
+        
+        def reflection_message(recipient, messages, sender, config): # type: ignore
+            last_message=messages[-1]["content"] # type: ignore
+            last_message=last_message+" "+ get_url() # type: ignore
+            if("next step" in last_message.lower()): # type: ignore
+                start_index=last_message.lower().index("next step:") # type: ignore
+                last_message:str=last_message[start_index:].strip() # type: ignore
+                last_message = last_message.replace("Next step:", "").strip() # type: ignore
+                if re.match(r'^\d+\.', last_message): # type: ignore
+                    last_message = re.sub(r'^\d+\.', '', last_message) # type: ignore
+                    last_message = last_message.strip() # type: ignore
+                return last_message # type: ignore
+            else:
+                return last_message # type: ignore
+
+        print(f">>> Registering nested chat. Available agents: {self.agents_map}")
+        self.agents_map["user"].register_nested_chats( # type: ignore
+            [
+                {
+            "sender": self.agents_map["browser_nav_executor"],
+            "recipient": self.agents_map["browser_nav_agent"],
+            "message":reflection_message,  
+            "max_turns": 100,
+            "summary_method": my_custom_summary_method,
+                }   
+            ],
+            trigger=trigger_nested_chat, # type: ignore
+        )
 
         return self
 
@@ -96,55 +154,91 @@ class AutogenWrapper:
             dict: A dictionary of agent instances.
 
         """
-        if "user_proxy" not in agents_needed:
-            raise ValueError("user_proxy agent is required in the list of needed agents.")
+        agents_map: dict[str, autogen.UserProxyAgent  | autogen.ConversableAgent]= {}
 
-        agents_map: dict[str, autogen.AssistantAgent | autogen.UserProxyAgent]= {}
-
-        user_proxy_agent = await self.__create_user_proxy_agent()
-        user_proxy_agent.reset()
-        agents_map["user_proxy"] = user_proxy_agent
-        agents_needed.remove("user_proxy")
-
+        user_delegate_agent = await self.__create_user_delegate_agent()
+        agents_map["user"] = user_delegate_agent
+        agents_needed.remove("user")
+        
+        browser_nav_executor = self.__create_browser_nav_executor_agent()
+        agents_map["browser_nav_executor"] = browser_nav_executor
+        agents_needed.remove("browser_nav_executor")
+        
         for agent_needed in agents_needed:
             if agent_needed == "browser_nav_agent":
-                browser_nav_agent: autogen.AssistantAgent = self.__create_browser_nav_agent(user_proxy_agent)
-                browser_nav_agent.reset()
+                browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
                 agents_map["browser_nav_agent"] = browser_nav_agent
-            elif agent_needed == "browser_nav_agent_no_skills":
-                browser_nav_agent_no_skills = self.__create_browser_nav_agent_no_skills(user_proxy_agent)
-                browser_nav_agent_no_skills.reset()
-                agents_map["browser_nav_agent_no_skills"] = browser_nav_agent_no_skills
+            elif agent_needed == "planner_agent":
+                planner_agent = self.__create_planner_agent(user_delegate_agent)
+                agents_map["planner_agent"] = planner_agent
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
-
         return agents_map
 
 
-    async def __create_user_proxy_agent(self):
+    async def __create_user_delegate_agent(self) -> autogen.ConversableAgent:
         """
-        Create a UserProxyAgent instance.
+        Create a ConversableAgent instance.
+
+        Returns:
+            autogen.ConversableAgent: An instance of ConversableAgent.
+
+        """
+        def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
+             content:Any = x.get("content", "") 
+             if content is None:
+                content = ""
+             
+             should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
+             content = content.replace("TERMINATE", "").strip()
+             content = content.replace("##", "").strip()
+             if not should_terminate and "next step" not in content.lower(): # type: ignore
+                 should_terminate = True
+             if(content != "" and should_terminate): # type: ignore
+                print_message_from_planner("Planner: "+content) # type: ignore
+             return should_terminate # type: ignore
+        
+        task_delegate_agent = autogen.ConversableAgent(
+            name="user",
+            llm_config=False, 
+            system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
+            is_termination_msg=is_planner_termination_message, # type: ignore
+            human_input_mode="NEVER",
+            max_consecutive_auto_reply=self.number_of_rounds,
+        )
+        return task_delegate_agent
+
+    def __create_browser_nav_executor_agent(self):
+        """
+        Create a UserProxyAgent instance for executing browser control.
 
         Returns:
             autogen.UserProxyAgent: An instance of UserProxyAgent.
 
         """
-        user_proxy_agent = autogen.UserProxyAgent(
-            name="user_proxy",
-            system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
-            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().upper().endswith("##TERMINATE##"), # type: ignore
+        def is_browser_executor_termination_message(x: dict[str, str])->bool: # type: ignore
+             tools_call:Any = x.get("tool_calls", "")
+             if tools_call :
+                return False
+             else:
+                return True
+        
+        browser_nav_executor_agent = autogen.UserProxyAgent(
+            name="browser_nav_executor",
+            is_termination_msg=is_browser_executor_termination_message,
             human_input_mode="NEVER",
+            llm_config=None,
             max_consecutive_auto_reply=self.number_of_rounds,
             code_execution_config={
-                "last_n_messages": 1,
-                "work_dir": "./",
-                "use_docker": False,
-            }
+                                "last_n_messages": 1,
+                                "work_dir": "tasks",
+                                "use_docker": False,
+                                },
         )
+        print(">>> Created browser_nav_executor_agent:", browser_nav_executor_agent)
+        return browser_nav_executor_agent
 
-        return user_proxy_agent
-
-    def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.AssistantAgent:
+    def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.ConversableAgent:
         """
         Create a BrowserNavAgent instance.
 
@@ -159,21 +253,16 @@ class AutogenWrapper:
         #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2))
         return browser_nav_agent.agent
 
-
-    def __create_browser_nav_agent_no_skills(self, user_proxy_agent: autogen.UserProxyAgent):
+    def __create_planner_agent(self, assistant_agent: autogen.ConversableAgent):
         """
-        Create a BrowserNavAgentNoSkills instance. This is mainly used for exploration at this point
-
-        Args:
-            user_proxy_agent (autogen.UserProxyAgent): The instance of UserProxyAgent that was created.
+        Create a Planner Agent instance. This is mainly used for exploration at this point
 
         Returns:
-            autogen.AssistantAgent: An instance of BrowserNavAgentNoSkills.
+            autogen.AssistantAgent: An instance of PlannerAgent.
 
         """
-        browser_nav_agent_no_skills = BrowserNavAgentNoSkills(self.config_list, user_proxy_agent) # type: ignore
-        return browser_nav_agent_no_skills.agent
-
+        planner_agent = PlannerAgent(self.config_list, assistant_agent) # type: ignore
+        return planner_agent.agent
 
     async def process_command(self, command: str, current_url: str | None = None) -> autogen.ChatResult | None:
         """
@@ -197,16 +286,11 @@ class AutogenWrapper:
         try:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
-
-            if "browser_nav_no_skills" in self.agents_map:
-                browser_nav_agent = self.agents_map["browser_nav_agent_no_skills"]
-            elif "browser_nav_agent" in self.agents_map:
-                browser_nav_agent = self.agents_map["browser_nav_agent"]
-            else:
-                raise ValueError(f"No browser navigation agent found. in agents_map {self.agents_map}")
-
-            result = await self.agents_map["user_proxy"].a_initiate_chat( # type: ignore
-                browser_nav_agent, # self.manager
+            print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
+            
+            result=await self.agents_map["user"].a_initiate_chat( # type: ignore
+                self.agents_map["planner_agent"], # self.manager # type: ignore
+                max_turns=self.number_of_rounds,
                 #clear_history=True,
                 message=prompt,
                 silent=False,
@@ -216,3 +300,6 @@ class AutogenWrapper:
         except openai.BadRequestError as bre:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
+
+
+    

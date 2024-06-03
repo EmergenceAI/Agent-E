@@ -1,7 +1,8 @@
 import asyncio
 import traceback
 from typing import Annotated
-
+from ae.utils.dom_mutation_observer import subscribe # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
 from playwright.async_api import ElementHandle
 from playwright.async_api import Page
 
@@ -33,8 +34,18 @@ async def click(selector: Annotated[str, "The properly formed query selector str
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await browser_manager.highlight_element(selector, True)
+    dom_changes_detected=None
+    def detect_dom_changes(changes): # type: ignore
+        nonlocal dom_changes_detected
+        dom_changes_detected = changes # type: ignore
+
+    subscribe(detect_dom_changes)
     result = await do_click(page, selector, wait_before_execution)
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    unsubscribe(detect_dom_changes)
     await browser_manager.notify_user(result["summary_message"])
+    if dom_changes_detected:
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. pressing Submit will likely select first."
     return result["detailed_message"]
 
 

@@ -1,7 +1,7 @@
 from typing import Any
 
 import autogen  # type: ignore
-
+import asyncio
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 
@@ -22,7 +22,6 @@ def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, message
         Tuple[bool, None]: A tuple indicating whether the processing should stop and the response to be sent.
     """
     global last_agent_response
-
     last_message = messages[-1]
     logger.debug(f"Post Process Message (User Proxy):{last_message}")
     if last_message.get('content') and "##TERMINATE##" in last_message['content']:
@@ -34,7 +33,6 @@ def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, message
             return True, None
 
     return False, None
-
 
 
 
@@ -54,9 +52,7 @@ async def final_reply_callback_browser_agent(recipient: autogen.ConversableAgent
         Tuple[bool, None]: A tuple indicating whether the processing should stop and the response to be sent.
     """
     global last_agent_response
-
     last_message = messages[-1]
-    print(f"Post Process Message (Browser Agent):{last_message}")
     if last_message.get('content') and "##TERMINATE##" in last_message['content']:
         last_agent_response = last_message['content'].replace("##TERMINATE##", "").strip()
         if last_agent_response:
@@ -66,5 +62,12 @@ async def final_reply_callback_browser_agent(recipient: autogen.ConversableAgent
             logger.debug(f"Final Response: {last_agent_response}")
             logger.debug("*********************")
             return True, None
-
     return False, None
+
+
+def final_reply_callback_planner_agent(plan:str): # type: ignore 
+            browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
+            loop = asyncio.get_event_loop()
+            print("Final Reply (Planner Agent):", plan)
+            loop.run_until_complete(browser_manager.notify_user(plan))
+            return False, None  # required to ensure the agent communication flow continues

@@ -5,11 +5,12 @@ from typing import Annotated
 from typing import List  # noqa: UP035
 
 from playwright.async_api import Page
-
+from ae.utils.dom_mutation_observer import subscribe # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
-
+from ae.core.skills.press_key_combination import press_key_combination
 
 @dataclass
 class EnterTextEntry:
@@ -58,7 +59,8 @@ async def custom_fill_element(page: Page, selector: str, text_to_enter: str):
     selector = f"{selector}"  # Ensures the selector is treated as a string
     await page.evaluate("""(inputParams) => {
         const selector = inputParams.selector;
-        const text_to_enter = inputParams.text_to_enter;
+        let text_to_enter = inputParams.text_to_enter;
+        text_to_enter = text_to_enter.trim();
         document.querySelector(selector).value = text_to_enter;
     }""", {"selector": selector, "text_to_enter": text_to_enter})
 
@@ -103,12 +105,24 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
         return "Error: No active page found. OpenURL command opens a new page."
 
     await browser_manager.highlight_element(query_selector, True)
+    
+    dom_changes_detected=None
+    def detect_dom_changes(changes): # type: ignore
+        nonlocal dom_changes_detected
+        dom_changes_detected = changes # type: ignore
+        
+    subscribe(detect_dom_changes)
     result = await do_entertext(page, query_selector, text_to_enter)
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    unsubscribe(detect_dom_changes)
+    
     await browser_manager.notify_user(result["summary_message"])
+    if dom_changes_detected:
+        return f"{result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
     return result["detailed_message"]
 
 
-async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=False):
+async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=True):
     """
     Performs the text entry operation on a DOM element.
 
@@ -135,6 +149,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         - If 'use_keyboard_fill' is set to False, the function uses the 'custom_fill_element' method to enter the text.
     """
     try:
+            
         logger.debug(f"Looking for selector {selector} to enter text: {text_to_enter}")
 
         elem = await page.query_selector(selector)
@@ -148,13 +163,19 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
+            try:
+                await press_key_combination("Control+A")
+                await asyncio.sleep(0.2)
+                await press_key_combination("Backspace")
+            except Exception as e:
+                logger.error(f"Error clearing the text in the element with selector {selector}: {e}")
+
             logger.debug(f"Focused element with selector {selector} to enter text")
             await page.keyboard.type(text_to_enter, delay=2)
         else:
             await custom_fill_element(page, selector, text_to_enter)
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
-        await elem.focus()
-        await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
+        await elem.focus()      
         await asyncio.sleep(1)
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         

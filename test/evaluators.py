@@ -324,6 +324,7 @@ class ManualContentEvaluator(Evaluator):
         elif user_response.lower()=="fail":
             return 0.0
         else:
+            print(f"Received response: {user_response}")
             raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
        
 
