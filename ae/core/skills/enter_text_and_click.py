@@ -46,12 +46,6 @@ async def enter_text_and_click(
 
     await browser_manager.highlight_element(text_selector, True)
 
-    dom_changes_detected=None
-    def detect_dom_changes(changes:str): # type: ignore
-        nonlocal dom_changes_detected
-        dom_changes_detected = changes # type: ignore
-
-    subscribe(detect_dom_changes)
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
 
     await browser_manager.notify_user(text_entry_result["summary_message"])
@@ -77,8 +71,4 @@ async def enter_text_and_click(
         await browser_manager.notify_user(do_click_result["summary_message"])
     
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
-    unsubscribe(detect_dom_changes)
-
-    if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields to interact with the elements."
     return result["detailed_message"]
