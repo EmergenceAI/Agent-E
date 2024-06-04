@@ -1593,7 +1593,7 @@
         "require_reset": false,
         "eval": {
             "eval_types": [
-                "manual"
+                "program_html"
             ],
             "reference_answers": {
                 "manual_check": {
@@ -1601,8 +1601,15 @@
                     "type": "possible"
                 }
             },
-            "reference_url": null,
-            "program_html": null
+            "dynamic_comparison": true,
+            "comparison_strategy": "must_include",
+            "program_html": [
+                {
+                    "url": "https://www.amazon.com/s?k=used+Nintendo+Switch+Lite&s=price-asc-rank",
+                    "locator": "jsblock: return document.querySelector('[data-cy=\"title-recipe\"]').textContent.trim();"
+                }
+            ],
+            "reference_url": null
         },
         "task_alias": "Amazon--4"
     },
@@ -1619,7 +1626,7 @@
         "require_reset": false,
         "eval": {
             "eval_types": [
-                "manual"
+                "program_html"
             ],
             "reference_answers": {
                 "manual_check": {
@@ -1627,8 +1634,15 @@
                     "type": "possible"
                 }
             },
-            "reference_url": null,
-            "program_html": null
+            "dynamic_comparison": true,
+            "comparison_strategy": "must_include",
+            "program_html": [
+                {
+                    "url": "https://www.amazon.com/s?k=used+Nintendo+Switch+Lite&s=price-asc-rank",
+                    "locator": "jsblock: return document.querySelector('div[data-name=\"Active Items\"] span.a-truncate-cut').textContent.trim();"
+                }
+            ],
+            "reference_url": null
         },
         "task_alias": "Amazon--5"
     },
@@ -1639,13 +1653,13 @@
         "storage_state": null,
         "start_url": "https://www.amazon.com/",
         "geolocation": null,
-        "intent_template": "Browse black strollers within $100 to $200 on Amazon. Then find one Among these black strollers with over 20,000 reviews and a rating greater than 4 star.",
+        "intent_template": "Browse black strollers within $100 to $205 on Amazon. Then find one Among these black strollers with over 20,000 reviews and a rating greater than 4 star.",
         "instantiation_dict": {},
-        "intent": "Browse black strollers within $100 to $200 on Amazon. Then find one Among these black strollers with over 20,000 reviews and a rating greater than 4 star.",
+        "intent": "Browse black strollers within $100 to $205 on Amazon. Then find one Among these black strollers with over 20,000 reviews and a rating greater than 4 star.",
         "require_reset": false,
         "eval": {
             "eval_types": [
-                "manual"
+                "program_html"
             ],
             "reference_answers": {
                 "manual_check": {
@@ -1653,8 +1667,15 @@
                     "type": "possible"
                 }
             },
-            "reference_url": null,
-            "program_html": null
+            "dynamic_comparison": true,
+            "comparison_strategy": "must_include",
+            "program_html": [
+                {
+                    "url": "https://www.amazon.com/s?k=used+Nintendo+Switch+Lite&s=price-asc-rank",
+                    "locator": "jsblock: return document.querySelector('h1#title').textContent.trim();"
+                }
+            ],
+            "reference_url": null
         },
         "task_alias": "Amazon--6"
     },
@@ -1671,9 +1692,25 @@
         "require_reset": false,
         "eval": {
             "eval_types": [
-                "manual"
+                "program_html",
+                "string_match"
             ],
             "reference_answers": {
+                "must_include": [
+                    "Women's",
+                    "Waterproof",
+                    "hiking",
+                    "boots"
+                ],
+                "program_html": [
+                    {
+                        "url": "last",
+                        "locator": "jsblock: String(Array.from(document.querySelector('button[aria-label=\"6\"]').parentElement.parentElement.classList).includes(\"a-button-selected\"))",
+                        "required_contents": {
+                            "exact_match": "true"
+                        }
+                    }
+                ],
                 "manual_check": {
                     "answer": "Filter: 4-star, waterproof, size 6",
                     "type": "possible"
@@ -1723,7 +1760,7 @@
         "require_reset": false,
         "eval": {
             "eval_types": [
-                "manual"
+                "program_html"
             ],
             "reference_answers": {
                 "manual_check": {
@@ -1731,8 +1768,15 @@
                     "type": "possible"
                 }
             },
-            "reference_url": null,
-            "program_html": null
+            "dynamic_comparison": true,
+            "comparison_strategy": "must_include",
+            "program_html": [
+                {
+                    "url": "last",
+                    "locator": "jsblock: return document.querySelector('h1#title').textContent.trim();"
+                }
+            ],
+            "reference_url": null
         },
         "task_alias": "Amazon--9"
     },
