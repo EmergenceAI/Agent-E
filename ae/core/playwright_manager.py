@@ -232,8 +232,13 @@ class PlaywrightManager:
 
 
     async def set_navigation_handler(self):
+        from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
+        from ae.utils.dom_mutation_observer import dom_mutation_change_detected
+
         page:Page = await PlaywrightManager.get_current_page(self)
         page.on("domcontentloaded", self.ui_manager.handle_navigation) # type: ignore
+        page.on("domcontentloaded", handle_navigation_for_mutation_observer) # type: ignore
+        await page.expose_function("dom_mutation_change_detected", dom_mutation_change_detected) # type: ignore
 
 
     async def set_overlay_state_handler(self):

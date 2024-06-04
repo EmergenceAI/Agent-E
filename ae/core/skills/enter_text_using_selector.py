@@ -9,7 +9,8 @@ from playwright.async_api import Page
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
-
+from ae.utils.dom_mutation_observer import subscribe 
+from ae.utils.dom_mutation_observer import unsubscribe 
 
 @dataclass
 class EnterTextEntry:
@@ -103,8 +104,20 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
         return "Error: No active page found. OpenURL command opens a new page."
 
     await browser_manager.highlight_element(query_selector, True)
+    dom_changes_detected=None
+    def detect_dom_changes(changes:str): # type: ignore
+        nonlocal dom_changes_detected
+        dom_changes_detected = changes # type: ignore
+
+    subscribe(detect_dom_changes)
+
     result = await do_entertext(page, query_selector, text_to_enter)
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    unsubscribe(detect_dom_changes)
+
     await browser_manager.notify_user(result["summary_message"])
+    if dom_changes_detected:
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields to interact with the elements."
     return result["detailed_message"]
 
 
