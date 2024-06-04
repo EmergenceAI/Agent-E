@@ -5,7 +5,9 @@ from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
-
+from ae.utils.dom_mutation_observer import subscribe 
+from ae.utils.dom_mutation_observer import unsubscribe 
+import asyncio 
 
 async def enter_text_and_click(
     text_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use mmid attribute."],
@@ -43,7 +45,15 @@ async def enter_text_and_click(
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await browser_manager.highlight_element(text_selector, True)
+
+    dom_changes_detected=None
+    def detect_dom_changes(changes:str): # type: ignore
+        nonlocal dom_changes_detected
+        dom_changes_detected = changes # type: ignore
+
+    subscribe(detect_dom_changes)
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
+
     await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
@@ -61,8 +71,14 @@ async def enter_text_and_click(
             await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
     else:
         await browser_manager.highlight_element(click_selector, True)
+
         do_click_result = await do_click(page, click_selector, wait_before_click_execution)
         result["detailed_message"] += f' {do_click_result["detailed_message"]}'
         await browser_manager.notify_user(do_click_result["summary_message"])
+    
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    unsubscribe(detect_dom_changes)
 
+    if dom_changes_detected:
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields to interact with the elements."
     return result["detailed_message"]
