@@ -69,8 +69,8 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
     logger.debug("Reconciling the Accessibility Tree with the DOM")
     # Define the attributes to fetch for each element
-    attributes = ['name', 'aria-label', 'placeholder', 'mmid', "id", "for"]
-    backup_attributes = ['data-testid'] #if the attributes are not found, then try to get these attributes
+    attributes = ['name', 'aria-label', 'placeholder', 'mmid', "id", "for", "data-testid"]
+    backup_attributes = [] #if the attributes are not found, then try to get these attributes
     tags_to_ignore = ['head','style', 'script', 'link', 'meta', 'noscript', 'template', 'iframe', 'g', 'main', 'c-wiz','svg', 'path']
     attributes_to_delete = ["level", "multiline", "haspopup", "id", "for"]
     ids_to_ignore = ['agentDriveAutoOverlay']
@@ -133,7 +133,8 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 // If the element is an input, include its type as well
                 if (element.tagName.toLowerCase() === 'input') {
                     attributes_to_values['tag_type'] = element.type; // This will capture 'checkbox', 'radio', etc.
-                } else if (element.tagName.toLowerCase() === 'select') {
+                } 
+                else if (element.tagName.toLowerCase() === 'select') {
                     attributes_to_values["mmid"] = element.getAttribute('mmid');
                     attributes_to_values["role"] = "combobox";
                     attributes_to_values["options"] = [];
@@ -149,6 +150,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     }
                     return attributes_to_values;
                 }
+                
 
                 for (const attribute of attributes) {
                     let value = element.getAttribute(attribute);
@@ -180,12 +182,39 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                             attributes_to_values[backupAttribute] = value;
                         }
                     }
+
                     //if even the backup attributes are not found, then return null, which will cause this element to be skipped
                     if(Object.keys(attributes_to_values).length <= minimalKeys.length) {
+                        if (element.tagName.toLowerCase() === 'button') {
+                                attributes_to_values["mmid"] = element.getAttribute('mmid');
+                                attributes_to_values["role"] = "button";
+                                attributes_to_values["children_of_button"] = [];
+                                let children=element.children;
+                                let attributes_to_exclude = ['width', 'height', 'path', 'class', 'viewBox']
+
+                                // Check if the button has no text and no attributes
+                                if (element.innerText.trim() === '') {
+                                    
+                                    for (const child of children) {
+                                        let children_attributes_to_values = {"tag": child.tagName,"mmid": child.getAttribute('mmid')};
+                                        
+                                        for (let attr of child.attributes) {
+                                            // If the attribute is not in the predefined list, add it to children_attributes_to_values
+                                            if (!attributes_to_exclude.includes(attr.name)) {
+                                                children_attributes_to_values[attr.name] = attr.value;
+                                            }
+                                        }
+
+                                        attributes_to_values["children_of_button"].push(children_attributes_to_values);
+                                    }
+                                    console.log("Button with no text and no attributes: ", attributes_to_values);
+                                    return attributes_to_values;
+                                }
+                        }
+
                         return null; // Return null if only minimal keys are present
                     }
                 }
-
                 return attributes_to_values;
             }
             """
@@ -199,6 +228,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
             if 'keyshortcuts' in node:
                     del node['keyshortcuts'] #remove keyshortcuts since it is not needed
+            node["mmid"]=mmid
 
             # Update the node with fetched information
             if element_attributes:
@@ -387,7 +417,7 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     if node.get('role') in ['separator']:
         return True
     #check if the node only have name and role, then delete that node
-    if len(node) == 2 and 'name' in node and 'role' in node:
+    if len(node) == 2 and 'name' in node and 'role' in node and node.get('role') != "button":
         return True
     return False
 
