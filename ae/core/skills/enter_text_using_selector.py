@@ -170,8 +170,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await custom_fill_element(page, selector, text_to_enter)
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         await elem.focus()
-        await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
-        await press_key_combination("Backspace") # remove the space
+        await page.keyboard.type("") # some html pages can have placeholders that only disappear upon keyboard input
         await asyncio.sleep(1)
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         
