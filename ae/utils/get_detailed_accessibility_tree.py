@@ -197,6 +197,9 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                                                       "tags_to_ignore": tags_to_ignore,
                                                       "ids_to_ignore": ids_to_ignore})
 
+            if 'keyshortcuts' in node:
+                    del node['keyshortcuts'] #remove keyshortcuts since it is not needed
+
             # Update the node with fetched information
             if element_attributes:
                 node.update(element_attributes)
@@ -210,9 +213,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 
                 if 'name' in node and 'text' in node and node['name'] == node['text']:
                     del node['text'] #if the name is same as the text, then remove the text to avoid duplication
-
-                if 'keyshortcuts' in node:
-                    del node['keyshortcuts'] #remove keyshortcuts since it is not needed
 
                 if node.get('tag') == "select": #children are not needed for select menus since "options" attriburte is already added
                     node.pop("children", None)
