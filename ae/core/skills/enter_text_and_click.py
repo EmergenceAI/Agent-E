@@ -5,8 +5,6 @@ from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
-from ae.utils.dom_mutation_observer import subscribe 
-from ae.utils.dom_mutation_observer import unsubscribe 
 import asyncio 
 
 async def enter_text_and_click(

@@ -5,7 +5,7 @@ from typing import Annotated
 from typing import List  # noqa: UP035
 
 from playwright.async_api import Page
-
+from ae.core.skills.press_key_combination import press_key_combination
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
@@ -161,6 +161,9 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
+            await press_key_combination("Control+A")
+            await asyncio.sleep(0.2)
+            await press_key_combination("Backspace")
             logger.debug(f"Focused element with selector {selector} to enter text")
             await page.keyboard.type(text_to_enter, delay=2)
         else:
@@ -168,6 +171,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         await elem.focus()
         await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
+        await press_key_combination("Backspace") # remove the space
         await asyncio.sleep(1)
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         
