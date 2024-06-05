@@ -188,15 +188,15 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                         if (element.tagName.toLowerCase() === 'button') {
                                 attributes_to_values["mmid"] = element.getAttribute('mmid');
                                 attributes_to_values["role"] = "button";
-                                attributes_to_values["children_of_button"] = [];
+                                attributes_to_values["additional_info"] = [];
                                 let children=element.children;
-                                let attributes_to_exclude = ['width', 'height', 'path', 'class', 'viewBox']
+                                let attributes_to_exclude = ['width', 'height', 'path', 'class', 'viewBox', 'mmid']
 
                                 // Check if the button has no text and no attributes
                                 if (element.innerText.trim() === '') {
                                     
                                     for (const child of children) {
-                                        let children_attributes_to_values = {"tag": child.tagName,"mmid": child.getAttribute('mmid')};
+                                        let children_attributes_to_values = {};
                                         
                                         for (let attr of child.attributes) {
                                             // If the attribute is not in the predefined list, add it to children_attributes_to_values
@@ -205,7 +205,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                                             }
                                         }
 
-                                        attributes_to_values["children_of_button"].push(children_attributes_to_values);
+                                        attributes_to_values["additional_info"].push(children_attributes_to_values);
                                     }
                                     console.log("Button with no text and no attributes: ", attributes_to_values);
                                     return attributes_to_values;
