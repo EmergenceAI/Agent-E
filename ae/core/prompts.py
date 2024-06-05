@@ -56,7 +56,7 @@ LLM_PROMPTS = {
     If an approach is not working, Revise the plan and try a different approach (e.g. If search does not yield results, revise with different generic search queries. If after multiple attempts, search does not appear to yield results, try UI navigation)
     If all else fails, revert to using google search with site restriction as last resort.
     You should not go beyond what the task requries and make it clear to the helper (e.g. if task is to search for a product, you need not add the product to the cart. Explicitly state to the helper to stop at the product page).
-    After the task is completed,  you will return a short response to the query back to the user followed by ##TERMINATE## and nothing else. 
+    After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. 
     You will not have plan or next step when you terminate. For all other responses, you will always have next step.
     Remember that the next step should be simple and not a compound task.
 
