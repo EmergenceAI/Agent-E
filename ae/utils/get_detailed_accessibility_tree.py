@@ -208,23 +208,20 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     node.pop("children", None)
                     node.pop("role", None)
                     node.pop("description", None)
-                elif node.get('tag') == "label" : #for label and button fields, check to see if that label is referenced by any other fields. If so, get them
+                elif node.get('tag') == "label": #for label fields, check to see if that label is referenced by any other fields. If so, get them
                     #if there is an id field value, then look in the DOM to see if there are any fields that have this id in aria-labelledby. If so, then add them here as children
                     js_code = """
                     (inputParams) => {
                         const ariaLabelledByQueryValue = inputParams.aria_labelled_by_query_value;
-                        console.log(`ariaLabelledByQueryValue: ${ariaLabelledByQueryValue}`)
                         const idQueryValue = inputParams.id_query_value;
                         const description = inputParams.description;
                         let referencedElements;
-                        
                         if(idQueryValue) { //this is more reliable to query by
                             referencedElements = [document.querySelector(`#${idQueryValue}`)];
                         }
 
                         if(!referencedElements) { //now try to query by aria-labelledby since the id did not work
                             referencedElements = document.querySelectorAll(`[aria-labelledby*="${ariaLabelledByQueryValue}"]`);
-                            console.log(`referencedElements: ${referencedElements.length}`);
                             if(!referencedElements || referencedElements.length !== 1) return null; //if there is more than one, we can not associate all of them to the same label
                         }
 
@@ -419,8 +416,8 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     Returns:
         bool: True if the node should be pruned, False otherwise.
     """
-    #If the request is for only interactive fields and this is not an input field, then mark the node for prunning
-    if node.get("role") != "WebArea" and only_input_fields and (not (node.get("tag") in ("input", "button", "textarea", "select","a") or  node.get("role") in ("button", "option", "link"))):
+    #If the request is for only input fields and this is not an input field, then mark the node for prunning
+    if node.get("role") != "WebArea" and only_input_fields and not (node.get("tag") in ("input", "button", "textarea") or node.get("role") == "button"):
         return True
 
     if node.get('role') == 'generic' and 'children' not in node:  # The presence of 'children' is checked after potentially deleting it above
@@ -509,28 +506,3 @@ async def do_get_accessibility_info(page: Page, only_input_fields: bool = False)
         logger.error(f"Error while fetching DOM info: {e}")
         traceback.print_exc()
         return None
-
-
-async def get_input_field_nodes(page: Page) -> dict[str, Any] | None:
-    """
-    Retrieves the input field only DOM nodes.
-    """
-    input_fields = await page.evaluate("""() => {
-    let elements = Array.from(document.querySelectorAll('*'));
-    let filtered_elements = elements.filter(element => {
-        return (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.tagName === "SELECT") ||
-            (element.tagName === "BUTTON" || element.tagName === "A" || (element.onclick != null) || window.getComputedStyle(element).cursor == "pointer") ||
-            (element.tagName === "IFRAME" || element.tagName === "VIDEO");
-    });
-    return filtered_elements.map(element => {
-        let children = Array.from(element.children).map(child => ({mmid: child.getAttribute('mmid'), text: child.innerText}));
-        return {
-            tag: element.tagName, 
-            mmid: element.getAttribute('mmid'), 
-            text: element.innerText, 
-            children: children.length > 0 ? children : undefined
-        };
-    });
-    }""")
-
-    return input_fields
