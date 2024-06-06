@@ -181,33 +181,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     }
                     //if even the backup attributes are not found, then return null, which will cause this element to be skipped
                     if(Object.keys(attributes_to_values).length <= minimalKeys.length) {
-                        if (element.tagName.toLowerCase() === 'button') {
-                                attributes_to_values["mmid"] = element.getAttribute('mmid');
-                                attributes_to_values["role"] = "button";
-                                attributes_to_values["additional_info"] = [];
-                                let children=element.children;
-                                let attributes_to_exclude = ['width', 'height', 'path', 'class', 'viewBox', 'mmid']
-
-                                // Check if the button has no text and no attributes
-                                if (element.innerText.trim() === '') {
-
-                                    for (const child of children) {
-                                        let children_attributes_to_values = {};
-
-                                        for (let attr of child.attributes) {
-                                            // If the attribute is not in the predefined list, add it to children_attributes_to_values
-                                            if (!attributes_to_exclude.includes(attr.name)) {
-                                                children_attributes_to_values[attr.name] = attr.value;
-                                            }
-                                        }
-
-                                        attributes_to_values["additional_info"].push(children_attributes_to_values);
-                                    }
-                                    console.log("Button with no text and no attributes: ", attributes_to_values);
-                                    return attributes_to_values;
-                                }
-                        }
-
                         return null; // Return null if only minimal keys are present
                     }
                 }
@@ -223,10 +196,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                                                       "tags_to_ignore": tags_to_ignore,
                                                       "ids_to_ignore": ids_to_ignore})
 
-            if 'keyshortcuts' in node:
-                    del node['keyshortcuts'] #remove keyshortcuts since it is not needed
-
-            node["mmid"]=mmid
 
             # Update the node with fetched information
             if element_attributes:
@@ -235,12 +204,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 # check if 'name' and 'mmid' are the same
                 if node.get('name') == node.get('mmid') and node.get('role') != "textbox":
                     del node['name']  # Remove 'name' from the node
-
-                if 'name' in node and 'description' in node and node['name'] == node['description']:
-                    del node['description'] #if the name is same as description, then remove the description to avoid duplication
-
-                if 'name' in node and 'text' in node and node['name'] == node['text']:
-                    del node['text'] #if the name is same as the text, then remove the text to avoid duplication
 
                 if node.get('tag') == "select": #children are not needed for select menus since "options" attriburte is already added
                     node.pop("children", None)

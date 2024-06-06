@@ -103,20 +103,8 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
         return "Error: No active page found. OpenURL command opens a new page."
 
     await browser_manager.highlight_element(query_selector, True)
-    dom_changes_detected=None
-    def detect_dom_changes(changes:str): # type: ignore
-        nonlocal dom_changes_detected
-        dom_changes_detected = changes # type: ignore
-
-    subscribe(detect_dom_changes)
-
     result = await do_entertext(page, query_selector, text_to_enter)
-    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
-    unsubscribe(detect_dom_changes)
-
     await browser_manager.notify_user(result["summary_message"])
-    if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
     return result["detailed_message"]
 
 
@@ -160,16 +148,13 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
-            await press_key_combination("Control+A")
-            await asyncio.sleep(0.1)
-            await press_key_combination("Backspace")
             logger.debug(f"Focused element with selector {selector} to enter text")
             await page.keyboard.type(text_to_enter, delay=2)
         else:
             await custom_fill_element(page, selector, text_to_enter)
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         await elem.focus()
-        await page.keyboard.type("") # some html pages can have placeholders that only disappear upon keyboard input
+        await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
         await asyncio.sleep(1)
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         

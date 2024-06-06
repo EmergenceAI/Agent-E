@@ -7,8 +7,6 @@ from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
-from ae.utils.dom_mutation_observer import subscribe
-from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
@@ -48,6 +46,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
         return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
+
     return result["detailed_message"]
 
 

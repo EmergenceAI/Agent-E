@@ -1,4 +1,3 @@
-import asyncio
 from typing import Annotated
 
 from ae.core.playwright_manager import PlaywrightManager
@@ -66,5 +65,4 @@ async def enter_text_and_click(
         result["detailed_message"] += f' {do_click_result["detailed_message"]}'
         await browser_manager.notify_user(do_click_result["summary_message"])
 
-    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     return result["detailed_message"]
