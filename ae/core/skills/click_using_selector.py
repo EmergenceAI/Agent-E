@@ -50,10 +50,6 @@ async def click(selector: Annotated[str, "The properly formed query selector str
         return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
     return result["detailed_message"]
 
-    # result = await do_click(page, selector, wait_before_execution)
-    # await browser_manager.notify_user(result["summary_message"])
-    # return result["detailed_message"]
-
 
 async def do_click(page: Page, selector: str, wait_before_execution: float) -> dict[str, str]:
     """

@@ -7,10 +7,7 @@ from typing import List  # noqa: UP035
 from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
-from ae.core.skills.press_key_combination import press_key_combination
 from ae.utils.dom_helper import get_element_outer_html
-from ae.utils.dom_mutation_observer import subscribe
-from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
@@ -111,7 +108,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     return result["detailed_message"]
 
 
-async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=False):
+async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=True):
     """
     Performs the text entry operation on a DOM element.
 
