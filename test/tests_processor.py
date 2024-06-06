@@ -14,6 +14,7 @@ from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from autogen.agentchat.chat import ChatResult  # type: ignore
+from autogen.agentchat import Agent
 from playwright.async_api import Page
 from tabulate import tabulate
 from termcolor import colored
@@ -91,9 +92,9 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     """
     status = 'Pass' if task_result['score'] == 1 else 'Fail'
     color = 'green' if status == 'Pass' else 'red'
-    cost = task_result["compute_cost"]
-    total_cost = round(cost.get("cost", -1), 4) # type: ignore
-    total_tokens = cost.get("total_tokens", -1) # type: ignore
+    cost = task_result.get("compute_cost", None)
+    total_cost = None if cost is None else round(cost.get("cost", -1), 4)  # type: ignore
+    total_tokens = None if cost is None else cost.get("total_tokens", -1)  # type: ignore
     result_table = [  # type: ignore
         ['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
         [index, task_result['task_id'], task_result['intent'], colored(status, color), round(task_result['tct'], 2), total_tokens, total_cost]  # type: ignore
@@ -267,21 +268,28 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         status = 'Pass' if result['score'] == 1 else 'Fail'
         color = 'green' if status == 'Pass' else 'red'
 
-        cost = result["compute_cost"]
-        total_cost = round(cost.get("cost", -1), 4) # type: ignore
-        total_tokens = cost.get("total_tokens", -1) # type: ignore
+        cost: str | int | float | None = result.get("compute_cost", None)
+        total_cost = None if cost is None else round(cost.get("cost", -1), 4)  # type: ignore
+        total_tokens = None if cost is None else cost.get("total_tokens", -1)  # type: ignore
 
         detailed_results_table.append([
             idx, result['task_id'], result['intent'], colored(status, color), round(result['tct'], 2), # type: ignore
             total_tokens, total_cost
         ])
+
     print(tabulate(detailed_results_table, headers='firstrow', tablefmt='grid'))
 
     # Summary report
 
-    # Calculate aggregated cost and token totals
-    total_cost = sum(result["compute_cost"].get("cost", 0) for result in test_results) # type: ignore
-    total_tokens = sum(result["compute_cost"].get("total_tokens", 0) for result in test_results) # type: ignore
+    # Calculate aggregated cost and token totals for all tests that have compute cost
+    total_cost = 0
+    total_tokens = 0
+
+    for result in test_results:
+        compute_cost = result.get("compute_cost",0) # type: ignore
+        if compute_cost is not None:
+            total_cost += compute_cost.get("cost", 0) # type: ignore
+            total_tokens += compute_cost.get("total_tokens", 0) # type: ignore
 
     passed_tests = [result for result in test_results if result['score'] == 1]
     summary_table = [ # type: ignore

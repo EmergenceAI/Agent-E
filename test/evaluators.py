@@ -55,6 +55,7 @@ class StringEvaluator(Evaluator):
 
         score = 1.0
         for approach, value in task_config["eval"]["reference_answers"].items():
+
             match approach:
                 case "exact_match":
                     logger.info(f"Evaluating exact_match for answer: Predicted: {pred} , Reference: {value}")
@@ -131,6 +132,7 @@ class URLEvaluator(Evaluator):
         def clean_url(url: str) -> str:
             url = str(url)
             url = url.rstrip("/")
+            url = url.lower()
             return url
 
         def parse_url(url: str) -> tuple[str, dict[str, list[str]]]:

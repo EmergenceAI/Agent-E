@@ -495,17 +495,17 @@
         "task_id": 18,
         "require_login": false,
         "storage_state": null,
-        "start_url": "about:blank",
+        "start_url": "https://www.google.com",
         "geolocation": null,
         "intent_template": "Find the {{information_type}} {{preposition1}} {{source}} {{preposition2}} {{destination}}",
         "instantiation_dict": {
-            "information_type": "distance",
+            "information_type": "shortest driving distance",
             "preposition1": "between",
             "source": "JFK",
             "preposition2": "and",
             "destination": "LGA airports"
         },
-        "intent": "Find the distance between JFK and LGA airports",
+        "intent": "Find the shortest driving distance between JFK and LGA airports in miles",
         "require_reset": false,
         "eval": {
             "eval_types": [
@@ -514,7 +514,8 @@
             "reference_answers": {
                 "must_include": [
                     "13.24 miles"
-                ]
+                ],
+                "min_required": 1
             },
             "reference_url": "",
             "program_html": [],
@@ -559,13 +560,13 @@
         "geolocation": null,
         "intent_template": "Find the {{information_type}} {{preposition1}} {{source}} {{preposition2}} {{destination}}",
         "instantiation_dict": {
-            "information_type": "distance",
+            "information_type": "shortest driving distance",
             "preposition1": "between",
             "source": "CMU",
             "preposition2": "and",
             "destination": "MIT"
         },
-        "intent": "Find the distance between CMU and MIT",
+        "intent": "Find the shortest driving distance between CMU and MIT in miles",
         "require_reset": false,
         "eval": {
             "eval_types": [
@@ -704,8 +705,8 @@
             "reference_answers": {
                 "some_matches": {
                     "phrases": [
-                        "poor battery life",
-                        "slow performance",
+                        "battery life",
+                        "performance",
                         "charging issues",
                         "app compatibility",
                         "app incompatiblity",
@@ -741,7 +742,10 @@
                 "some_matches": {
                     "phrases": [
                         "battery life",
+                        "too small",
+                        "size",
                         "performance",
+                        "functionality",
                         "speaker quality",
                         "durability",
                         "build quality",
@@ -808,7 +812,7 @@
                 "url_match"
             ],
             "reference_answers": null,
-            "reference_url": "https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage+case |OR| https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage",
+            "reference_url": "https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage+case |OR| https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage |OR| https://www.amazon.com/s?k=Nintendo+Switch+game+card+storage+11+cards",
             "program_html": null
         }
     },
@@ -830,8 +834,8 @@
             "eval_types": [
                 "url_match"
             ],
-            "reference_answers": null,
-            "reference_url": "https://www.apple.com/legal/sales-support/sales-policies/retail_us.html",
+            "reference_answers": null, 
+            "reference_url": "https://www.apple.com/legal/sales-support/sales-policies/retail_us.html |OR| https://www.apple.com/shop/help/returns_refund",
             "program_html": null
         }
     },
