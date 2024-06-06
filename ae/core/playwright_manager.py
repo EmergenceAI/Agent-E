@@ -8,6 +8,8 @@ from playwright.async_api import Page
 from playwright.async_api import Playwright
 
 from ae.core.ui_manager import UIManager
+from ae.utils.dom_mutation_observer import dom_mutation_change_detected
+from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 

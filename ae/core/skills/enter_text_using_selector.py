@@ -7,7 +7,10 @@ from typing import List  # noqa: UP035
 from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
+from ae.core.skills.press_key_combination import press_key_combination
 from ae.utils.dom_helper import get_element_outer_html
+from ae.utils.dom_mutation_observer import subscribe
+from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
@@ -157,7 +160,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         await page.keyboard.type(" ") # some html pages can have placeholders that only disappear upon keyboard input
         await asyncio.sleep(1)
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
-        
+
         return {"summary_message": success_msg, "detailed_message": f"{success_msg} and outer HTML: {element_outer_html}."}
 
     except Exception as e:
