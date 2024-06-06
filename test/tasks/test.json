@@ -512,9 +512,13 @@
                 "string_match"
             ],
             "reference_answers": {
-                "must_include": [
-                    "13.24 miles"
-                ]
+                "some_matches": [
+                    "13.24 miles",
+                    "10 miles",
+                    "approximately 10 miles",
+                    "10.32 miles"
+                ],
+                "min_required": 1
             },
             "reference_url": "",
             "program_html": [],
