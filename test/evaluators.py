@@ -55,6 +55,7 @@ class StringEvaluator(Evaluator):
 
         score = 1.0
         for approach, value in task_config["eval"]["reference_answers"].items():
+
             match approach:
                 case "exact_match":
                     logger.info(f"Evaluating exact_match for answer: Predicted: {pred} , Reference: {value}")

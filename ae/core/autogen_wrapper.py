@@ -212,6 +212,11 @@ class AutogenWrapper:
                 silent=False,
                 cache=None,
             )
+            # reset usage summary for all agents after each command
+            for agent in self.agents_map.values():
+                print(">>> agent:", agent)
+                if hasattr(agent, "client") and agent.client is not None:
+                    agent.client.clear_usage_summary() # type: ignore
             return result
         except openai.BadRequestError as bre:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
