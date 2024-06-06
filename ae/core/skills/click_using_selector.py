@@ -9,7 +9,8 @@ from playwright.async_api import Page
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.logger import logger
-
+from ae.utils.dom_mutation_observer import subscribe 
+from ae.utils.dom_mutation_observer import unsubscribe 
 
 async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
                 wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
@@ -34,8 +35,10 @@ async def click(selector: Annotated[str, "The properly formed query selector str
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await browser_manager.highlight_element(selector, True)
+
+    
     dom_changes_detected=None
-    def detect_dom_changes(changes): # type: ignore
+    def detect_dom_changes(changes:str): # type: ignore
         nonlocal dom_changes_detected
         dom_changes_detected = changes # type: ignore
 

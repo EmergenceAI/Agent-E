@@ -55,6 +55,7 @@ class StringEvaluator(Evaluator):
 
         score = 1.0
         for approach, value in task_config["eval"]["reference_answers"].items():
+
             match approach:
                 case "exact_match":
                     logger.info(f"Evaluating exact_match for answer: Predicted: {pred} , Reference: {value}")
@@ -131,6 +132,7 @@ class URLEvaluator(Evaluator):
         def clean_url(url: str) -> str:
             url = str(url)
             url = url.rstrip("/")
+            url = url.lower()
             return url
 
         def parse_url(url: str) -> tuple[str, dict[str, list[str]]]:
@@ -312,12 +314,14 @@ class ManualContentEvaluator(Evaluator):
         """
         task:str = task_config["intent"]
         reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
-        answer_type=task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
         id=task_config["task_id"]
         print("Task ID: ",id)
         print("Task: ",task)
-        print("Answer Type: ",answer_type)
-        print("Reference Answer: ",reference_answer)
+        if answer_type.strip().lower()=="possible":
+            print("Possible answer (reference): ~~~",reference_answer,"~~~")
+        elif answer_type.strip().lower()=="golden":
+            print("Golden answer (reference): ",reference_answer)
         user_response = input("Annotate the task as Pass or Fail? ")
         if(user_response.lower()=="pass"):
             return 1.0

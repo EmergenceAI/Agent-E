@@ -6,6 +6,7 @@ from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.utils.logger import logger
 from ae.utils.dom_mutation_observer import subscribe # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
+
 import asyncio 
 
 async def enter_text_and_click(
@@ -45,19 +46,22 @@ async def enter_text_and_click(
 
     await browser_manager.highlight_element(text_selector, True)
     dom_changes_detected=None
-    def detect_dom_changes(changes): # type: ignore
+    
+    def detect_dom_changes(changes:str): # type: ignore
         nonlocal dom_changes_detected
         dom_changes_detected = changes # type: ignore
 
     subscribe(detect_dom_changes)
+
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
+
     await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     result = text_entry_result
-    
+
     if dom_changes_detected:
         result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
         return result["summary_message"]
