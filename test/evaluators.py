@@ -131,6 +131,7 @@ class URLEvaluator(Evaluator):
         def clean_url(url: str) -> str:
             url = str(url)
             url = url.rstrip("/")
+            url = url.lower()
             return url
 
         def parse_url(url: str) -> tuple[str, dict[str, list[str]]]:
