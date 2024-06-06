@@ -5,12 +5,14 @@ from typing import Annotated
 from typing import List  # noqa: UP035
 
 from playwright.async_api import Page
-from ae.core.skills.press_key_combination import press_key_combination
+
 from ae.core.playwright_manager import PlaywrightManager
+from ae.core.skills.press_key_combination import press_key_combination
 from ae.utils.dom_helper import get_element_outer_html
+from ae.utils.dom_mutation_observer import subscribe
+from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
-from ae.utils.dom_mutation_observer import subscribe 
-from ae.utils.dom_mutation_observer import unsubscribe 
+
 
 @dataclass
 class EnterTextEntry:
@@ -114,6 +116,8 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     result = await do_entertext(page, query_selector, text_to_enter)
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
+
+    await browser_manager.take_screenshots("click_using_selector", page)
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:

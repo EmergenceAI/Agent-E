@@ -131,7 +131,8 @@ This will take time to run. Alternatlively to run a particular example(s), modif
     - `--max_task_index`: Maximum task index to end tests with, non-inclusive
     - `--test_results_id`: A unique identifier for the test results. If not provided, a timestamp is used
     - `--test_config_file`: Path to the test configuration file. Default is "test/tasks/test.json" in the project root.
-    - `wait_time_non_headless`: The amount of time to wait between headless tests
+    - `--wait_time_non_headless`: The amount of time to wait between headless tests
+    - `--take_screenshots`: Takes screenshots after every operation performed. Example: `--take_screenshots true` Default to `false`
 For example: `python -m test.run_tests --min_task_index 0 --max_task_index 28 --test_results_id first_28_tests` _(add `-u` for Mac)_
 
 
