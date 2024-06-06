@@ -228,6 +228,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
             if 'keyshortcuts' in node:
                     del node['keyshortcuts'] #remove keyshortcuts since it is not needed
+            
             node["mmid"]=mmid
 
             # Update the node with fetched information
@@ -284,13 +285,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                             return null;
                         }
                         """
-                        referencing_element_attributes = await page.evaluate(js_code, {"aria_labelled_by_query_value": element_attributes["id"]})
-                        if referencing_element_attributes:
-                            node["mmid"] = referencing_element_attributes["mmid"]
-                            node["tag"] = referencing_element_attributes["tag"]
-                            if node.get("description"):
-                                node["name"] = node["description"]
-                                del node["description"]
                     #textbox just means a text input and that is expressed well enough with the rest of the attributes returned
                     del node['role']
 
@@ -412,7 +406,8 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     if node.get("role") != "WebArea" and only_input_fields and not (node.get("tag") in ("input", "button", "textarea") or node.get("role") == "button"):
         return True
 
-    if node.get('role') == 'generic' and 'children' not in node:  # The presence of 'children' is checked after potentially deleting it above
+    if node.get('role') == 'generic' and 'children' not in node and not ('name' in node and node.get('name')):  # The presence of 'children' is checked after potentially deleting it above
+
         return True
     if node.get('role') in ['separator']:
         return True
