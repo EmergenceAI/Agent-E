@@ -412,7 +412,7 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     if node.get('role') in ['separator']:
         return True
     #check if the node only have name and role, then delete that node
-    if len(node) == 2 and 'name' in node and 'role' in node and node.get('role') != "button":
+    if len(node) == 2 and 'name' in node and 'role' in node:
         return True
     return False
 
