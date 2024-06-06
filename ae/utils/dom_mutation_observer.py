@@ -55,10 +55,16 @@ async def add_mutation_observer(page:Page):
 
 
 async def handle_navigation_for_mutation_observer(page:Page):
-    print('Handling navigation for mutation observer')
     await add_mutation_observer(page)
 
 async def dom_mutation_change_detected(changes_detected: str):
+    """
+    Detects changes in the DOM (new nodes added) and emits the event to all subscribed callbacks.
+    The changes_detected is a string in JSON formatt containing the tag and content of the new nodes added to the DOM.
+    
+    e.g.  The following will be detected when autocomplete recommendations show up when one types Nelson Mandela on google search
+    [{'tag': 'SPAN', 'content': 'nelson mandela wikipedia'}, {'tag': 'SPAN', 'content': 'nelson mandela movies'}]
+    """
     changes_detected = json.loads(changes_detected.replace('\t', '').replace('\n', ''))
     if len(changes_detected) > 0:
         # Emit the event to all subscribed callbacks
