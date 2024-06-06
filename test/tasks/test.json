@@ -834,8 +834,8 @@
             "eval_types": [
                 "url_match"
             ],
-            "reference_answers": null,
-            "reference_url": "https://www.apple.com/legal/sales-support/sales-policies/retail_us.html",
+            "reference_answers": null, 
+            "reference_url": "https://www.apple.com/legal/sales-support/sales-policies/retail_us.html |OR| https://www.apple.com/shop/help/returns_refund",
             "program_html": null
         }
     },
