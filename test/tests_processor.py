@@ -14,7 +14,6 @@ from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from autogen.agentchat.chat import ChatResult  # type: ignore
-from autogen.agentchat import Agent
 from playwright.async_api import Page
 from tabulate import tabulate
 from termcolor import colored

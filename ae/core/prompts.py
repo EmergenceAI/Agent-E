@@ -72,7 +72,7 @@ LLM_PROMPTS = {
     Some of the provided functions do provide bulk operations, for those, the function description will clearly mention it.
     Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type.
     You must first attempt to submit a form or search query by pressing Enter key instead of clicking on the submit button. However, if that did not work, you will click on the submit button in next try.
-    Unless otherwise specified, perform the task on the current page.
+    Unless otherwise specified, you will strictly perform the task on the current page.
     Once the task is completed or cannot be completed, return a very very short summary of the actions you performed to accomplish the task and a brief information about the page you are on and any related information you can find that may help the user further. This should be followed by ##TERMINATE TASK##.
     Additionally, If task requires an answer, you will also provide a direct answer as part of the message containing ##TERMINATE TASK##.
     You will NOT provide any URLs of links on webpage. If user asks for URLs, you can will instead provide the text of the hyperlink on the page and offer to click on it. This is very very important.
