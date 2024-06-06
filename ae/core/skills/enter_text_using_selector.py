@@ -117,7 +117,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields to interact with the elements."
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
     return result["detailed_message"]
 
 
@@ -162,7 +162,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         if use_keyboard_fill:
             await elem.focus()
             await press_key_combination("Control+A")
-            await asyncio.sleep(0.2)
+            await asyncio.sleep(0.1)
             await press_key_combination("Backspace")
             logger.debug(f"Focused element with selector {selector} to enter text")
             await page.keyboard.type(text_to_enter, delay=2)
