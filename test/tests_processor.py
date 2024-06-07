@@ -174,7 +174,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     agent_key = list(messages.keys())[0] # type: ignore
 
     last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
-    dump_log(str(task_id), messages_str_keys)
+    dump_log(str(task_id), messages_str_keys , logs_dir)
     evaluator = evaluator_router(task_config)
 
     cdp_session = await page.context.new_cdp_session(page)
@@ -187,36 +187,6 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     try:
         command_cost = get_command_exec_cost(command_exec_result) # type: ignore
         print(f"Command cost: {command_cost}")
-
-        logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
-        logger.info(f"Task {task_id} completed.")
-
-        messages = ag.agents_map["browser_nav_agent"].chat_messages # type: ignore
-        messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
-        agent_key = list(messages.keys())[0] # type: ignore
-        last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
-
-        dump_log(str(task_id), messages_str_keys, logs_dir)
-
-        evaluator = evaluator_router(task_config)
-        cdp_session = await page.context.new_cdp_session(page)
-        score = await evaluator(
-            task_config=task_config,
-            page=page,
-            client=cdp_session,
-            answer=last_agent_response,
-        )
-
-        return {
-            "task_id": task_id,
-            "start_url": start_url,
-            "intent": str(command),
-            "score": score,
-            "tct": end_time - start_time,
-            "last_statement": last_agent_response,
-            "last_url": page.url,
-            "compute_cost": command_cost
-        }
     except Exception as e:
         logger.error(f"Error getting command cost: {e}")
         command_cost = {"cost": -1, "total_tokens": -1}

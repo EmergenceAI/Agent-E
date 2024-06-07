@@ -13,7 +13,7 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
     - Full URL the browser's active page.
     """
 
-    logger.info("Executing Get URL Command")
+
     try:
         # Create and use the PlaywrightManager
         browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
