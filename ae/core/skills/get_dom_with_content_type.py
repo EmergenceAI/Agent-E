@@ -55,7 +55,7 @@ async def get_dom_with_content_type(
         logger.debug('Fetching DOM for input_fields')
         extracted_data = await do_get_accessibility_info(page, only_input_fields=True)
         if extracted_data is None:
-            return "Could not fetch input fields. Please try again with content_type all_fields."
+            return "Could not fetch input fields. Please consider trying with content_type all_fields."
         user_success_message = "Fetched only input fields in the DOM"
     elif content_type == 'text_only':
         # Extract text from the body or the highest-level element
