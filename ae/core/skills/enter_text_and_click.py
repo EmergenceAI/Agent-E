@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated
 
 from ae.core.playwright_manager import PlaywrightManager
@@ -5,7 +6,7 @@ from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
-import asyncio 
+
 
 async def enter_text_and_click(
     text_selector: Annotated[str, "The properly formatted DOM selector query, for example [mmid='1234'], where the text will be entered. Use mmid attribute."],
@@ -54,7 +55,7 @@ async def enter_text_and_click(
 
     #if the text_selector is the same as the click_selector, press the Enter key instead of clicking
     if text_selector == click_selector:
-        do_press_key_combination_result = await do_press_key_combination(page, "Enter")
+        do_press_key_combination_result = await do_press_key_combination(browser_manager, page, "Enter")
         if do_press_key_combination_result:
             result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
             await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
@@ -67,6 +68,9 @@ async def enter_text_and_click(
         do_click_result = await do_click(page, click_selector, wait_before_click_execution)
         result["detailed_message"] += f' {do_click_result["detailed_message"]}'
         await browser_manager.notify_user(do_click_result["summary_message"])
-    
+
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+
+    await browser_manager.take_screenshots("click_using_selector", page)
+
     return result["detailed_message"]
