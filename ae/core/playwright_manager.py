@@ -1,16 +1,17 @@
 import asyncio
 import os
 import tempfile
+import time
 
 from playwright.async_api import async_playwright as playwright
 from playwright.async_api import BrowserContext
 from playwright.async_api import Page
 from playwright.async_api import Playwright
 from ae.core.ui_manager import UIManager
+from ae.utils.dom_mutation_observer import dom_mutation_change_detected
+from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
-from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
-from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 
 
 class PlaywrightManager:
@@ -28,6 +29,8 @@ class PlaywrightManager:
     _playwright = None # type: ignore
     _browser_context = None
     __async_initialize_done = False
+    _take_screenshots = False
+    _screenshots_dir = None
 
     def __new__(cls, *args, **kwargs): # type: ignore
         """
@@ -40,7 +43,7 @@ class PlaywrightManager:
         return cls._instance
 
 
-    def __init__(self, browser_type: str = "chromium", headless: bool = False, gui_input_mode: bool=True):
+    def __init__(self, browser_type: str = "chromium", headless: bool = False, gui_input_mode: bool = True, screenshots_dir: str = "", take_screenshots: bool = False):
         """
         Initializes the PlaywrightManager with the specified browser type and headless mode.
         Initialization occurs only once due to the singleton pattern.
@@ -57,6 +60,9 @@ class PlaywrightManager:
         self.user_response_event = asyncio.Event()
         if gui_input_mode:
             self.ui_manager: UIManager = UIManager()
+
+        self.set_take_screenshots(take_screenshots)
+        self.set_screenshots_dir(screenshots_dir)
 
 
     async def async_initialize(self):
@@ -330,6 +336,35 @@ class PlaywrightManager:
         self.user_response = ""
         self.ui_manager.new_user_message(result)
         return result
+
+    def set_take_screenshots(self, take_screenshots: bool):
+        self._take_screenshots = take_screenshots
+
+    def get_take_screenshots(self):
+        return self._take_screenshots
+
+    def set_screenshots_dir(self, screenshots_dir: str):
+        self._screenshots_dir = screenshots_dir
+
+    def get_screenshots_dir(self):
+        return self._screenshots_dir
+
+    async def take_screenshots(self, name: str, page: Page|None, full_page: bool = True, include_timestamp: bool = True):
+        if not self._take_screenshots:
+            return
+        if page is None:
+            page = await self.get_current_page()
+
+        screenshot_name = name
+
+        if include_timestamp:
+            screenshot_name += f"_{int(time.time())}"
+        screenshot_name += ".png"
+
+        await page.screenshot(path=f"{self.get_screenshots_dir()}/{screenshot_name}", full_page=full_page)
+
+        print(f"Screen shot saved to: {self.get_screenshots_dir()}/{screenshot_name}")
+
 
     def log_user_message(self, message: str):
         """

@@ -35,9 +35,21 @@ def check_test_folders():
         os.makedirs(TEST_RESULTS)
         logger.info(f"Created scores folder at: {TEST_RESULTS}")
 
+def create_task_log_folders(task_id: str, test_results_id: str):
+    task_log_dir = os.path.join(TEST_LOGS, f'{test_results_id}_{task_id}')
+    task_screenshots_dir = os.path.join(task_log_dir, 'snapshots')
+    if not os.path.exists(task_log_dir):
+        os.makedirs(task_log_dir)
+        logger.info(f"Created log dir for task {task_id} at: {task_log_dir}")
+    if not os.path.exists(task_screenshots_dir):
+        os.makedirs(task_screenshots_dir)
+        logger.info(f"Created screenshots dir for task {task_id} at: {task_screenshots_dir}")
 
-def dump_log(task_id: str, messages_str_keys: dict[str, str]):
-    file_name = os.path.join(TEST_LOGS, f'execution_logs_{task_id}.json')
+    return {"task_log_folder": task_log_dir, "task_screenshots_folder": task_screenshots_dir}
+
+
+def dump_log(task_id: str, messages_str_keys: dict[str, str], logs_dir: str):
+    file_name = os.path.join(logs_dir, f'execution_logs_{task_id}.json')
     with open(file_name, 'w',  encoding='utf-8') as f:
             json.dump(messages_str_keys, f, ensure_ascii=False, indent=4)
 
@@ -120,7 +132,7 @@ def get_command_exec_cost(command_exec_result: ChatResult):
     return output
 
 
-async def execute_single_task(task_config: dict[str, Any], browser_manager: PlaywrightManager, ag: AutogenWrapper, page: Page) -> dict[str, Any]:
+async def execute_single_task(task_config: dict[str, Any], browser_manager: PlaywrightManager, ag: AutogenWrapper, page: Page, logs_dir: str) -> dict[str, Any]:
     """
     Executes a single test task based on a specified task configuration and evaluates its performance.
 
@@ -175,6 +187,36 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     try:
         command_cost = get_command_exec_cost(command_exec_result) # type: ignore
         print(f"Command cost: {command_cost}")
+
+        logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
+        logger.info(f"Task {task_id} completed.")
+
+        messages = ag.agents_map["browser_nav_agent"].chat_messages # type: ignore
+        messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
+        agent_key = list(messages.keys())[0] # type: ignore
+        last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
+
+        dump_log(str(task_id), messages_str_keys, logs_dir)
+
+        evaluator = evaluator_router(task_config)
+        cdp_session = await page.context.new_cdp_session(page)
+        score = await evaluator(
+            task_config=task_config,
+            page=page,
+            client=cdp_session,
+            answer=last_agent_response,
+        )
+
+        return {
+            "task_id": task_id,
+            "start_url": start_url,
+            "intent": str(command),
+            "score": score,
+            "tct": end_time - start_time,
+            "last_statement": last_agent_response,
+            "last_url": page.url,
+            "compute_cost": command_cost
+        }
     except Exception as e:
         logger.error(f"Error getting command cost: {e}")
         command_cost = {"cost": -1, "total_tokens": -1}
@@ -191,7 +233,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
 
 
 async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_task_index: int, max_task_index: int,
-               test_file: str="", test_results_id: str = "", wait_time_non_headless: int=5) -> list[dict[str, Any]]:
+               test_file: str="", test_results_id: str = "", wait_time_non_headless: int=5, take_screenshots: bool = False) -> list[dict[str, Any]]:
     """
     Runs a specified range of test tasks using Playwright for browser interactions and AutogenWrapper for task automation.
     It initializes necessary components, processes each task, handles exceptions, and compiles test results into a structured list.
@@ -204,6 +246,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
     - test_file (str): Path to the file containing the test configurations. If not provided, defaults to a predetermined file path.
     - test_results_id (str): A unique identifier for the session of test results. Defaults to a timestamp if not provided.
     - wait_time_non_headless (int): Time to wait between tasks when running in non-headless mode, useful for live monitoring or debugging.
+    - take_screenshots (bool): Whether to take screenshots during test execution. Defaults to False.
 
     Returns:
     - list[dict[str, Any]]: A list of dictionaries, each containing the results from executing a test task. Results include task ID, intent, score, total command time, etc.
@@ -236,8 +279,14 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
     total_tests = max_task_index - min_task_index
 
     for index, task_config in enumerate(test_configurations[min_task_index:max_task_index], start=min_task_index):
+        task_id = str(task_config.get('task_id'))
+        log_folders = create_task_log_folders(task_id, test_results_id)
+        browser_manager.set_take_screenshots(take_screenshots)
+        if take_screenshots:
+            browser_manager.set_screenshots_dir(log_folders["task_screenshots_folder"])
+
         print_progress_bar(index - min_task_index, total_tests)
-        task_result = await execute_single_task(task_config, browser_manager, ag, page)
+        task_result = await execute_single_task(task_config, browser_manager, ag, page, log_folders["task_log_folder"])
         test_results.append(task_result)
         save_test_results(test_results, test_results_id)
         print_test_result(task_result, index + 1, total_tests)
@@ -275,7 +324,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     for result in test_results:
         compute_cost = result.get("compute_cost",0) # type: ignore
-        if compute_cost is not None:
+        if compute_cost is not None and isinstance(compute_cost, dict):
             total_cost += compute_cost.get("cost", 0) # type: ignore
             total_tokens += compute_cost.get("total_tokens", 0) # type: ignore
 
@@ -283,9 +332,9 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
     summary_table = [ # type: ignore
         ['Total Tests', 'Passed', 'Failed', 'Average Time Taken (s)', 'Total Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
         [total_tests, len(passed_tests), total_tests - len(passed_tests),
-         round(sum(test['tct'] for test in test_results) / total_tests, 2), # type: ignore
-         round(sum(test['tct'] for test in test_results), 2),  # type: ignore
-         total_tokens, total_cost]
+        round(sum(test['tct'] for test in test_results) / total_tests, 2), # type: ignore
+        round(sum(test['tct'] for test in test_results), 2),  # type: ignore
+        total_tokens, total_cost]
     ]
 
     print('\nSummary Report:')

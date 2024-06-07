@@ -5,6 +5,7 @@ from ae.utils.logger import logger
 from ae.utils.dom_mutation_observer import subscribe # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
 import asyncio 
+from playwright.async_api import Page # type: ignore
 
 async def press_key_combination(key_combination: Annotated[str, "The key to press, e.g., Enter, PageDown etc"]) -> str:
     """
@@ -58,4 +59,44 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
         return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
     
     return f"Key {key_combination} executed successfully"
+
+
+async def do_press_key_combination(browser_manager: PlaywrightManager, page: Page, key_combination: str) -> bool:
+    """
+    Presses a key combination on the provided page.
+
+    This function simulates the pressing of a key or a combination of keys on a web page.
+    The `key_combination` should be a string that represents the keys to be pressed, separated by '+' if it's a combination.
+    For example, 'Control+C' to copy or 'Alt+F4' to close a window on Windows.
+
+    Parameters:
+    - browser_manager (PlaywrightManager): The PlaywrightManager instance.
+    - page (Page): The Playwright page instance.
+    - key_combination (str): The key combination to press, represented as a string. For combinations, use '+' as a separator.
+
+    Returns:
+    bool: True if success and False if failed
+    """
+
+    logger.info(f"Executing press_key_combination with key combo: {key_combination}")
+    try:
+        # Split the key combination if it's a combination of keys
+        keys = key_combination.split('+')
+
+        # If it's a combination, hold down the modifier keys
+        for key in keys[:-1]:  # All keys except the last one are considered modifier keys
+            await page.keyboard.down(key)
+
+        # Press the last key in the combination
+        await page.keyboard.press(keys[-1])
+
+        # Release the modifier keys
+        for key in keys[:-1]:
+            await page.keyboard.up(key)
+
+        await browser_manager.take_screenshots("click_using_selector", page)
+    except Exception as e:
+        logger.error(f"Error executing press_key_combination \"{key_combination}\": {e}")
+        return False
+    return True
 

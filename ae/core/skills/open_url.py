@@ -28,6 +28,9 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
         logger.warn(f"Initial navigation to {url} failed: {e}. Will try to continue anyway.") # happens more often than not, but does not seem to be a problem
         import traceback
         traceback.print_exc()
+
+    await browser_manager.take_screenshots("click_using_selector", page)
+
     await browser_manager.notify_user(f"Opened URL: {url}")
         # Get the page title
     title = await page.title()
