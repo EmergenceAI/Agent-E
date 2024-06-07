@@ -45,8 +45,10 @@ async def enter_text_and_click(
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await browser_manager.highlight_element(text_selector, True)
+
     function_name = inspect.currentframe().f_code.co_name
     await browser_manager.take_screenshots(f"{function_name}_start", page)
+
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
 
     await browser_manager.notify_user(text_entry_result["summary_message"])
