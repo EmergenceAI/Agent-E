@@ -173,10 +173,8 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await page.keyboard.type(text_to_enter, delay=4)
         else:
             await custom_fill_element(page, selector, text_to_enter)
+            await elem.focus()
         
-        # Set the focus back to the element
-        await elem.focus()
-
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         return {"summary_message": success_msg, "detailed_message": f"{success_msg} and outer HTML: {element_outer_html}."}
