@@ -48,7 +48,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     unsubscribe(detect_dom_changes)
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. pressing Submit will likely select first."
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields DOM to interact with it."
     return result["detailed_message"]
 
 

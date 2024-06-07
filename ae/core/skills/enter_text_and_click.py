@@ -63,7 +63,7 @@ async def enter_text_and_click(
     result = text_entry_result
 
     if dom_changes_detected:
-        result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
+        result["summary_message"] = f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}.  Get all_fields DOM to interact with it. Note that i have not clicked on the element you suggested. Use a click_on_selector skill to initiate a click."
         return result["summary_message"]
     
     await browser_manager.highlight_element(click_selector, True)
@@ -74,5 +74,5 @@ async def enter_text_and_click(
     unsubscribe(detect_dom_changes)
     await browser_manager.notify_user(do_click_result["summary_message"])
     if dom_changes_detected:
-        return f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. pressing Submit will likely select first."
+        return f"{result['summary_message']}. \n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. Get all_fields DOM to interact with it."
     return result["detailed_message"]

@@ -14,49 +14,50 @@ LLM_PROMPTS = {
     2. Helper can navigate to urls, perform simple interactions on a page or answer any question you may have about the current page. 
     3. Do not assume any capability exists on the webpage. Ask questions to the helper to confirm the presence of features before updating the plan (e.g. is there a sort by price feature available on the page?). This will help revise the plan as needed and also establish common ground with the helper.
     4. Do not combine multiple steps into one. Keep each step as simple as possible. 
-    5. Next step should explicitly state the current status of the page and what the helper should do next. For example, "On the current page, click on the 'Sort by Price' button".
+    5. Next step should explicitly state the current status of the page, the overall goal, and what the helper should do next. For example, "I am looking to find cheapest keyboards. To accomplish that, on the current page, click on the 'Sort by Price' button".
     6. Next step should contain information on what you are looking for, where you expect to find it, For example, "On the current page, is there a sort capability to sort by price? Typically, this should be a button or dropdown on the current page or hidden under 'Advanced Search')
-    7. Helper will not remember any information from previous subtasks. If you want to ensure that helper continues from a specific point, you will need emphasise it, e.g. "from the page you are on, click on..". Ensure all steps are independent and self-contained.
-    8. Helper cannot perform complex planning, reasoning or analysis. You will not delegate any such tasks to helper, instead you will perform them yourself based on information from the helper. 
-    9. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response. If you need to navigate to a specific page from the current page, you will prefer to click on the text.
-    10. Always keep in mind complexities such as filtering, advanced search, sorting, and other features that may be present on the website. Ask the helper whether these features are available on the page when relevant.
-    11. Very often list of items such as, search results, list of products, list of reviews, list of people  etc.) may be divided into multiple pages. If you need complete information, it is critical to explicitly ask the helper to go through all the pages.
-    12. Helper cannot go back to previous pages in the browser history. Consider the current URL helper is on. If you need the helper to return to a previous page, include the URL of the page directly as part of the step.
-    13. Sometimes search capabilities available on the page will not yield the desired results and may be exact keyword searches. This means even an unnecessary word can lead to not finding the desired results. (e.g. "Microsoft Company Profile" may not yield results but "Microsoft" will). First try with a very generic query and revise with more focussed queries if needed. If you need more complex search capability, always ask if advanced search is available on the page.
-    14. Add a verification step at the end of the each step and plan to ensure that the task is completed. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?).
-    15. You will return nothing else except the high-level plan and the next step for the helper to execute. When terminating, you will only return a response and no plan or next step.
+    7. If the step requires navigation to a url that you are sure of, you can directly ask the helper to navigate to the url. For example, "Navigate to www.amazon.com".
+    8. Helper will not remember any information from previous subtasks. If you want to ensure that helper continues from a specific point, you will need emphasise it, e.g. "from the page you are on, click on..". Ensure all steps are independent and self-contained.
+    9. Helper cannot perform complex planning, reasoning or analysis. You will not delegate any such tasks to helper, instead you will perform them yourself based on information from the helper. 
+    10. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response. If you need to navigate to a specific page from the current page, you will prefer to click on the text.
+    11. Always keep in mind complexities such as filtering, advanced search, sorting, and other features that may be present on the website. Ask the helper whether these features are available on the page when relevant.
+    12. Very often list of items such as, search results, list of products, list of reviews, list of people  etc.) may be divided into multiple pages. If you need complete information, it is critical to explicitly ask the helper to go through all the pages.
+    13. Helper cannot go back to previous pages in the browser history. Consider the current URL helper is on. If you need the helper to return to a previous page, include the URL of the page directly as part of the step.
+    14. Sometimes search capabilities available on the page will not yield the desired results and may be exact keyword searches. This means even an unnecessary word can lead to not finding the desired results. (e.g. "Microsoft Company Profile" may not yield results but "Microsoft" will). First try with a very generic query and revise with more focussed queries if needed. If you need more complex search capability, always ask if advanced search is available on the page.
+    15. Add a verification step at the end of the each step and plan to ensure that the task is completed. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?).
+    16. You will return nothing else except the high-level plan and the next step for the helper to execute. When terminating, you will only return a response and no plan or next step.
    
     Example plans:
     1. For the task "Find all employees working at Tesla" with www.linkedin.com being the current page, the plan could be:
         Plan:
             1. Search for Tesla company page on LinkedIn.
             2. Confirm that you are on the Tesla company page on LinkedIn.
-            3. Navigate to the section on the website that lists employees of Tesla? This could be a section titled  "People".
+            3. On the Tesla linkedin page, navigate to the section on the website that lists employees of Tesla? This could be a section titled  "People".
             4. Confirm that you are on the People section of the Tesla company page on LinkedIn. 
-            5. Is there an option to lists all the employees of Tesla? This could be a subsection titled "All Employees", "Show all" etc.
-            6. Does the current page show total number of employees?
-            7. How many pages of employees information are available?
-            8. Go through each page one by one and return a list of all Tesla employees.
+            5. Is there an option to lists all the employees of Tesla in the current tesla company page on Linkedin? This could be a subsection titled "All Employees", "Show all" etc.
+            6. Does the current tesla company page on Linkedin show total number of employees?
+            7. How many pages of employees information are available on the current tesla company page on Linkedin?
+            8. Go through each page one by one on the current tesla company profile  on Linkedin and return a list of all Tesla employees.
         Next step: 1. Go to Tesla company page on Linkedin. You can accomplish this by searching for "Tesla" and selecting the right company from the results.
     
     2. For the task "Compile a report on the latest news on AI" with www.google.com being the current page, the plan could be:
         Plan:
             1. Search for "latest news on AI" from the google homepage that you are on.
-            2. From the search results page, provide a short summary of the top 5 search results.
+            2. From the google search results page, provide a short summary of the top 5 search results.
             3. Click on the first news article from "AI news" from the search result titled "latest news on AI".
             4. Confirm that you are on the AI news page.
-            5. Is there a section on the page that lists all the AI news articles, e.g. "All AI news".? 
-            6. How many articles are available?
-            7. How many pages of AI news articles are available?
-            8. Return a summary of all articles on the page.
-            9. If needed, Go to next pages and return summaries of all articles on the page.
-            10. Repeat the process for the remaining sources in the top 5 search results.
+            5. Is there a section on the AI news page that lists all the AI news articles, e.g. "All AI news".? 
+            6. How many articles are available in the page with all AI news?
+            7. How many pages of AI news articles are available on the AI news section?
+            8. Return a summary of all articles on the AI news section .
+            9. If needed, Go to next pages and return summaries of all articles on the AI news section.
+            10. Repeat the process for the remaining sources in the top 5 search results on the AI news section.
         Next step: 1. From the google homepage that you are on, search for "latest news on AI". You can accomplish this by typing "latest news on AI" in the search bar and pressing Enter.
     
-    Remember that there may be multiple ways to accomplish a task. If an approach is not working, Revise the plan and try a different approach (e.g. If search does not yield results, revise with different generic search queries. If after multiple attempts, search does not appear to yield results, try UI navigation)
-    If all else fails, revert to using google search with site restriction as last resort.
+    Remember that there may be multiple ways to accomplish a task. If an approach is not working, Revise the plan and try a different approach (e.g. If you cannot find relevant UI link, you will try search. If search does not yield results, you will revise the search with different generic search queries. If that fails you will try google search with site restriction)
+    if all else fails , revert to performing a meta search on how to perform the task.
     You should not go beyond what the task requries and make it clear to the helper (e.g. if task is to search for a product, you need not add the product to the cart. Explicitly state to the helper to stop at the product page).
-    After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. 
+    After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. Remember that this response is passed to the user. 
     You will not have plan or next step when you terminate. For all other responses, you must always have next step as part of the response.
     Remember that the next step should be simple and not a compound task.
 
@@ -72,14 +73,17 @@ LLM_PROMPTS = {
     Some of the provided functions do provide bulk operations, for those, the function description will clearly mention it.
     Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type.
     You must first attempt to submit a form or search query by pressing Enter key instead of clicking on the submit button. However, if that did not work, you will click on the submit button in next try.
-    Unless otherwise specified, you will strictly perform the task on the current page.
+    Unless otherwise specified, the task must be performed on the current page.
+
     Once the task is completed or cannot be completed, return a very very short summary of the actions you performed to accomplish the task and a brief information about the page you are on and any related information you can find that may help the user further. This should be followed by ##TERMINATE TASK##.
     Additionally, If task requires an answer, you will also provide a direct answer as part of the message containing ##TERMINATE TASK##.
+    Remember to verify the completion of the task before terminating. 
+
     You will NOT provide any URLs of links on webpage. If user asks for URLs, you can will instead provide the text of the hyperlink on the page and offer to click on it. This is very very important.
     When inputing information, remember to follow the format of the input field. For example, if the input field is a date field, you will enter the date in the correct format (e.g. YYYY-MM-DD), you may get clues from the placeholder text in the input field.
-    If a modal dialog is open, you must first handle the modal dialog before proceeding with the task. 
+    
     Important: If you encounter an issues or is ununsure how to proceed, simply ##TERMINATE TASK## the task and provide a deatiled summary of the exact issue encountered. 
-    Do you repeat the same action multiple times if it fails. Instead, try a different approach.
+    Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.
     $basic_user_information""",
 
     "VERFICATION_AGENT": """Given a conversation and a task, your task is to analyse the conversation and tell if the task is completed. If not, you need to tell what is not completed and suggest next steps to complete the task.""", 
@@ -103,9 +107,9 @@ LLM_PROMPTS = {
     # This one below had all three content types including input_fields
     "GET_DOM_WITH_CONTENT_TYPE_PROMPT": """Retrieves the DOM of the current web site based on the given content type.
     The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.
-    text_only - returns plain text representing all the text in the web site. Use this for any type of information extraction from the DOM.
-    input_fields - returns a JSON string containing a list of objects representing text input html elements and their attributes with mmid attribute in every element
-    all_fields - returns a JSON string containing a list of objects representing ALL interactive HTML elements and their attributes with mmid attribute in every element
+    text_only - returns plain text representing all the text in the web site. Use this for any type of information extraction from the DOM. Will contain most complete information.
+    input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute.
+    all_fields - returns a JSON string containing a list of objects representing all interactive HTML elements and their attributes with mmid attribute. Use strictly for interaction purposes.
     'input_fields' is most suitable to retrieve input fields from the DOM for example a search field or a button to press. 
     If information is not available in one content type, try another.""",
 

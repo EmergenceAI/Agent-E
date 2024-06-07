@@ -28,8 +28,8 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
         try:
             title = await page.title()
             current_url = page.url
-            if len(current_url) >100:
-                current_url = current_url[:100] + "..."
+            if len(current_url) >250:
+                current_url = current_url[:250] + "..."
             return f"Current page: {current_url}, Title: {title}" # type: ignore
         except:
             current_url = page.url

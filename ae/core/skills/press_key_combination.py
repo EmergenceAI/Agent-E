@@ -36,7 +36,7 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
     keys = key_combination.split('+')
     
     dom_changes_detected=None
-    def detect_dom_changes(changes): # type: ignore
+    def detect_dom_changes(changes:str): # type: ignore
         nonlocal dom_changes_detected
         dom_changes_detected = changes # type: ignore
     
