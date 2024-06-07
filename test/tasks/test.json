@@ -573,9 +573,13 @@
                 "string_match"
             ],
             "reference_answers": {
-                "must_include": [
-                    "566"
-                ]
+                "some_matches": {
+                    "phrases": [
+                        "566",
+                        "567"
+                    ],
+                    "min_required": 1
+                }
             },
             "reference_url": "",
             "program_html": [],
