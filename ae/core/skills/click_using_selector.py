@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import traceback
 from typing import Annotated
 
@@ -34,6 +35,10 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     if page is None: # type: ignore
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
+    function_name = inspect.currentframe().f_code.co_name
+
+    await browser_manager.take_screenshots(f"{function_name}_start", page)
+
     await browser_manager.highlight_element(selector, True)
 
     dom_changes_detected=None
@@ -45,7 +50,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     result = await do_click(page, selector, wait_before_execution)
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
-    await browser_manager.take_screenshots("click_using_selector", page)
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
     await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
