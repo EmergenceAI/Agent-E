@@ -765,7 +765,7 @@
         "task_id": 26,
         "require_login": false,
         "storage_state": null,
-        "start_url": "https://www.walmart.com/ip/BLU-G50-Plus-G0350WW-32GB-GSM-Unlocked-Android-Smart-Phone-Blue/245114689",
+        "start_url": "https://www.walmart.com/ip/BLU-G50-Mega-2022-G0670WW-32GB-Dual-SIM-GSM-Unlocked-Android-Smartphone-Blue/1001247588",
         "geolocation": null,
         "intent_template": "Based on the lowest reviews what are top 5 reasons {{reason_type}}?",
         "instantiation_dict": {
@@ -780,10 +780,13 @@
             "reference_answers": {
                 "some_matches": {
                     "phrases": [
-                        "poor customer service",
-                        "compatibility issues",
-                        "product misrepresentation",
-                        "handling problems"
+                        "big",
+                        "reception",
+                        "slow",
+                        "sluggish",
+                        "gps",
+                        "misrepresentation",
+                        "not as advertised"
                     ],
                     "min_required": 2
                 }
