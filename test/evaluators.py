@@ -318,6 +318,7 @@ class ManualContentEvaluator(Evaluator):
         id=task_config["task_id"]
         print("Task ID: ",id)
         print("Task: ",task)
+        print("Agent answer: ",answer)
         if answer_type.strip().lower()=="possible":
             print("Possible answer (reference): ~~~",reference_answer,"~~~")
         elif answer_type.strip().lower()=="golden":
