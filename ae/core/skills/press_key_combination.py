@@ -1,3 +1,4 @@
+import inspect
 import time
 from typing import Annotated
 
@@ -89,6 +90,8 @@ async def do_press_key_combination(browser_manager: PlaywrightManager, page: Pag
 
     logger.info(f"Executing press_key_combination with key combo: {key_combination}")
     try:
+        function_name = inspect.currentframe().f_code.co_name
+        await browser_manager.take_screenshots(f"{function_name}_start", page)
         # Split the key combination if it's a combination of keys
         keys = key_combination.split('+')
 
@@ -103,8 +106,10 @@ async def do_press_key_combination(browser_manager: PlaywrightManager, page: Pag
         for key in keys[:-1]:
             await page.keyboard.up(key)
 
-        await browser_manager.take_screenshots("click_using_selector", page)
     except Exception as e:
         logger.error(f"Error executing press_key_combination \"{key_combination}\": {e}")
         return False
+
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
+
     return True

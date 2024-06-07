@@ -17,7 +17,7 @@ dependencies = [
     "anthropic==0.23.1",
     "google-generativeai==0.5.1",
     "nltk==3.8.1",
-    "playwright==1.41.2",
+    "playwright==1.44.0",
     "pyautogen==0.2.27",
     "pydantic==2.6.2",
     "python-dotenv==1.0.0",
