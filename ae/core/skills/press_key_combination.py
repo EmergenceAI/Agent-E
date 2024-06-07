@@ -62,7 +62,7 @@ async def press_enter_key(selector: Annotated[str, """The properly formed query 
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
     await do_click(page, selector, wait_before_execution=0.0)
-    result = await do_press_key_combination(page, 'Enter')
+    result = await do_press_key_combination(browser_manager, page, 'Enter')
 
     if result:
         return f"Enter key pressed in field with selector: {selector}"
@@ -70,7 +70,7 @@ async def press_enter_key(selector: Annotated[str, """The properly formed query 
         return f"Failed to press Enter key in field with selector: {selector}"
 
 
-async def do_press_key_combination(page: Page, key_combination: str) -> bool:
+async def do_press_key_combination(browser_manager: PlaywrightManager, page: Page, key_combination: str) -> bool:
     """
     Presses a key combination on the provided page.
 
@@ -79,6 +79,7 @@ async def do_press_key_combination(page: Page, key_combination: str) -> bool:
     For example, 'Control+C' to copy or 'Alt+F4' to close a window on Windows.
 
     Parameters:
+    - browser_manager (PlaywrightManager): The PlaywrightManager instance.
     - page (Page): The Playwright page instance.
     - key_combination (str): The key combination to press, represented as a string. For combinations, use '+' as a separator.
 
@@ -101,6 +102,8 @@ async def do_press_key_combination(page: Page, key_combination: str) -> bool:
         # Release the modifier keys
         for key in keys[:-1]:
             await page.keyboard.up(key)
+
+        await browser_manager.take_screenshots("click_using_selector", page)
     except Exception as e:
         logger.error(f"Error executing press_key_combination \"{key_combination}\": {e}")
         return False

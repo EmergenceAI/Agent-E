@@ -55,7 +55,7 @@ async def enter_text_and_click(
 
     #if the text_selector is the same as the click_selector, press the Enter key instead of clicking
     if text_selector == click_selector:
-        do_press_key_combination_result = await do_press_key_combination(page, "Enter")
+        do_press_key_combination_result = await do_press_key_combination(browser_manager, page, "Enter")
         if do_press_key_combination_result:
             result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
             await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
