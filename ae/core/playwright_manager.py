@@ -362,7 +362,7 @@ class PlaywrightManager:
         screenshot_name = name
 
         if include_timestamp:
-            screenshot_name += f"_{int(time.time())}"
+            screenshot_name = f"{int(time.time())}_{screenshot_name}"
         screenshot_name += ".png"
 
         await page.screenshot(path=f"{self.get_screenshots_dir()}/{screenshot_name}", full_page=full_page)
