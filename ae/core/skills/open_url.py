@@ -1,3 +1,4 @@
+import inspect
 from typing import Annotated
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
@@ -21,7 +22,9 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     await browser_manager.get_browser_context()
     page = await browser_manager.get_current_page()
     # Navigate to the URL with a short timeout to ensure the initial load starts
+    function_name = inspect.currentframe().f_code.co_name
     try:
+        await browser_manager.take_screenshots(f"{function_name}_start", page)
         url = ensure_protocol(url)
         await page.goto(url, timeout=timeout*1000) # type: ignore
     except Exception as e:
@@ -29,7 +32,7 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
         import traceback
         traceback.print_exc()
 
-    await browser_manager.take_screenshots("click_using_selector", page)
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
 
     await browser_manager.notify_user(f"Opened URL: {url}")
         # Get the page title

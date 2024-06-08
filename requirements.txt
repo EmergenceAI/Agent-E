@@ -97,7 +97,7 @@ packaging==23.2
     # via
     #   docker
     #   huggingface-hub
-playwright==1.41.2
+playwright==1.44.0
 proto-plus==1.23.0
     # via
     #   google-ai-generativelanguage
@@ -125,7 +125,7 @@ pydantic==2.6.2
     #   pyautogen
 pydantic-core==2.16.3
     # via pydantic
-pyee==11.0.1
+pyee==11.1.0
     # via playwright
 pyparsing==3.1.2
     # via httplib2

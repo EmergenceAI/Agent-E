@@ -1,11 +1,14 @@
-
+import asyncio
+import inspect
 from typing import Annotated
+
+from playwright.async_api import Page  # type: ignore
+
 from ae.core.playwright_manager import PlaywrightManager
+from ae.utils.dom_mutation_observer import subscribe  # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe  # type: ignore
 from ae.utils.logger import logger
-from ae.utils.dom_mutation_observer import subscribe # type: ignore
-from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
-import asyncio 
-from playwright.async_api import Page # type: ignore
+
 
 async def press_key_combination(key_combination: Annotated[str, "The key to press, e.g., Enter, PageDown etc"]) -> str:
     """
@@ -35,12 +38,12 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
 
     # Split the key combination if it's a combination of keys
     keys = key_combination.split('+')
-    
+
     dom_changes_detected=None
     def detect_dom_changes(changes:str): # type: ignore
         nonlocal dom_changes_detected
         dom_changes_detected = changes # type: ignore
-    
+
     subscribe(detect_dom_changes)
     # If it's a combination, hold down the modifier keys
     for key in keys[:-1]:  # All keys except the last one are considered modifier keys
@@ -54,10 +57,10 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
         await page.keyboard.up(key)
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
-    
+
     if dom_changes_detected:
         return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
-    
+
     return f"Key {key_combination} executed successfully"
 
 
@@ -80,6 +83,8 @@ async def do_press_key_combination(browser_manager: PlaywrightManager, page: Pag
 
     logger.info(f"Executing press_key_combination with key combo: {key_combination}")
     try:
+        function_name = inspect.currentframe().f_code.co_name
+        await browser_manager.take_screenshots(f"{function_name}_start", page)
         # Split the key combination if it's a combination of keys
         keys = key_combination.split('+')
 
@@ -94,9 +99,11 @@ async def do_press_key_combination(browser_manager: PlaywrightManager, page: Pag
         for key in keys[:-1]:
             await page.keyboard.up(key)
 
-        await browser_manager.take_screenshots("click_using_selector", page)
     except Exception as e:
         logger.error(f"Error executing press_key_combination \"{key_combination}\": {e}")
         return False
+
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
+
     return True
 

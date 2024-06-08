@@ -260,10 +260,13 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         test_results.append(task_result)
         save_test_results(test_results, test_results_id)
         print_test_result(task_result, index + 1, total_tests)
-        await browser_manager.close_except_specified_tab(page) #cleanup pages that are not the one we opened here
 
         if not browser_manager.isheadless: #no need to wait if we are running headless
             await asyncio.sleep(wait_time_non_headless)  # give time for switching between tasks in case there is a human observer
+
+        await browser_manager.take_screenshots("final", None)
+
+        await browser_manager.close_except_specified_tab(page) #cleanup pages that are not the one we opened here
 
     print_progress_bar(total_tests, total_tests)  # Complete the progress bar
     print('\n\nAll tests completed.')

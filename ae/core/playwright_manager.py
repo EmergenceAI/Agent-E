@@ -13,6 +13,8 @@ from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observ
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 
+# Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
+os.environ["PW_TEST_SCREENSHOT_NO_FONTS_READY"] = "1"
 
 class PlaywrightManager:
     """
@@ -349,7 +351,8 @@ class PlaywrightManager:
     def get_screenshots_dir(self):
         return self._screenshots_dir
 
-    async def take_screenshots(self, name: str, page: Page|None, full_page: bool = True, include_timestamp: bool = True):
+    async def take_screenshots(self, name: str, page: Page|None, full_page: bool = True, include_timestamp: bool = True,
+                               load_state: str = 'domcontentloaded', take_snapshot_timeout: int = 5*1000):
         if not self._take_screenshots:
             return
         if page is None:
@@ -358,12 +361,15 @@ class PlaywrightManager:
         screenshot_name = name
 
         if include_timestamp:
-            screenshot_name += f"_{int(time.time())}"
+            screenshot_name = f"{int(time.time_ns())}_{screenshot_name}"
         screenshot_name += ".png"
-
-        await page.screenshot(path=f"{self.get_screenshots_dir()}/{screenshot_name}", full_page=full_page)
-
-        print(f"Screen shot saved to: {self.get_screenshots_dir()}/{screenshot_name}")
+        screenshot_path = f"{self.get_screenshots_dir()}/{screenshot_name}"
+        try:
+            await page.wait_for_load_state(state=load_state, timeout=take_snapshot_timeout) # type: ignore
+            await page.screenshot(path=screenshot_path, full_page=full_page, timeout=take_snapshot_timeout, caret="initial", scale="device")
+            print(f"Screen shot saved to: {screenshot_path}")
+        except Exception as e:
+            logger.error(f"Failed to take screenshot and save to \"{screenshot_path}\". Error: {e}")
 
 
     def log_user_message(self, message: str):

@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 from typing import Annotated
 
 from ae.core.playwright_manager import PlaywrightManager
@@ -45,10 +46,14 @@ async def enter_text_and_click(
 
     await browser_manager.highlight_element(text_selector, True)
 
+    function_name = inspect.currentframe().f_code.co_name
+    await browser_manager.take_screenshots(f"{function_name}_start", page)
+
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
 
     await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
+        await browser_manager.take_screenshots(f"{function_name}_end", page)
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
 
     result = text_entry_result
@@ -71,6 +76,6 @@ async def enter_text_and_click(
 
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
 
-    await browser_manager.take_screenshots("click_using_selector", page)
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
 
     return result["detailed_message"]

@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import traceback
 from dataclasses import dataclass
 from typing import Annotated
@@ -107,6 +108,10 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     if page is None: # type: ignore
         return "Error: No active page found. OpenURL command opens a new page."
 
+    function_name = inspect.currentframe().f_code.co_name
+
+    await browser_manager.take_screenshots(f"{function_name}_start", page)
+
     await browser_manager.highlight_element(query_selector, True)
 
     dom_changes_detected=None
@@ -120,7 +125,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
 
-    await browser_manager.take_screenshots("click_using_selector", page)
+    await browser_manager.take_screenshots(f"{function_name}_end", page)
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
