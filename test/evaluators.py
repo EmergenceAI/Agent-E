@@ -14,6 +14,7 @@ from typing import Any
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
+from termcolor import colored
 
 
 class Evaluator:
@@ -312,26 +313,30 @@ class ManualContentEvaluator(Evaluator):
         Returns:
             float: A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
         """
-        task:str = task_config["intent"]
-        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
-        answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
-        id=task_config["task_id"]
-        print("Task ID: ",id)
-        print("Task: ",task)
-        print("Agent answer: ",answer)
-        if answer_type.strip().lower()=="possible":
-            print("Possible answer (reference): ~~~",reference_answer,"~~~")
-        elif answer_type.strip().lower()=="golden":
-            print("Golden answer (reference): ",reference_answer)
-        user_response = input("Annotate the task as Pass or Fail? ")
-        if(user_response.lower()=="pass"):
+        task = task_config["intent"]
+        reference_answer = task_config["eval"]["reference_answers"]["manual_check"]["answer"]
+        answer_type = task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        id = str(task_config["task_id"])
+
+        print(colored("\n\n***************************\n", "green", attrs=["bold"]))
+        print(colored("Task ID: ", "blue", attrs=["bold"]) + id + "\n")
+        print(colored("Task: ", "blue", attrs=["bold"]) + task + "\n")
+        print(colored("Agent answer: ", "blue", attrs=["bold"]) + str(answer or "") + "\n")
+
+        if answer_type.strip().lower() == "possible":
+            print(colored("Possible answer (reference): ", "yellow") + f"~~~{reference_answer}~~~")
+        elif answer_type.strip().lower() == "golden":
+            print(colored("Golden answer (reference): ", "yellow") + reference_answer)
+
+        user_response = input(colored("\nAnnotate the task as Pass or Fail? ", "magenta", attrs=["bold"]))
+
+        if user_response.lower() == "pass":
             return 1.0
-        elif user_response.lower()=="fail":
+        elif user_response.lower() == "fail":
             return 0.0
         else:
-            print(f"Received response: {user_response}")
+            print(colored(f"Received response: {user_response}", "red"))
             raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
-       
 
 
 class EvaluatorComb(Evaluator):
