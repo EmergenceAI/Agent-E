@@ -65,8 +65,10 @@ def extract_last_response(messages: list[dict[str, Any]]) -> str:
     """Extract the last response message from chat history."""
     # Iterate over the messages in reverse order
     for message in reversed(messages):
-        if message and '##TERMINATE##' in message.get('content', ''):
-            return message['content'].replace("##TERMINATE##", "").strip()
+        if message and 'content' in message:
+            content=message.get('content', "")
+            if content and  '##TERMINATE##' in content:
+                return message['content'].replace("##TERMINATE##", "").strip()
     return ""
 
 
