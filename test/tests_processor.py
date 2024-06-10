@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import time
-from datetime import datetime
 from test.evaluators import evaluator_router
 from test.test_utils import get_formatted_current_timestamp
 from test.test_utils import load_config
@@ -16,7 +15,6 @@ from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from autogen.agentchat.chat import ChatResult  # type: ignore
-from httpx import get
 from playwright.async_api import Page
 from tabulate import tabulate
 from termcolor import colored
