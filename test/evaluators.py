@@ -1,6 +1,7 @@
 """base class for evaluation"""
 import collections
 import html
+from operator import index
 import time
 import urllib
 import urllib.parse
@@ -317,9 +318,11 @@ class ManualContentEvaluator(Evaluator):
         reference_answer = task_config["eval"]["reference_answers"]["manual_check"]["answer"]
         answer_type = task_config["eval"]["reference_answers"]["manual_check"]["type"]
         id = str(task_config["task_id"])
+        index = str(task_config["task_index"])
 
         print(colored("\n\n***************************\n", "green", attrs=["bold"]))
         print(colored("Task ID: ", "blue", attrs=["bold"]) + id + "\n")
+        print(colored("Task Index: ", "blue", attrs=["bold"]) + index + "\n")
         print(colored("Task: ", "blue", attrs=["bold"]) + task + "\n")
         print(colored("Agent answer: ", "blue", attrs=["bold"]) + str(answer or "") + "\n")
 

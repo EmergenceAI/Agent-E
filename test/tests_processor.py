@@ -179,6 +179,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
 
     command: str = task_config.get('intent', "")
     task_id = task_config.get('task_id')
+    task_index = task_config.get('task_index')
     start_url = task_config.get('start_url')
     logger.info(f"Intent: {command}, Task ID: {task_id}")
 
@@ -217,6 +218,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
         command_cost = {"cost": -1, "total_tokens": -1}
     return {
         "task_id": task_id,
+        "task_index": task_index,
         "start_url": start_url,
         "intent": str(command),
         "score": score,
