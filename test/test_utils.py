@@ -1,6 +1,7 @@
 """Implements helper functions to assist evaluation cases where other evaluators are not suitable."""
 import json
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -244,3 +245,19 @@ def task_config_validator(task_config: dict[str, Any]) -> bool:
         raise ValueError("Intent is missing in the task config file. Without it the task cannot be run.")
 
     return True
+
+def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
+    """Get the current timestamp in the specified format.
+
+    Args:
+        format (str, optional): The format of the timestamp. Defaults to "%Y-%m-%d %H:%M:%S".
+
+    Returns:
+        str: The current timestamp in the specified format.
+    """
+    # Get the current time
+    current_time = datetime.now()
+
+    # Format the timestamp as a human-readable string
+    timestamp_str = current_time.strftime(format)
+    return timestamp_str
