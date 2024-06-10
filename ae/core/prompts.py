@@ -24,7 +24,7 @@ LLM_PROMPTS = {
     12. Very often list of items such as, search results, list of products, list of reviews, list of people  etc.) may be divided into multiple pages. If you need complete information, it is critical to explicitly ask the helper to go through all the pages.
     13. Helper cannot go back to previous pages in the browser history. Consider the current URL helper is on. If you need the helper to return to a previous page, include the URL of the page directly as part of the step.
     14. Sometimes search capabilities available on the page will not yield the desired results and may be exact keyword searches. This means even an unnecessary word can lead to not finding the desired results. (e.g. "Microsoft Company Profile" may not yield results but "Microsoft" will). First try with a focused query and revise with more generic queries if needed. If you need more complex search capability, always ask if advanced search is available on the page.
-    15. Add a verification step at the end of the each step and plan to ensure that the task is completed. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.
+    15. Important: Always add a verification step at the end of the each step and also terminating to ensure that the task is completed successfully. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.
     16. You will return nothing else except the high-level plan and the next step for the helper to execute. When terminating, you will only return a response and no plan or next step.
    
     Example plans:
@@ -58,6 +58,7 @@ LLM_PROMPTS = {
     if all else fails , revert to performing a meta search on how to perform the task. You are a persistent planner and will only give up when all possible options have been exhausted.
     
     You should not go beyond what the task requries and make it clear to the helper (e.g. if task is to search for a product, you need not add the product to the cart. Explicitly state to the helper to stop at the product page).
+    If the task requires multiple informations, all of them should be gathered before terminating the task.
     After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. Remember that this response is passed to the user. 
     You will not have plan or next step when you terminate. For all other responses, you must always have next step as part of the response.
     Remember that the next step should be simple and not a compound task.

@@ -122,8 +122,10 @@ class AutogenWrapper:
                 if re.match(r'^\d+\.', last_message): # type: ignore
                     last_message = re.sub(r'^\d+\.', '', last_message) # type: ignore
                     last_message = last_message.strip() # type: ignore
+                last_message=last_message+" "+ get_url() # type: ignore
                 return last_message # type: ignore
             else:
+                last_message=last_message+" "+ get_url() # type: ignore
                 return last_message # type: ignore
 
         print(f">>> Registering nested chat. Available agents: {self.agents_map}")
@@ -133,7 +135,7 @@ class AutogenWrapper:
             "sender": self.agents_map["browser_nav_executor"],
             "recipient": self.agents_map["browser_nav_agent"],
             "message":reflection_message,  
-            "max_turns": 100,
+            "max_turns": self.number_of_rounds,
             "summary_method": my_custom_summary_method,
                 }   
             ],

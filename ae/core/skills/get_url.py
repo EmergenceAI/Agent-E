@@ -30,10 +30,10 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
             current_url = page.url
             if len(current_url) >250:
                 current_url = current_url[:250] + "..."
-            return f"Current page: {current_url}, Title: {title}" # type: ignore
+            return f"Current URL: {current_url}, Title: {title}" # type: ignore
         except:
             current_url = page.url
-            return f"Current page: {current_url}"
+            return f"Current URL: {current_url}"
 
     except Exception as e:
         raise ValueError('No active page found. OpenURL command opens a new page.') from e
