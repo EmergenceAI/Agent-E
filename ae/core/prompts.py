@@ -59,7 +59,7 @@ LLM_PROMPTS = {
     
     You should not go beyond what the task requries and make it clear to the helper (e.g. if task is to search for a product, you need not add the product to the cart. Explicitly state to the helper to stop at the product page).
     If the task requires multiple informations, all of them should be gathered before terminating the task.
-    After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. Remember that this response is passed to the user. 
+    After the task is completed,  you will return the final response to the query back to the user followed by ##TERMINATE## and nothing else. The response should be complete and must include all necessary information. Remember that this response is passed to the user. 
     You will not have plan or next step when you terminate. For all other responses, you must always have next step as part of the response.
     Remember that the next step should be simple and not a compound task.
 
