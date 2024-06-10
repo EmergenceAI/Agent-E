@@ -239,9 +239,12 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 if node.get('name') == node.get('mmid') and node.get('role') != "textbox":
                     del node['name']  # Remove 'name' from the node
 
-                if 'name' in node and 'description' in node and node['name'] == node['description']:
+                if 'name' in node and 'description' in node and (node['name'] == node['description'] or node['name'] == node['description'].replace('\n', ' ') or node['description'].replace('\n', '') in node['name']):
                     del node['description'] #if the name is same as description, then remove the description to avoid duplication
                 
+                if 'name' in node and 'aria-label' in node and  node['aria-label'] in node['name']:
+                    del node['aria-label'] #if the name is same as the aria-label, then remove the aria-label to avoid duplication
+
                 if 'name' in node and 'text' in node and node['name'] == node['text']:
                     del node['text'] #if the name is same as the text, then remove the text to avoid duplication
 
@@ -407,9 +410,9 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
         return True
 
     if node.get('role') == 'generic' and 'children' not in node and not ('name' in node and node.get('name')):  # The presence of 'children' is checked after potentially deleting it above
-
         return True
-    if node.get('role') in ['separator']:
+    
+    if node.get('role') in ['separator', 'LineBreak']:
         return True
     #check if the node only have name and role, then delete that node
     if len(node) == 2 and 'name' in node and 'role' in node:
