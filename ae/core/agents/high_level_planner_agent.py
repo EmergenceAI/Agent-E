@@ -32,7 +32,7 @@ class PlannerAgent:
             llm_config={
                 "config_list": config_list,
                 "cache_seed": 2,
-                "temperature": 0.2
+                "temperature": 0.0
             },
         )
 
