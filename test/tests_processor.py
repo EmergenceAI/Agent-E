@@ -3,6 +3,7 @@ import json
 import os
 import time
 from test.evaluators import evaluator_router
+from test.test_utils import get_formatted_current_timestamp
 from test.test_utils import load_config
 from test.test_utils import task_config_validator
 from typing import Any
@@ -48,6 +49,18 @@ def create_task_log_folders(task_id: str, test_results_id: str):
     return {"task_log_folder": task_log_dir, "task_screenshots_folder": task_screenshots_dir}
 
 
+def create_results_dir(test_file: str) -> str:
+    test_file_base = os.path.basename(test_file)
+    test_file_name = os.path.splitext(test_file_base)[0]
+    results_dir = os.path.join(TEST_RESULTS, f"results_for_test_file_{test_file_name}")
+
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+        logger.info(f"Created results directory: {results_dir}")
+
+    return results_dir
+
+
 def dump_log(task_id: str, messages_str_keys: dict[str, str], logs_dir: str):
     file_name = os.path.join(logs_dir, f'execution_logs_{task_id}.json')
     with open(file_name, 'w',  encoding='utf-8') as f:
@@ -59,6 +72,14 @@ def save_test_results(test_results: list[dict[str, str | int | float | None]], t
     with open(file_name, 'w',  encoding='utf-8') as f:
         json.dump(test_results, f, ensure_ascii=False, indent=4)
     logger.info(f"Test results dumped to: {file_name}")
+
+
+def save_individual_test_result(test_result: dict[str, str | int | float | None], results_dir: str):
+    task_id = test_result["task_id"]
+    file_name = os.path.join(results_dir, f'test_result_{task_id}.json')
+    with open(file_name, 'w',  encoding='utf-8') as f:
+        json.dump(test_result, f, ensure_ascii=False, indent=4)
+    logger.info(f"Test result for task {task_id} dumped to: {file_name}")
 
 
 def extract_last_response(messages: list[dict[str, Any]]) -> str:
@@ -152,6 +173,8 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     start_url = None
     task_id = None
 
+    start_ts = get_formatted_current_timestamp()
+
     task_config_validator(task_config)
 
     command: str = task_config.get('intent', "")
@@ -166,13 +189,13 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     current_url = await browser_manager.get_current_url()
     command_exec_result = await ag.process_command(command, current_url)
     end_time = time.time()
-    
+
     logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
     logger.info(f"Task {task_id} completed.")
 
     messages = ag.agents_map["planner_agent"].chat_messages # type: ignore
     messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
-    
+
     agent_key = list(messages.keys())[0] # type: ignore
 
     last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
@@ -200,7 +223,9 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
         "tct": end_time - start_time,
         "last_statement": last_agent_response,
         "last_url": page.url,
-        "compute_cost": command_cost
+        "compute_cost": command_cost,
+        "start_ts": start_ts,
+        "completion_ts": get_formatted_current_timestamp()
     }
 
 
@@ -236,6 +261,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         test_results_id = str(int(time.time()))
 
     check_test_folders()
+    results_dir = create_results_dir(test_file)
     test_results: list[dict[str, str | int | float | None]] = []
 
     if not ag:
@@ -260,15 +286,15 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         print_progress_bar(index - min_task_index, total_tests)
         task_result = await execute_single_task(task_config, browser_manager, ag, page, log_folders["task_log_folder"])
         test_results.append(task_result)
-        save_test_results(test_results, test_results_id)
+        save_individual_test_result(task_result, results_dir)
         print_test_result(task_result, index + 1, total_tests)
 
-        if not browser_manager.isheadless: #no need to wait if we are running headless
+        if not browser_manager.isheadless: # no need to wait if we are running headless
             await asyncio.sleep(wait_time_non_headless)  # give time for switching between tasks in case there is a human observer
 
         await browser_manager.take_screenshots("final", None)
 
-        await browser_manager.close_except_specified_tab(page) #cleanup pages that are not the one we opened here
+        await browser_manager.close_except_specified_tab(page) # cleanup pages that are not the one we opened here
 
     print_progress_bar(total_tests, total_tests)  # Complete the progress bar
     print('\n\nAll tests completed.')
