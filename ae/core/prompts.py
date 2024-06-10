@@ -55,7 +55,7 @@ LLM_PROMPTS = {
         Next step: 1. From the google homepage that you are on, search for "latest news on AI". You can accomplish this by typing "latest news on AI" in the search bar and pressing Enter.
     
     Remember that there may be multiple ways to accomplish a task. If an approach is not working, Revise the plan and try a different approach (e.g. If you cannot find relevant UI link, you will try search. If search does not yield results, you will revise the search with more generic search queries. If that fails you will try google search with site restriction)
-    if all else fails , revert to performing a meta search on how to perform the task. You are a persistent planner and will only give up when all possible options have been exhausted.
+    if all else fails , revert to performing a meta search on how to perform the task. Important: You are a persistent planner and will only give up when all possible options have been exhausted.
     
     You should not go beyond what the task requries and make it clear to the helper (e.g. if task is to search for a product, you need not add the product to the cart. Explicitly state to the helper to stop at the product page).
     If the task requires multiple informations, all of them should be gathered before terminating the task.
@@ -109,7 +109,7 @@ LLM_PROMPTS = {
     # This one below had all three content types including input_fields
     "GET_DOM_WITH_CONTENT_TYPE_PROMPT": """Retrieves the DOM of the current web site based on the given content type.
     The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.
-    text_only - returns plain text representing all the text in the web site. Use this for any type of information extraction from the DOM. Will contain most complete information.
+    text_only - returns plain text representing all the text in the web site. Always use this for any type of information extraction since it will contain the most complete information.
     input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute.
     all_fields - returns a JSON string containing a list of objects representing all interactive HTML elements and their attributes with mmid attribute. Use strictly for interaction purposes.
     'input_fields' is most suitable to retrieve input fields from the DOM for example a search field or a button to press. 
