@@ -231,11 +231,15 @@ class AutogenWrapper:
                 content = ""
              
              should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
+            
+             next_step_present= "next step" in content.strip().lower() # type: ignore
              content = content.replace("TERMINATE", "").strip()
              content = content.replace("##", "").strip()
 
-             if(content != "" and should_terminate): # type: ignore
+             if(content != "" and (should_terminate or not next_step_present)): # type: ignore
                 print_message_from_planner("Planner: "+content) # type: ignore
+             
+             should_terminate = should_terminate or not next_step_present
              return should_terminate # type: ignore
         
         task_delegate_agent = autogen.ConversableAgent(

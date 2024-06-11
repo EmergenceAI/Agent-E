@@ -122,7 +122,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     subscribe(detect_dom_changes)
 
     result = await do_entertext(page, query_selector, text_to_enter)
-    await asyncio.sleep(0.3) # sleep for 100ms to allow the mutation observer to detect changes
+    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
@@ -184,8 +184,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await page.keyboard.type(text_to_enter, delay=4)
         else:
             await custom_fill_element(page, selector, text_to_enter)
-            await elem.focus()
-        
+        await elem.focus()
         logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
         return {"summary_message": success_msg, "detailed_message": f"{success_msg} and outer HTML: {element_outer_html}."}
