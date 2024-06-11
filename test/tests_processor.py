@@ -147,22 +147,26 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     print('\n' + tabulate(result_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
 def get_command_exec_cost(command_exec_result: ChatResult):
-    cost = command_exec_result.cost # type: ignore
-    usage: dict[str, Any] = None
-    if "usage_including_cached_inference" in cost:
-        usage: dict[str, Any] = cost["usage_including_cached_inference"]
-    elif "usage_excluding_cached_inference" in cost:
-        usage: dict[str, Any] = cost["usage_excluding_cached_inference"]
-    else:
-        raise ValueError("Cost not found in the command execution result.")
-    print("Usage: ", usage)
     output: dict[str, Any] = {}
-    for key in usage.keys():
-        if isinstance(usage[key], dict) and "prompt_tokens" in usage[key]:
-            output["cost"] = usage[key]["cost"]
-            output["prompt_tokens"] = usage[key]["prompt_tokens"]
-            output["completion_tokens"] = usage[key]["completion_tokens"]
-            output["total_tokens"] = usage[key]["total_tokens"]
+    try:
+        cost = command_exec_result.cost # type: ignore
+        usage: dict[str, Any] = None
+        if "usage_including_cached_inference" in cost:
+            usage: dict[str, Any] = cost["usage_including_cached_inference"]
+        elif "usage_excluding_cached_inference" in cost:
+            usage: dict[str, Any] = cost["usage_excluding_cached_inference"]
+        else:
+            raise ValueError("Cost not found in the command execution result.")
+        print("Usage: ", usage)
+
+        for key in usage.keys():
+            if isinstance(usage[key], dict) and "prompt_tokens" in usage[key]:
+                output["cost"] = usage[key]["cost"]
+                output["prompt_tokens"] = usage[key]["prompt_tokens"]
+                output["completion_tokens"] = usage[key]["completion_tokens"]
+                output["total_tokens"] = usage[key]["total_tokens"]
+    except Exception as e:
+        logger.debug(f"Error getting command execution cost: {e}")
     return output
 
 
