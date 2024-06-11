@@ -3,6 +3,7 @@ import os
 import tempfile
 import traceback
 from string import Template
+from time import time_ns
 
 import autogen  # type: ignore
 import openai
@@ -32,6 +33,8 @@ class AutogenWrapper:
     def __init__(self, max_chat_round: int = 50):
         self.number_of_rounds = max_chat_round
         self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent] | None = None
+        self.config_list: list[dict[str, str]] | None = None
+        self.chat_logs_dir: str|None = None
 
 
     @classmethod
@@ -83,6 +86,34 @@ class AutogenWrapper:
         self.agents_map = await self.__initialize_agents(agents_needed)
 
         return self
+
+
+    def get_chat_logs_dir(self) -> str|None:
+        """
+        Get the directory for saving chat logs.
+
+        Returns:
+            str|None: The directory path or None if there is not one
+
+        """
+        return self.chat_logs_dir
+
+    def set_chat_logs_dir(self, chat_logs_dir: str):
+        """
+        Set the directory for saving chat logs.
+
+        Args:
+            chat_logs_dir (str): The directory path.
+
+        """
+        self.chat_logs_dir = chat_logs_dir
+
+
+    def __save_chat_log(self, chat_log: list[dict[str, str]]):
+        chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
+        # Save the chat log to a file
+        with open(chat_logs_file, "w") as file:
+            json.dump(chat_log, file, indent=4)
 
 
     async def __initialize_agents(self, agents_needed: list[str]):
