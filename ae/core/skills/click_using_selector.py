@@ -55,7 +55,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
-        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
@@ -99,7 +99,6 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
         try:
             await element.wait_for_element_state("visible", timeout=200)
             logger.info(f"Executing ClickElement with \"{selector}\" as the selector. Element is attached and visibe. Clicking the element.")
-            await perform_playwright_click(element, selector)
         except Exception:
             # If the element is not visible, try to click it anyway
             pass

@@ -38,14 +38,11 @@ async def add_mutation_observer(page:Page):
                     let allAddedNodes=mutation.addedNodes;
                     for(let node of allAddedNodes) {
                         if(node.tagName && !['SCRIPT', 'NOSCRIPT', 'STYLE'].includes(node.tagName) && !node.closest('#agentDriveAutoOverlay')) {
-                            let _mmid = Math.random().toString(36).substring(2, 6);
-                            let id=node.getAttribute('id');
-                            node.setAttribute('mmid', id ? id : _mmid);
                             let visibility=true;
                             let content = node.innerText.trim();
                             if(visibility && node.innerText.trim()){
                                 if(content) {
-                                    changes_detected.push({tag: node.tagName, content: content, mmid: _mmid});
+                                    changes_detected.push({tag: node.tagName, content: content});
                                 }
                             }                    
                         }
@@ -53,14 +50,11 @@ async def add_mutation_observer(page:Page):
                 } else if (mutation.type === 'characterData') {
                     let node = mutation.target;
                     if(node.parentNode && !['SCRIPT', 'NOSCRIPT', 'STYLE'].includes(node.parentNode.tagName) && !node.parentNode.closest('#agentDriveAutoOverlay')) {
-                        let _mmid = Math.random().toString(36).substring(2, 6);
-                        let id=node.parentNode.getAttribute('id');
-                        node.parentNode.setAttribute('mmid', id ? id : _mmid);
                         let visibility=true;
                         let content = node.data.trim();
                         if(visibility && content && window.getComputedStyle(node.parentNode).display !== 'none'){
                             if(content && !changes_detected.some(change => change.content.includes(content))) {
-                                changes_detected.push({tag: node.parentNode.tagName, content: content, mmid: _mmid});
+                                changes_detected.push({tag: node.parentNode.tagName, content: content});
                             }
                         }                    
                     }
