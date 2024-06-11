@@ -172,7 +172,7 @@ class AutogenWrapper:
         self.chat_logs_dir = chat_logs_dir
 
 
-    def __save_chat_log(self, chat_log: list[dict[str, str]]):
+    def __save_chat_log(self, chat_log: list[dict[str, Any]]):
         chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
         # Save the chat log to a file
         with open(chat_logs_file, "w") as file:
