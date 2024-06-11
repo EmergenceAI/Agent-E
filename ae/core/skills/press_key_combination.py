@@ -59,7 +59,7 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
     unsubscribe(detect_dom_changes)
 
     if dom_changes_detected:
-        return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This could be a modal dialog. Get all_fields DOM to interact with it."
+        return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
 
     return f"Key {key_combination} executed successfully"
 

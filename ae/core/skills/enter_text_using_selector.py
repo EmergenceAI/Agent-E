@@ -129,7 +129,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
 
     return result["detailed_message"]
 
@@ -178,7 +178,10 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await press_key_combination("Control+A")
             await asyncio.sleep(0.1)
             await press_key_combination("Backspace")
+            await asyncio.sleep(0.1)
             logger.debug(f"Focused element with selector {selector} to enter text")
+            #add a 100ms delay
+
             await page.keyboard.type(text_to_enter, delay=4)
         else:
             await custom_fill_element(page, selector, text_to_enter)

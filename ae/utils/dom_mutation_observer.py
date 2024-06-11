@@ -30,33 +30,47 @@ async def add_mutation_observer(page:Page):
     """
 
     await page.evaluate("""                  
-    console.log('Adding a mutation observer for DOM changes');
-    new MutationObserver((mutationsList, observer) => { 
-        let changes_detected = [];
-        for(let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                let allAddedNodes=mutation.addedNodes;
-                for(let node of allAddedNodes) {
-                    if(node.tagName && !['SCRIPT', 'NOSCRIPT', 'STYLE', 'UL'].includes(node.tagName) && !node.closest('#agentDriveAutoOverlay')) {
-                        let _mmid= "12345";
-                        let id=node.getAttribute('id');
-                        node.setAttribute('mmid', id ? id : _mmid);
-                        let visibility=node.offsetWidth > 0 && node.offsetHeight > 0;  
-                        let content = node.innerText.trim();
-                        if(visibility && node.innerText.trim() && window.getComputedStyle(node).display !== 'none'){
+        console.log('Adding a mutation observer for DOM changes');
+        new MutationObserver((mutationsList, observer) => { 
+            let changes_detected = [];
+            for(let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    let allAddedNodes=mutation.addedNodes;
+                    for(let node of allAddedNodes) {
+                        if(node.tagName && !['SCRIPT', 'NOSCRIPT', 'STYLE'].includes(node.tagName) && !node.closest('#agentDriveAutoOverlay')) {
+                            let _mmid = Math.random().toString(36).substring(2, 6);
+                            let id=node.getAttribute('id');
+                            node.setAttribute('mmid', id ? id : _mmid);
+                            let visibility=true;
+                            let content = node.innerText.trim();
+                            if(visibility && node.innerText.trim()){
+                                if(content) {
+                                    changes_detected.push({tag: node.tagName, content: content, mmid: _mmid});
+                                }
+                            }                    
+                        }
+                    }
+                } else if (mutation.type === 'characterData') {
+                    let node = mutation.target;
+                    if(node.parentNode && !['SCRIPT', 'NOSCRIPT', 'STYLE'].includes(node.parentNode.tagName) && !node.parentNode.closest('#agentDriveAutoOverlay')) {
+                        let _mmid = Math.random().toString(36).substring(2, 6);
+                        let id=node.parentNode.getAttribute('id');
+                        node.parentNode.setAttribute('mmid', id ? id : _mmid);
+                        let visibility=true;
+                        let content = node.data.trim();
+                        if(visibility && content && window.getComputedStyle(node.parentNode).display !== 'none'){
                             if(content && !changes_detected.some(change => change.content.includes(content))) {
-                                changes_detected.push({tag: node.tagName, content: content, mmid: _mmid});
+                                changes_detected.push({tag: node.parentNode.tagName, content: content, mmid: _mmid});
                             }
                         }                    
                     }
                 }
-            }
             } 
-        if(changes_detected.length > 0) {
-            window.dom_mutation_change_detected(JSON.stringify(changes_detected));
-        } 
-    }).observe(document, {subtree: true, childList: true}); 
-    """)
+            if(changes_detected.length > 0) {
+                window.dom_mutation_change_detected(JSON.stringify(changes_detected));
+            } 
+        }).observe(document, {subtree: true, childList: true, characterData: true}); 
+        """)
 
 
 async def handle_navigation_for_mutation_observer(page:Page):
@@ -72,7 +86,6 @@ async def dom_mutation_change_detected(changes_detected: str):
     """
     changes_detected = json.loads(changes_detected.replace('\t', '').replace('\n', ''))
     if len(changes_detected) > 0:
-        print(f"Changes detected: {changes_detected}")
         # Emit the event to all subscribed callbacks
         for callback in DOM_change_callback:
             # If the callback is a coroutine function
