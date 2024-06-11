@@ -122,7 +122,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     subscribe(detect_dom_changes)
 
     result = await do_entertext(page, query_selector, text_to_enter)
-    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    await asyncio.sleep(0.3) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)

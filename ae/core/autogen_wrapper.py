@@ -14,6 +14,7 @@ from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
+from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
 from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
@@ -35,7 +36,7 @@ class AutogenWrapper:
 
     def __init__(self, max_chat_round: int = 100):
         self.number_of_rounds = max_chat_round
-        self.agents_map: dict[str, autogen.UserProxyAgent | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
+        self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
         self.config_list: list[dict[str, str]] | None = None
 
     @classmethod
@@ -156,7 +157,7 @@ class AutogenWrapper:
             dict: A dictionary of agent instances.
 
         """
-        agents_map: dict[str, autogen.UserProxyAgent  | autogen.ConversableAgent]= {}
+        agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution  | autogen.ConversableAgent]= {}
 
         user_delegate_agent = await self.__create_user_delegate_agent()
         agents_map["user"] = user_delegate_agent
@@ -194,8 +195,7 @@ class AutogenWrapper:
              should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
              content = content.replace("TERMINATE", "").strip()
              content = content.replace("##", "").strip()
-             if not should_terminate and "next step" not in content.lower(): # type: ignore
-                 should_terminate = True
+
              if(content != "" and should_terminate): # type: ignore
                 print_message_from_planner("Planner: "+content) # type: ignore
              return should_terminate # type: ignore
@@ -225,7 +225,7 @@ class AutogenWrapper:
              else:
                 return True
         
-        browser_nav_executor_agent = autogen.UserProxyAgent(
+        browser_nav_executor_agent = UserProxyAgent_SequentialFunctionExecution(
             name="browser_nav_executor",
             is_termination_msg=is_browser_executor_termination_message,
             human_input_mode="NEVER",
@@ -240,7 +240,7 @@ class AutogenWrapper:
         print(">>> Created browser_nav_executor_agent:", browser_nav_executor_agent)
         return browser_nav_executor_agent
 
-    def __create_browser_nav_agent(self, user_proxy_agent: autogen.UserProxyAgent) -> autogen.ConversableAgent:
+    def __create_browser_nav_agent(self, user_proxy_agent: UserProxyAgent_SequentialFunctionExecution) -> autogen.ConversableAgent:
         """
         Create a BrowserNavAgent instance.
 
