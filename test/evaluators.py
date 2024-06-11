@@ -1,7 +1,6 @@
 """base class for evaluation"""
 import collections
 import html
-from operator import index
 import time
 import urllib
 import urllib.parse
@@ -331,15 +330,27 @@ class ManualContentEvaluator(Evaluator):
         elif answer_type.strip().lower() == "golden":
             print(colored("Golden answer (reference): ", "yellow") + reference_answer)
 
-        user_response = input(colored("\nAnnotate the task as Pass or Fail? ", "magenta", attrs=["bold"]))
-
-        if user_response.lower() == "pass":
+        task:str = task_config["intent"]
+        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
+        answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        id=task_config["task_id"]
+        print("Task ID: ",id)
+        print("Task: ",task)
+        print("Agent answer: ",answer)
+        if answer_type.strip().lower()=="possible":
+            print("Possible answer (reference): ~~~",reference_answer,"~~~")
+        elif answer_type.strip().lower()=="golden":
+            print("Golden answer (reference): ",reference_answer)
+        user_response = input(colored("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ", "magenta", attrs=["bold"]))
+        if(user_response.lower()=="pass"):
             return 1.0
         elif user_response.lower() == "fail":
             return 0.0
+        elif user_response.lower()=="skip":
+            return -0.1
         else:
             print(colored(f"Received response: {user_response}", "red"))
-            raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
+            raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
 
 
 class EvaluatorComb(Evaluator):

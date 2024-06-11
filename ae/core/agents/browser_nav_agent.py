@@ -39,7 +39,7 @@ class BrowserNavAgent:
             system_message=system_message,
             llm_config={
                 "config_list": config_list,
-                "cache_seed": 2,
+                "cache_seed": None,
                 "temperature": 0.0
             },
         )

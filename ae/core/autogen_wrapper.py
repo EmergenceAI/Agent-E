@@ -1,15 +1,20 @@
 import asyncio
 import json
 import os
+import re
 import tempfile
 import traceback
 from string import Template
+from time import time_ns
 from typing import Any
+
 import autogen  # type: ignore
+import nest_asyncio  # type: ignore
 import openai
-import re
+
 #from autogen import Cache
 from dotenv import load_dotenv
+
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
@@ -19,7 +24,6 @@ from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
 nest_asyncio.apply()  # type: ignore
-
 
 class AutogenWrapper:
     """
@@ -36,8 +40,12 @@ class AutogenWrapper:
 
     def __init__(self, max_chat_round: int = 100):
         self.number_of_rounds = max_chat_round
+
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
+
         self.config_list: list[dict[str, str]] | None = None
+        self.chat_logs_dir: str|None = None
+
 
     @classmethod
     async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
@@ -103,6 +111,8 @@ class AutogenWrapper:
             return asyncio.run(geturl())
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
+            messages_str_keys = {str(key): value for key, value in sender.chat_messages.items()} # type: ignore
+            self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
                 return "I received an empty message. Try a different approach."
@@ -144,6 +154,34 @@ class AutogenWrapper:
         )
 
         return self
+
+
+    def get_chat_logs_dir(self) -> str|None:
+        """
+        Get the directory for saving chat logs.
+
+        Returns:
+            str|None: The directory path or None if there is not one
+
+        """
+        return self.chat_logs_dir
+
+    def set_chat_logs_dir(self, chat_logs_dir: str):
+        """
+        Set the directory for saving chat logs.
+
+        Args:
+            chat_logs_dir (str): The directory path.
+
+        """
+        self.chat_logs_dir = chat_logs_dir
+
+
+    def __save_chat_log(self, chat_log: list[dict[str, Any]]):
+        chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
+        # Save the chat log to a file
+        with open(chat_logs_file, "w") as file:
+            json.dump(chat_log, file, indent=4)
 
 
     async def __initialize_agents(self, agents_needed: list[str]):
