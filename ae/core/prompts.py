@@ -12,7 +12,7 @@ LLM_PROMPTS = {
     Some things to consider when creating the plan and describing next step. 
     1. Helper can navigate to urls, perform simple interactions on a page or answer any question you may have about the current page. 
     2. Do not assume any capability exists on the webpage. Ask questions to the helper to confirm the presence of features before updating the plan (e.g. is there a sort by price feature available on the page?). This will help revise the plan as needed and also establish common ground with the helper.
-    3. Do not combine multiple steps into one. Keep each next step as simple as possible. You will not ask helper to perform multiple actions in a single step. 
+    3. Very important: Do not combine multiple steps into one. Keep each next step as simple as possible. A step will be as simple as interacting with a single element on a page. If you need to interact with multiple elements, you will break it down into multiple steps. 
     4. Take into account the current url in the plan. Do not ask helper to navigate to a url they are already on. 
     5. Next step should contain information on what you are looking for, where you expect to find it, For example, "On the current page, is there a sort capability to sort by price? Typically, this should be a button or dropdown on the current page or hidden under 'Advanced Search')
     6. If the step requires navigation to a url that you are sure of, you can directly ask the helper to navigate to the url. For example, "Navigate to www.amazon.com".
@@ -68,7 +68,7 @@ LLM_PROMPTS = {
 
     You will NOT provide any URLs of links on webpage. If user asks for URLs, you can will instead provide the text of the hyperlink on the page and offer to click on it. This is very very important.
     When inputing information, remember to follow the format of the input field. For example, if the input field is a date field, you will enter the date in the correct format (e.g. YYYY-MM-DD), you may get clues from the placeholder text in the input field.
-    
+    mu
     Important: If you encounter an issues or is ununsure how to proceed, simply ##TERMINATE TASK## the task and provide a deatiled summary of the exact issue encountered. 
     Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, try a new approach or terminate the task.""",
 
