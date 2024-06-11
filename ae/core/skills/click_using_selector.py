@@ -55,7 +55,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
-        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields DOM to interact with it."
+        return f"Success: {result['summary_message']} As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
     return result["detailed_message"]
 
 
