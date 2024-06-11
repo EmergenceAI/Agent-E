@@ -92,11 +92,10 @@ LLM_PROMPTS = {
     # This one below had all three content types including input_fields
     "GET_DOM_WITH_CONTENT_TYPE_PROMPT": """Retrieves the DOM of the current web site based on the given content type.
     The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.
-    text_only - returns plain text representing all the text in the web site. Always use this for any type of information extraction since it will contain the most complete information.
-    input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute.
+    text_only - returns plain text representing all the text in the web site. You must use this for any information extraction. This will contain the most complete information.
+    input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute. Use strictly for interaction purposes.
     all_fields - returns a JSON string containing a list of objects representing all interactive HTML elements and their attributes with mmid attribute. Use strictly for interaction purposes.
-    'input_fields' is most suitable to retrieve input fields from the DOM for example a search field or a button to press. 
-    If information is not available in one content type, try another.""",
+    If information is not available in one content type, you must try another content_type.""",
 
     "GET_ACCESSIBILITY_TREE": """Retrieves the accessibility tree of the current web site.
     The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.""",
