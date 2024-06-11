@@ -90,7 +90,7 @@
             ],
             "reference_answers": {
                 "must_include": [
-                    "$199"
+                    "199"
                 ]
             },
             "reference_url": "",

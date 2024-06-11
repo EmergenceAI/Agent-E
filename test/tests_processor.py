@@ -27,7 +27,7 @@ TEST_RESULTS = os.path.join(PROJECT_TEST_ROOT, 'results')
 
 last_agent_response = ""
 
-def check_test_folders():
+def check_top_level_test_folders():
     if not os.path.exists(TEST_LOGS):
         os.makedirs(TEST_LOGS)
         logger.info(f"Created log folder at: {TEST_LOGS}")
@@ -36,8 +36,17 @@ def check_test_folders():
         os.makedirs(TEST_RESULTS)
         logger.info(f"Created scores folder at: {TEST_RESULTS}")
 
+def create_test_results_id(test_results_id: str|None, test_file: str) -> str:
+    prefix = "test_results_for_"
+    if test_results_id:
+        return f"{prefix}{test_results_id}"
+    test_file_base = os.path.basename(test_file)
+    test_file_name = os.path.splitext(test_file_base)[0]
+
+    return f"{prefix}{test_file_name}"
+
 def create_task_log_folders(task_id: str, test_results_id: str):
-    task_log_dir = os.path.join(TEST_LOGS, f'{test_results_id}_{task_id}')
+    task_log_dir = os.path.join(TEST_LOGS, f"{test_results_id}", f'logs_for_task_{task_id}')
     task_screenshots_dir = os.path.join(task_log_dir, 'snapshots')
     if not os.path.exists(task_log_dir):
         os.makedirs(task_log_dir)
@@ -49,10 +58,14 @@ def create_task_log_folders(task_id: str, test_results_id: str):
     return {"task_log_folder": task_log_dir, "task_screenshots_folder": task_screenshots_dir}
 
 
-def create_results_dir(test_file: str) -> str:
-    test_file_base = os.path.basename(test_file)
-    test_file_name = os.path.splitext(test_file_base)[0]
-    results_dir = os.path.join(TEST_RESULTS, f"results_for_test_file_{test_file_name}")
+def create_results_dir(test_file: str, test_results_id: str|None) -> str:
+    results_dir = ""
+    if test_results_id:
+        results_dir = os.path.join(TEST_RESULTS, f"results_for_{test_results_id}")
+    else:
+        test_file_base = os.path.basename(test_file)
+        test_file_name = os.path.splitext(test_file_base)[0]
+        results_dir = os.path.join(TEST_RESULTS, f"results_for_test_file_{test_file_name}")
 
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
@@ -136,22 +149,26 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     print('\n' + tabulate(result_table, headers='firstrow', tablefmt='grid')) # type: ignore
 
 def get_command_exec_cost(command_exec_result: ChatResult):
-    cost = command_exec_result.cost # type: ignore
-    usage: dict[str, Any] = None
-    if "usage_including_cached_inference" in cost:
-        usage: dict[str, Any] = cost["usage_including_cached_inference"]
-    elif "usage_excluding_cached_inference" in cost:
-        usage: dict[str, Any] = cost["usage_excluding_cached_inference"]
-    else:
-        raise ValueError("Cost not found in the command execution result.")
-    print("Usage: ", usage)
     output: dict[str, Any] = {}
-    for key in usage.keys():
-        if isinstance(usage[key], dict) and "prompt_tokens" in usage[key]:
-            output["cost"] = usage[key]["cost"]
-            output["prompt_tokens"] = usage[key]["prompt_tokens"]
-            output["completion_tokens"] = usage[key]["completion_tokens"]
-            output["total_tokens"] = usage[key]["total_tokens"]
+    try:
+        cost = command_exec_result.cost # type: ignore
+        usage: dict[str, Any] = None
+        if "usage_including_cached_inference" in cost:
+            usage: dict[str, Any] = cost["usage_including_cached_inference"]
+        elif "usage_excluding_cached_inference" in cost:
+            usage: dict[str, Any] = cost["usage_excluding_cached_inference"]
+        else:
+            raise ValueError("Cost not found in the command execution result.")
+        print("Usage: ", usage)
+
+        for key in usage.keys():
+            if isinstance(usage[key], dict) and "prompt_tokens" in usage[key]:
+                output["cost"] = usage[key]["cost"]
+                output["prompt_tokens"] = usage[key]["prompt_tokens"]
+                output["completion_tokens"] = usage[key]["completion_tokens"]
+                output["total_tokens"] = usage[key]["total_tokens"]
+    except Exception as e:
+        logger.debug(f"Error getting command execution cost: {e}")
     return output
 
 
@@ -252,6 +269,8 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     This function also manages logging and saving of test results, updates the progress bar to reflect test execution status, and prints a detailed summary report at the end of the testing session.
     """
+    check_top_level_test_folders()
+
     if not test_file or test_file == "":
         test_file = os.path.join(TEST_TASKS, 'test.json')
 
@@ -259,11 +278,9 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     test_configurations = load_config(test_file)
 
-    if not test_results_id or test_results_id == "":
-        test_results_id = str(int(time.time()))
+    test_results_id = create_test_results_id(test_results_id, test_file)
 
-    check_test_folders()
-    results_dir = create_results_dir(test_file)
+    results_dir = create_results_dir(test_file, test_results_id)
     test_results: list[dict[str, str | int | float | None]] = []
 
     if not ag:
@@ -280,7 +297,11 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
 
     for index, task_config in enumerate(test_configurations[min_task_index:max_task_index], start=min_task_index):
         task_id = str(task_config.get('task_id'))
+
         log_folders = create_task_log_folders(task_id, test_results_id)
+
+        ag.set_chat_logs_dir(log_folders["task_log_folder"])
+
         browser_manager.set_take_screenshots(take_screenshots)
         if take_screenshots:
             browser_manager.set_screenshots_dir(log_folders["task_screenshots_folder"])
