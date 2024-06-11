@@ -323,13 +323,15 @@ class ManualContentEvaluator(Evaluator):
             print("Possible answer (reference): ~~~",reference_answer,"~~~")
         elif answer_type.strip().lower()=="golden":
             print("Golden answer (reference): ",reference_answer)
-        user_response = input("Annotate the task as Pass or Fail? ")
+        user_response = input("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ")
         if(user_response.lower()=="pass"):
             return 1.0
         elif user_response.lower()=="fail":
             return 0.0
+        elif user_response.lower()=="skip":
+            return -0.1
         else:
-            raise ValueError("Invalid user response. Please enter 'Pass' or 'Fail'.")
+            raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
        
 
 
