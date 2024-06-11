@@ -68,7 +68,7 @@ async def custom_fill_element(page: Page, selector: str, text_to_enter: str):
         document.querySelector(selector).value = text_to_enter;
     }""", {"selector": selector, "text_to_enter": text_to_enter})
 
-async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
+async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute e.g. [mmid='114']) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
     """
     Enters text into a DOM element identified by a CSS selector.
 
@@ -122,15 +122,14 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     subscribe(detect_dom_changes)
 
     result = await do_entertext(page, query_selector, text_to_enter)
-    await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
+    await asyncio.sleep(0.3) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"{result['detailed_message']} As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
-
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
@@ -178,7 +177,10 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await press_key_combination("Control+A")
             await asyncio.sleep(0.1)
             await press_key_combination("Backspace")
+            await asyncio.sleep(0.1)
             logger.debug(f"Focused element with selector {selector} to enter text")
+            #add a 100ms delay
+
             await page.keyboard.type(text_to_enter, delay=4)
         else:
             await custom_fill_element(page, selector, text_to_enter)

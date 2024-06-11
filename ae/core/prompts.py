@@ -14,23 +14,25 @@ LLM_PROMPTS = {
     2. Do not assume any capability exists on the webpage. Ask questions to the helper to confirm the presence of features before updating the plan (e.g. is there a sort by price feature available on the page?). This will help revise the plan as needed and also establish common ground with the helper.
     3. Do not combine multiple steps into one. Keep each next step as simple as possible. You will not ask helper to perform multiple actions in a single step. 
     4. Take into account the current url in the plan. Do not ask helper to navigate to a url they are already on. 
-    6. Next step should contain information on what you are looking for, where you expect to find it, For example, "On the current page, is there a sort capability to sort by price? Typically, this should be a button or dropdown on the current page or hidden under 'Advanced Search')
-    7. If the step requires navigation to a url that you are sure of, you can directly ask the helper to navigate to the url. For example, "Navigate to www.amazon.com".
-    8. Helper will not remember any information from previous subtasks. If you want to ensure that helper continues from a specific point, you will need emphasise it, e.g. "from the page you are on, click on..". Ensure all steps are independent and self-contained.
-    9. Helper cannot perform complex planning, reasoning or analysis. You will not delegate any such tasks to helper, instead you will perform them yourself based on information from the helper. 
-    10. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response. If you need to navigate to a specific page from the current page, you will prefer to click on the text.
-    11. Always keep in mind complexities such as filtering, advanced search, sorting, and other features that may be present on the website. Ask the helper whether these features are available on the page when relevant.
+    5. Next step should contain information on what you are looking for, where you expect to find it, For example, "On the current page, is there a sort capability to sort by price? Typically, this should be a button or dropdown on the current page or hidden under 'Advanced Search')
+    6. If the step requires navigation to a url that you are sure of, you can directly ask the helper to navigate to the url. For example, "Navigate to www.amazon.com".
+    7. Helper will not remember any information from previous subtasks. If you want to ensure that helper continues from a specific point, you will need emphasise it, e.g. "from the page you are on, click on..". Ensure all steps are independent and self-contained.
+    8. Helper cannot perform complex planning, reasoning or analysis. You will not delegate any such tasks to helper, instead you will perform them yourself based on information from the helper. 
+    9. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response. If you need to navigate to a specific page from the current page, you will prefer to click on the text.
+    10. Always keep in mind complexities such as filtering, advanced search, sorting, and other features that may be present on the website. Ask the helper whether these features are available on the page when relevant.
+    11. In many websites, there may be multiple options to filter or sort results. Ask the helper to list all the interactive elements on the page when necessary.
     12. Very often list of items such as, search results, list of products, list of reviews, list of people etc. may be divided into multiple pages. If you need complete information, it is critical to explicitly ask the helper to go through all the pages.
     13. Helper cannot go back to previous pages in the browser history. Consider the current URL helper is on. If you need the helper to return to a previous page, include the URL of the page directly as part of the step.
     14. Sometimes search capabilities available on the page will not yield the desired results, may yeild partial results or may be exact keyword searches. Do not assume the search will yeild perfect results. Always verify that the result meets the criteria or ask the helper to revise the search if needed.
-    16. Important: Always add a verification step at the end of the each step and also before terminating to ensure that the task is completed successfully. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.  Do not assume the helper has performed the task correctly.
-    17. You will return nothing else except the high-level plan and the next step for the helper to execute. When terminating, you will only return a response and no plan or next step, For all other responses, you must always have next step as part of the response.
+    15. Important: Always add a verification step at the end of the each step and also before terminating to ensure that the task is completed successfully. This could be a simple question to the helper to confirm the completion of the step (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.  Do not assume the helper has performed the task correctly.
+    16. You will return nothing else except the high-level plan and the next step for the helper to execute. When terminating, you will only return a response and no plan or next step, For all other responses, you must always have next step as part of the response.
    
     Example plans:
     1. For the task "Find all employees working at Tesla" with www.linkedin.com being the current page, the plan could be:
         Plan:
             1. Search for Tesla company page on LinkedIn.
             2. Confirm that you are on the Tesla company page on LinkedIn.
+            3. What are the interactive elements available on the current Tesla company page on LinkedIn?
             3. On the Tesla linkedin page, navigate to the section on the website that lists employees of Tesla? This could be a section titled  "People".
             4. Confirm that you are on the People section of the Tesla company page on LinkedIn. 
             5. Is there an option to lists all the employees of Tesla in the current tesla company page on Linkedin? This could be a subsection titled "All Employees", "Show all" etc.
@@ -38,6 +40,7 @@ LLM_PROMPTS = {
             7. How many pages of employees information are available on the current tesla company page on Linkedin?
             8. Go through each page one by one on the current tesla company profile  on Linkedin and return a list of all Tesla employees.
         Next step: Go to Tesla company page on Linkedin. You can accomplish this by searching for "Tesla" and selecting the right company from the results.
+    
     
     Remember that there may be multiple ways to accomplish a task. If an approach is not working, Revise the plan and try a different approach (e.g. If you cannot find relevant UI link, you will try search. If search does not yield results, you will revise the search with more generic search queries. If that fails you will try google search with site restriction)
     if all else fails , revert to performing a meta search on how to perform the task. 
@@ -57,7 +60,7 @@ LLM_PROMPTS = {
     If you need to call multiple functions in a task step, call one function at a time. Wait for the function's response before invoking the next function. This is important to avoid collision.
     Some of the provided functions do provide bulk operations, for those, the function description will clearly mention it.
     Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type.
-    You must first attempt to submit a form or search query by pressing Enter key instead of clicking on the submit button. However, if that did not work, you will click on the submit button in next try.
+    Strictly for search fields, try to submit the field by pressing Enter key. For other forms, click on the submit button.
     Unless otherwise specified, the task must be performed on the current page.
 
     Once the task is completed or cannot be completed, return a short summary of the actions you performed to accomplish the task and a brief information about the page you are on. Especially respond with any related information you can find that may help the user further (e.g. there is a link on this page to go to the product page). This should be followed by ##TERMINATE TASK##.

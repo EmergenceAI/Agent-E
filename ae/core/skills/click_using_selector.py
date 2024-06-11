@@ -14,7 +14,7 @@ from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
-async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
+async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action (e.g. [mmid='114']). When \"mmid\" attribute is present, use it for the query selector."],
                 wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
     """
     Executes a click action on the element matching the given query selector string within the currently open web page.
@@ -55,7 +55,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
-        return f"Success: {result['summary_message']} As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This often means the action is not yet completed and needs further action. Important: Get all_fields DOM to interact with it."
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
