@@ -124,6 +124,24 @@ def print_progress_bar(current: int, total: int, bar_length: int = 50) -> None:
 
     print(f'\rProgress: [{arrow}{spaces}] {current}/{total} ({percent:.2f}%)', end='')
 
+def determine_status_and_color(score: float) -> tuple[str, str]:
+    """
+    Determines the status and color for a test result based on the score.
+
+    Parameters:
+    - score (float): The score of the test task, indicating success (1), failure (0), or skip (-0.1).
+
+    Returns:
+    - tuple[str, str]: A tuple containing the status ('Pass', 'Fail', or 'Skip') and the corresponding color ('green', 'red', or 'yellow').
+
+    """
+    if score == 1:
+        return 'Pass', 'green'
+    elif score < 0:
+        return 'Skip', 'yellow'
+    else:
+        return 'Fail', 'red'
+
 
 def print_test_result(task_result: dict[str, str | int | float | None], index: int, total: int) -> None:
     """
@@ -137,8 +155,8 @@ def print_test_result(task_result: dict[str, str | int | float | None], index: i
     The function determines the test status (Pass/Fail) based on the 'score' key in task_result and prints the result with colored status.
 
     """
-    status = 'Pass' if task_result['score'] == 1 else 'Fail'
-    color = 'green' if status == 'Pass' else 'red'
+    status, color = determine_status_and_color(task_result['score']) # type: ignore
+
     cost = task_result.get("compute_cost", None)
     total_cost = None if cost is None else round(cost.get("cost", -1), 4)  # type: ignore
     total_tokens = None if cost is None else cost.get("total_tokens", -1)  # type: ignore
@@ -326,8 +344,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
     print("\nDetailed Test Results:")
     detailed_results_table = [['Test Index', 'Task ID', 'Intent', 'Status', 'Time Taken (s)', 'Total Tokens', 'Total Cost ($)']]
     for idx, result in enumerate(test_results, 1):
-        status = 'Pass' if result['score'] == 1 else 'Fail'
-        color = 'green' if status == 'Pass' else 'red'
+        status, color = determine_status_and_color(result['score']) # type: ignore
 
         cost: str | int | float | None = result.get("compute_cost", None)
         total_cost = None if cost is None else round(cost.get("cost", -1), 4)  # type: ignore
@@ -352,10 +369,20 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
             total_cost += compute_cost.get("cost", 0) # type: ignore
             total_tokens += compute_cost.get("total_tokens", 0) # type: ignore
 
-    passed_tests = [result for result in test_results if result['score'] == 1]
+    passed_tests = []
+    skipped_tests = []
+    failed_tests = []
+    for result in test_results:
+        if result["score"] == 1:
+            passed_tests.append(result) # type: ignore
+        elif result["score"] < 0: # type: ignore
+            skipped_tests.append(result) # type: ignore
+        else:
+            failed_tests.append(result) # type: ignore
+
     summary_table = [ # type: ignore
-        ['Total Tests', 'Passed', 'Failed', 'Average Time Taken (s)', 'Total Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
-        [total_tests, len(passed_tests), total_tests - len(passed_tests),
+        ['Total Tests', 'Passed', 'Failed', 'Skipped', 'Average Time Taken (s)', 'Total Time Taken (s)', 'Total Tokens', 'Total Cost ($)'],
+        [total_tests, len(passed_tests), len(failed_tests), len(skipped_tests),
         round(sum(test['tct'] for test in test_results) / total_tests, 2), # type: ignore
         round(sum(test['tct'] for test in test_results), 2),  # type: ignore
         total_tokens, total_cost]
