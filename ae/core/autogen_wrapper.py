@@ -108,6 +108,8 @@ class AutogenWrapper:
             return asyncio.run(geturl())
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
+            messages_str_keys = {str(key): value for key, value in sender.chat_messages.items()} # type: ignore
+            self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
                 return "I received an empty message. Try a different approach."
