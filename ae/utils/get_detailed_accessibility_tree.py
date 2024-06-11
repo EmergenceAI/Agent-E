@@ -173,7 +173,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 const keys = Object.keys(attributes_to_values);
                 const minimalKeys = ['tag', 'mmid'];
                 const hasMoreThanMinimalKeys = keys.length > minimalKeys.length || keys.some(key => !minimalKeys.includes(key));
-
+                
                 if (!hasMoreThanMinimalKeys) {
                     //If there were no attributes found, then try to get the backup attributes
                     for (const backupAttribute of input_params.backup_attributes) {
@@ -182,7 +182,15 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                             attributes_to_values[backupAttribute] = value;
                         }
                     }
+                    let role = element.getAttribute('role');
+                    if(role==='listbox' || element.tagName.toLowerCase()=== 'ul'){
+                        let children=element.children;
+                        let filtered_children = Array.from(children).filter(child => child.getAttribute('role') === 'option' || child.tagName.toLowerCase() === 'li');
+                        console.log("Listbox or ul found: ", filtered_children);
+                        let attributes_to_include = ['mmid', 'role', 'aria-label','value'];
+                        
 
+                    }
                     //if even the backup attributes are not found, then return null, which will cause this element to be skipped
                     if(Object.keys(attributes_to_values).length <= minimalKeys.length) {
                         if (element.tagName.toLowerCase() === 'button') {
