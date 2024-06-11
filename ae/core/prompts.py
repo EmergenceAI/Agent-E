@@ -62,14 +62,12 @@ LLM_PROMPTS = {
 
     Once the task is completed or cannot be completed, return a short summary of the actions you performed to accomplish the task and a brief information about the page you are on. Especially respond with any related information you can find that may help the user further (e.g. there is a link on this page to go to the product page). This should be followed by ##TERMINATE TASK##.
     Additionally, If task requires an answer, you will also provide a direct answer as part of the message containing ##TERMINATE TASK##.
-    Remember to verify the completion of the task before terminating. 
 
     You will NOT provide any URLs of links on webpage. If user asks for URLs, you can will instead provide the text of the hyperlink on the page and offer to click on it. This is very very important.
     When inputing information, remember to follow the format of the input field. For example, if the input field is a date field, you will enter the date in the correct format (e.g. YYYY-MM-DD), you may get clues from the placeholder text in the input field.
     
     Important: If you encounter an issues or is ununsure how to proceed, simply ##TERMINATE TASK## the task and provide a deatiled summary of the exact issue encountered. 
-    Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.
-    $basic_user_information""",
+    Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, try a new approach or terminate the task.""",
 
     "VERFICATION_AGENT": """Given a conversation and a task, your task is to analyse the conversation and tell if the task is completed. If not, you need to tell what is not completed and suggest next steps to complete the task.""", 
     "ENTER_TEXT_AND_CLICK_PROMPT": """This skill enters text into a specified element and clicks another element, both identified by their DOM selector queries.
