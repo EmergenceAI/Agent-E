@@ -171,6 +171,26 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     attributes_to_values['description'] = element.innerText;
                 }
 
+                let role = element.getAttribute('role');
+                if(role==='listbox' || element.tagName.toLowerCase()=== 'ul'){
+                    let children=element.children;
+                    let filtered_children = Array.from(children).filter(child => child.getAttribute('role') === 'option');
+                    console.log("Listbox or ul found: ", filtered_children);
+                    let attributes_to_include = ['mmid', 'role', 'aria-label','value'];
+                    attributes_to_values["additional_info"]=[]
+                    for (const child of children) {
+                        let children_attributes_to_values = {};
+                        
+                        for (let attr of child.attributes) {
+                            // If the attribute is not in the predefined list, add it to children_attributes_to_values
+                            if (attributes_to_include.includes(attr.name)) {
+                                children_attributes_to_values[attr.name] = attr.value;
+                            }
+                        }
+
+                        attributes_to_values["additional_info"].push(children_attributes_to_values);
+                    }
+                }
                 // Check if attributes_to_values contains more than just 'name', 'role', and 'mmid'
                 const keys = Object.keys(attributes_to_values);
                 const minimalKeys = ['tag', 'mmid'];
@@ -184,26 +204,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                             attributes_to_values[backupAttribute] = value;
                         }
                     }
-                    let role = element.getAttribute('role');
-                    if(role==='listbox' || element.tagName.toLowerCase()=== 'ul'){
-                        let children=element.children;
-                        let filtered_children = Array.from(children).filter(child => child.getAttribute('role') === 'option');
-                        console.log("Listbox or ul found: ", filtered_children);
-                        let attributes_to_include = ['mmid', 'role', 'aria-label','value'];
-                        attributes_to_values["additional_info"]=[]
-                        for (const child of children) {
-                            let children_attributes_to_values = {};
-                            
-                            for (let attr of child.attributes) {
-                                // If the attribute is not in the predefined list, add it to children_attributes_to_values
-                                if (attributes_to_include.includes(attr.name)) {
-                                    children_attributes_to_values[attr.name] = attr.value;
-                                }
-                            }
-
-                            attributes_to_values["additional_info"].push(children_attributes_to_values);
-                        }
-                    }
+               
                     //if even the backup attributes are not found, then return null, which will cause this element to be skipped
                     if(Object.keys(attributes_to_values).length <= minimalKeys.length) {
                         if (element.tagName.toLowerCase() === 'button') {
