@@ -25,7 +25,6 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
             messages = self._oai_messages[sender] # type: ignore
         message = messages[-1] # type: ignore
         tool_returns = []
-        print("Sequential Function calling...")
         skip_flag:bool = False
         for tool_call in message.get("tool_calls", []): # type: ignore
             function_call = tool_call.get("function", {}) # type: ignore
