@@ -118,7 +118,7 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
             return {"summary_message": f'Select menu option "{element_value}" selected', 
                     "detailed_message": f'Select menu option "{element_value}" selected. The select element\'s outer HTML is: {element_outer_html}.'}
         
-        await element.focus()
+
         #Playwright click seems to fail more often than not, disabling it for now and just going with JS click
         #await perform_playwright_click(element, selector)
         await perform_javascript_click(page, selector)
