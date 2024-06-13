@@ -171,6 +171,10 @@ html_theme = 'sphinx_rtd_theme'
 - Investigate if there is a way to have less tokens used up by the AutoGen required prompts and annotations
 
 
+## Social:
+
+[Discord](https://discord.gg/czHhPDMk)
+
 ## Contributing
 
 Thank you for your interest in contributing! We welcome involvement from the community.
