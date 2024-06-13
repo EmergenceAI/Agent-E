@@ -97,13 +97,19 @@ def save_individual_test_result(test_result: dict[str, str | int | float | None]
 
 def extract_last_response(messages: list[dict[str, Any]]) -> str:
     """Extract the last response message from chat history."""
-    # Iterate over the messages in reverse order
-    for message in reversed(messages):
-        if message and 'content' in message:
-            content=message.get('content', "")
-            if content and  '##TERMINATE##' in content:
-                return message['content'].replace("##TERMINATE##", "").strip()
-    return ""
+    try:
+        # Iterate over the messages in reverse order
+        for message in reversed(messages):
+            if message and 'content' in message:
+                content=message.get('content', "")
+                content_json = json.loads(content)
+                final_answer = content_json.get('final_response', None)
+                if final_answer:
+                    return final_answer
+        return ""
+    except:
+        logger.error("Error extracting last response from chat history.")
+        return ""
 
 
 def print_progress_bar(current: int, total: int, bar_length: int = 50) -> None:

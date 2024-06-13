@@ -98,14 +98,20 @@ class AutogenWrapper:
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             content:str=manager.last_message()["content"] # type: ignore
-            if content is None: 
+            print(f"Content: {content}")
+            content_json = json.loads(content)
+            print(f"Content JSON: {content_json}")
+            next_step = content_json.get('next_step', None)
+            print(f"Next Step: {next_step}")
+            if next_step is None: 
                 print_message_from_planner("Received no response, terminating..") # type: ignore
+                print("Trigger nested chat returned False")
                 return False
-            elif "next step" not in content.lower(): # type: ignore
-                print_message_from_planner("Planner: "+ content) # type: ignore
-                return False 
-            print_message_from_planner(content) # type: ignore
-            return True
+            else:
+                print_message_from_planner("Next Step: "+ next_step) # type: ignore
+                print(f"Trigger nested chat returned True: {next_step} ")
+                return True 
+
         
         def get_url() -> str:
             return asyncio.run(geturl())
@@ -125,19 +131,15 @@ class AutogenWrapper:
         
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
-            last_message=last_message+" "+ get_url() # type: ignore
-            if("next step" in last_message.lower()): # type: ignore
-                start_index=last_message.lower().index("next step:") # type: ignore
-                last_message:str=last_message[start_index:].strip() # type: ignore
-                last_message = last_message.replace("Next step:", "").strip() # type: ignore
-                if re.match(r'^\d+\.', last_message): # type: ignore
-                    last_message = re.sub(r'^\d+\.', '', last_message) # type: ignore
-                    last_message = last_message.strip() # type: ignore
-                last_message=last_message+" "+ get_url() # type: ignore
-                return last_message # type: ignore
+            content_json = json.loads(last_message)
+            next_step = content_json.get('next_step', None)
+            if next_step is None: 
+                print ("Message to nested chat returned None")
+                return None
             else:
-                last_message=last_message+" "+ get_url() # type: ignore
-                return last_message # type: ignore
+                next_step = next_step.strip() +" " + get_url() # type: ignore
+                print (f"Message to nested chat : {next_step} ")
+                return next_step # type: ignore
 
         print(f">>> Registering nested chat. Available agents: {self.agents_map}")
         self.agents_map["user"].register_nested_chats( # type: ignore
@@ -226,20 +228,21 @@ class AutogenWrapper:
 
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
+             should_terminate = False
              content:Any = x.get("content", "") 
              if content is None:
                 content = ""
-             
-             should_terminate = "TERMINATE##" in content.strip().upper() or "TERMINATE ##" in content.strip().upper() # type: ignore
+                should_terminate = True
+             else:
+                try:
+                    content_json = json.loads(content)
+                    _terminate = content_json.get('terminate', "no")
+                    if(_terminate == "yes"):
+                        should_terminate = True
+                except json.JSONDecodeError:
+                    print("Error decoding JSON content")
+                    should_terminate = True
             
-             next_step_present= "next step" in content.strip().lower() # type: ignore
-             content = content.replace("TERMINATE", "").strip()
-             content = content.replace("##", "").strip()
-
-             if(content != "" and (should_terminate or not next_step_present)): # type: ignore
-                print_message_from_planner("Planner: "+content) # type: ignore
-             
-             should_terminate = should_terminate or not next_step_present
              return should_terminate # type: ignore
         
         task_delegate_agent = autogen.ConversableAgent(
