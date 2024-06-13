@@ -237,7 +237,7 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
 
         evaluator = evaluator_router(task_config)
         cdp_session = await page.context.new_cdp_session(page)
-        score = await evaluator(
+        evaluator_result = await evaluator(
             task_config=task_config,
             page=page,
             client=cdp_session,
@@ -248,7 +248,8 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
             "task_id": task_id,
             "start_url": start_url,
             "intent": str(command),
-            "score": score,
+            "score": evaluator_result["score"],
+            "reason": evaluator_result["reason"],
             "tct": end_time - start_time,
             "last_statement": last_agent_response,
             "last_url": page.url,
