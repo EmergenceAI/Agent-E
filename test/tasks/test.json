@@ -670,7 +670,7 @@
             "filter": "done",
             "entity": "issues"
         },
-        "intent": "Go to project atlas then filter by done issues",
+        "intent": "Go to project named atlas then filter by done issues",
         "require_reset": false,
         "eval": {
             "eval_types": [
