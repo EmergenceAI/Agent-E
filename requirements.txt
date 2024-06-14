@@ -15,10 +15,16 @@ certifi==2024.2.2
     #   httpcore
     #   httpx
     #   requests
+cffi==1.16.0
+    # via cryptography
 charset-normalizer==3.3.2
-    # via requests
+    # via
+    #   pdfminer-six
+    #   requests
 click==8.1.7
     # via nltk
+cryptography==42.0.8
+    # via pdfminer-six
 diskcache==5.6.3
     # via pyautogen
 distro==1.9.0
@@ -97,6 +103,11 @@ packaging==23.2
     # via
     #   docker
     #   huggingface-hub
+pdfminer-six==20231228
+    # via pdfplumber
+pdfplumber==0.11.1
+pillow==10.3.0
+    # via pdfplumber
 playwright==1.44.0
 proto-plus==1.23.0
     # via
@@ -117,6 +128,8 @@ pyasn1==0.6.0
 pyasn1-modules==0.4.0
     # via google-auth
 pyautogen==0.2.27
+pycparser==2.22
+    # via cffi
 pydantic==2.6.2
     # via
     #   anthropic
@@ -129,6 +142,8 @@ pyee==11.1.0
     # via playwright
 pyparsing==3.1.2
     # via httplib2
+pypdfium2==4.30.0
+    # via pdfplumber
 python-dotenv==1.0.0
     # via pyautogen
 pyyaml==6.0.1
