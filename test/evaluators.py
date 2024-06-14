@@ -14,6 +14,7 @@ from typing import Any
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
+from termcolor import colored
 
 
 class Evaluator:
@@ -27,7 +28,7 @@ class Evaluator:
         """Initialize the evaluator with an optional evaluation tag."""
         self.eval_tag = eval_tag
 
-    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession, answer: str) -> float:
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession, answer: str) -> dict[str, float|str]:
         """Abstract method to be implemented by subclasses for evaluation.
 
         Raises:
@@ -49,7 +50,7 @@ class StringEvaluator(Evaluator):
         client: CDPSession | None = None,
         answer: str | None = None,
 
-    ) -> float:
+    ) -> dict[str, float|str]:
         last_action = answer or ""
         pred = clean_answer(last_action)
 
@@ -98,7 +99,7 @@ class StringEvaluator(Evaluator):
                             )
                 case _:
                     logger.info(f"Unknown approach value received: {approach}")
-        return score
+        return {"score": score}
 
 
 class URLEvaluator(Evaluator):
@@ -113,7 +114,7 @@ class URLEvaluator(Evaluator):
         page: Page,
         client: CDPSession | None = None,
         answer: str | None = None
-    ) -> float:
+    ) -> dict[str, float|str]:
         """Evaluates the current page URL against reference URLs specified in the config file.
 
         Parameters:
@@ -123,7 +124,7 @@ class URLEvaluator(Evaluator):
             answer (str | None, optional): Not used in this evaluator.
 
         Returns:
-            float: 1.0 if the page URL matches any of the reference URLs, considering the matching rule; otherwise 0.0.
+            dict[str, float|str]: "score" 1.0 if the page URL matches any of the reference URLs, considering the matching rule; otherwise 0.0.
 
         Raises:
             ValueError: If an unknown matching rule is specified in the config file.
@@ -184,7 +185,7 @@ class URLEvaluator(Evaluator):
         else:
             raise ValueError(f"Unknown matching rule: {matching_rule}")
 
-        return score
+        return {"score": score}
 
 
 class HTMLContentEvaluator(Evaluator):
@@ -199,7 +200,7 @@ class HTMLContentEvaluator(Evaluator):
         page: Page,
         client: CDPSession | None = None,
         answer: str | None = None
-    ) -> float:
+    ) -> dict[str, float|str]:
         """Evaluates the presence of specified HTML content on the webpage.
 
         Parameters:
@@ -209,7 +210,7 @@ class HTMLContentEvaluator(Evaluator):
             answer (str | None, optional): Not used in this evaluator.
 
         Returns:
-            float: A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
+            dict[str, float|str]: "score" A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
 
         Raises:
             ValueError: If an unknown locator strategy is specified in the config file.
@@ -290,7 +291,7 @@ class HTMLContentEvaluator(Evaluator):
                 raise ValueError(
                     f"Unknown required_contents: {target['required_contents'].keys()}"
                 )
-        return score
+        return {"score": score}
 
 class ManualContentEvaluator(Evaluator):
     """Evaluation Route for Manual Evaluation."""
@@ -300,7 +301,7 @@ class ManualContentEvaluator(Evaluator):
         page: Page,
         client: CDPSession | None = None,
         answer: str | None = None
-    ) -> float:
+    ) -> dict[str, float|str]:
         """Pauses Execution to get manual evaluation score from user.
 
         Parameters:
@@ -310,30 +311,43 @@ class ManualContentEvaluator(Evaluator):
             answer (str | None, optional): Not used in this evaluator.
 
         Returns:
-            float: A score between 0.0 and 1.0 representing the presence of required HTML content on the webpage.
+            dict[str, float|str]: A score representig the status 1 = pass, 0 = fail and -0.1 is a skip. Additionaly, a reason can be provided for the score (mainly for fail/skip).
         """
-        task:str = task_config["intent"]
-        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
-        answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
-        id=task_config["task_id"]
-        print("Task ID: ",id)
-        print("Task: ",task)
-        print("Agent answer: ",answer)
-        if answer_type.strip().lower()=="possible":
-            print("Possible answer (reference): ~~~",reference_answer,"~~~")
-        elif answer_type.strip().lower()=="golden":
-            print("Golden answer (reference): ",reference_answer)
-        user_response = input("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ")
-        if(user_response.lower()=="pass"):
-            return 1.0
-        elif user_response.lower()=="fail":
-            return 0.0
-        elif user_response.lower()=="skip":
-            return -0.1
-        else:
-            raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
-       
+        task = task_config["intent"]
+        reference_answer = task_config["eval"]["reference_answers"]["manual_check"]["answer"]
+        answer_type = task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        id = str(task_config["task_id"])
+        index = str(task_config["task_index"])
 
+        print(colored("\n\n***************************\n", "green", attrs=["bold"]))
+        print(colored("Task ID: ", "blue", attrs=["bold"]) + id + "\n")
+        print(colored("Task Index: ", "blue", attrs=["bold"]) + index + "\n")
+        print(colored("Task: ", "blue", attrs=["bold"]) + task + "\n")
+        print(colored("Agent answer: ", "blue", attrs=["bold"]) + str(answer or "") + "\n")
+
+        if answer_type.strip().lower() == "possible":
+            print(colored("Possible answer (reference): ", "yellow") + f"~~~{reference_answer}~~~")
+        elif answer_type.strip().lower() == "golden":
+            print(colored("Golden answer (reference): ", "yellow") + reference_answer)
+
+        user_response = input(colored("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ", "magenta", attrs=["bold"]))
+        eval_response: dict[str, float|str] = {}
+        if(user_response.lower()=="pass"):
+            eval_response["score"] = 1.0
+        elif user_response.lower()=="fail":
+            eval_response["score"] = 0.0
+        elif user_response.lower()=="skip":
+            eval_response["score"] = -0.1
+        else:
+            print(colored(f"Received response: {user_response}", "red"))
+            raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
+        reason: str|None = None
+
+        if eval_response["score"] <= 0:
+            reason = input("Reason for rating: ")
+            eval_response["reason"] = reason
+
+        return eval_response
 
 class EvaluatorComb(Evaluator):
     """Combines multiple evaluators to perform a comprehensive evaluation based on different criteria.
@@ -357,7 +371,7 @@ class EvaluatorComb(Evaluator):
         page: Page,
         client: CDPSession,
         answer: str,
-    ) -> float:
+    ) -> dict[str, float|str]:
         """Performs the evaluation using all included evaluators and aggregates their scores.
 
         Parameters:
@@ -367,13 +381,19 @@ class EvaluatorComb(Evaluator):
             answer (str): The answer or content to be evaluated.
 
         Returns:
-            float: The aggregated score from all evaluators, representing the overall evaluation result.
+            dict[str, float|str]: "score" - The aggregated score from all evaluators, representing the overall evaluation result. "reason" - The reason for the evaluation score, if applicable.
         """
         score: float = 1.0
+        reason: str | None = None
         for evaluator in self.evaluators:
-            cur_score = await evaluator(task_config, page, client, answer)
-            score: float = score * cur_score
-        return score
+            eval_result = await evaluator(task_config, page, client, answer)
+            score: float = score * eval_result["score"] # type: ignore
+            if "reason" in eval_result:
+                if reason is None:
+                    reason = eval_result["reason"] # type: ignore
+                else:
+                    reason += f"\n{eval_result['reason']}"
+        return {"score": score, "reason": reason} # type: ignore
 
 
 def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:

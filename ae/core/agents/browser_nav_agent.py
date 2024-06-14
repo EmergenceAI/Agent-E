@@ -14,6 +14,7 @@ from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.get_url import geturl
 from ae.core.skills.get_user_input import get_user_input
 from ae.core.skills.open_url import openurl
+from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 
 
 class BrowserNavAgent:
@@ -98,6 +99,11 @@ class BrowserNavAgent:
         self.user_proxy_agent.register_for_execution()(entertext)
         # Register entertext skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)
+
+        # Register entertext skill for execution by user_proxy_agent
+        self.user_proxy_agent.register_for_execution()(extract_text_from_pdf)
+        # Register entertext skill for LLM by assistant agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
 
         # Register reply function for printing messages
         self.user_proxy_agent.register_reply( # type: ignore
