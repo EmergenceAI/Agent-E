@@ -109,7 +109,6 @@ class AutogenWrapper:
                 return False
             else:
                 print_message_from_planner("Next Step: "+ next_step) # type: ignore
-                print(f"Trigger nested chat returned True: {next_step} ")
                 return True 
 
         
@@ -138,7 +137,6 @@ class AutogenWrapper:
                 return None
             else:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
-                print (f"Message to nested chat : {next_step} ")
                 return next_step # type: ignore
 
         print(f">>> Registering nested chat. Available agents: {self.agents_map}")
