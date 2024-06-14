@@ -15,6 +15,7 @@ import openai
 #from autogen import Cache
 from dotenv import load_dotenv
 
+from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
@@ -44,8 +45,7 @@ class AutogenWrapper:
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
 
         self.config_list: list[dict[str, str]] | None = None
-        self.chat_logs_dir: str|None = None
-
+        self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
 
     @classmethod
     async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
