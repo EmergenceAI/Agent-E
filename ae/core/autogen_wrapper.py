@@ -325,7 +325,7 @@ class AutogenWrapper:
         """
         current_url_prompt_segment = ""
         if current_url:
-            current_url_prompt_segment = f"Current URL: {current_url}"
+            current_url_prompt_segment = f"Current Page: {current_url}"
 
         prompt = Template(LLM_PROMPTS["COMMAND_EXECUTION_PROMPT"]).substitute(command=command, current_url_prompt_segment=current_url_prompt_segment)
         logger.info(f"Prompt for command: {prompt}")

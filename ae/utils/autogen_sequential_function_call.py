@@ -29,6 +29,7 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
         for tool_call in message.get("tool_calls", []): # type: ignore
             function_call = tool_call.get("function", {}) # type: ignore
             func = self._function_map.get(function_call.get("name", None), None) # type: ignore
+            func_return = None
             if inspect.iscoroutinefunction(func): # type: ignore
                 try:
                     # get the running loop if it was already created
@@ -43,10 +44,11 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
                     if close_loop:
                         loop.close()
             else:
-                _, func_return = self.execute_function(function_call) # type: ignore
+                if (not skip_flag):
+                    _, func_return = self.execute_function(function_call) # type: ignore
             if func_return is None: # type: ignore
                 if skip_flag:
-                    content = "This action is not yet executed since previous action needs further interaction. Get all_fields DOM to complete the interaction."
+                    content = "VERY IMPORTANT: This function could not be executed since previous function resulted in a Webpage change. You must get all_fields DOM and repeat the function if needed."
                 else:
                     content = "" 
             else:
