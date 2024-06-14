@@ -85,9 +85,9 @@ class BrowserNavAgent:
         self.browser_nav_executor.register_for_execution()(geturl)
 
         # Register bulk_enter_text skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"])(bulk_enter_text)
+        #self.agent.register_for_llm(description=LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"])(bulk_enter_text)
         # Register bulk_enter_text skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(bulk_enter_text)
+        #self.browser_nav_executor.register_for_execution()(bulk_enter_text)
 
         # Register entertext skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)

@@ -121,8 +121,7 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
 
         #Playwright click seems to fail more often than not, disabling it for now and just going with JS click
         #await perform_playwright_click(element, selector)
-        await perform_javascript_click(page, selector)
-        msg = f"Element with selector: \"{selector}\" clicked."
+        msg=await perform_javascript_click(page, selector)
         return {"summary_message": msg, "detailed_message": f"{msg} The clicked element's outer HTML is: {element_outer_html}."}
     except Exception as e:
         logger.error(f"Unable to click element with selector: \"{selector}\". Error: {e}")
@@ -198,7 +197,12 @@ async def perform_javascript_click(page: Page, selector: str):
             if (element.tagName.toLowerCase() === "a") {
                 element.target = "_self";
             }
+            let ariaExpandedBeforeClick = element.getAttribute('aria-expanded');
             element.click();
+            let ariaExpandedAfterClick = element.getAttribute('aria-expanded');
+            if (ariaExpandedBeforeClick === 'false' && ariaExpandedAfterClick === 'true') {
+                return "Executed JavaScript Click on element with selector: "+selector +". Very important: As a consequence a menu has appeared where you may need to make further selction. Very important: Get all_fields DOM to complete the action.";
+            }
             return "Executed JavaScript Click on element with selector: "+selector;
         }
     }"""
