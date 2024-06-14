@@ -139,6 +139,8 @@ Remember that you are a persistent planner and will only terminate an incomplete
 
     "PRESS_ENTER_KEY_PROMPT": """Presses the enter key in the given html field. This is most useful on text input fields.""",
 
+    "EXTRACT_TEXT_FROM_PDF_PROMPT": """Extracts text from a PDF file hosted at the given URL.""",
+
     "BROWSER_AGENT_NO_SKILLS_PROMPT": """You are an autonomous agent tasked with performing web navigation on a Playwright instance, including logging into websites and executing other web-based actions.
     You will receive user commands, formulate a plan and then write the PYTHON code that is needed for the task to be completed.
     It is possible that the code you are writing is for one step at a time in the plan. This will ensure proper execution of the task.
