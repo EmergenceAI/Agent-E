@@ -19,6 +19,7 @@ from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
 
 
+
 class BrowserNavAgent:
     def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
         """
@@ -108,6 +109,11 @@ class BrowserNavAgent:
 
 
         '''
+        # Register entertext skill for execution by user_proxy_agent
+        self.user_proxy_agent.register_for_execution()(extract_text_from_pdf)
+        # Register entertext skill for LLM by assistant agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
+
         # Register reply function for printing messages
         self.browser_nav_executor.register_reply( # type: ignore
             [autogen.Agent, None],
