@@ -102,6 +102,7 @@ class BrowserNavAgent:
         # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(press_key_combination)
 
+        #commented out PDF extraction skill since it was looping for some reason with the planner
         #self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
         #self.browser_nav_executor.register_for_execution()(extract_text_from_pdf)
 
