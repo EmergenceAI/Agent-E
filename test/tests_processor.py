@@ -205,35 +205,59 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
     command = ""
     start_url = None
     task_id = None
+
     start_ts = get_formatted_current_timestamp()
+
+    task_config_validator(task_config)
+
+    command: str = task_config.get('intent', "")
+    task_id = task_config.get('task_id')
+    task_index = task_config.get('task_index')
+    start_url = task_config.get('start_url')
+    logger.info(f"Intent: {command}, Task ID: {task_id}")
+
+    if start_url:
+        await page.goto(start_url, wait_until='load', timeout=30000)
+
+    start_time = time.time()
+    current_url = await browser_manager.get_current_url()
+    command_exec_result = await ag.process_command(command, current_url)
+    end_time = time.time()
+
+    evaluator_result: dict[str, float | str] = {}
+    last_agent_response: str = ""
+    command_cost: dict[str, Any] = {}
+    single_task_result: dict[str, Any] = {}
     try:
-        task_config_validator(task_config)
+        single_task_result = {
+            "task_id": task_id,
+            "task_index": task_index,
+            "start_url": start_url,
+            "intent": str(command),
+            "last_url": page.url,
+            "tct": end_time - start_time,
+            "start_ts": start_ts,
+            "completion_ts": get_formatted_current_timestamp()
+        }
 
-        command: str = task_config.get('intent', "")
-        task_id = task_config.get('task_id')
-        start_url = task_config.get('start_url')
-        logger.info(f"Intent: {command}, Task ID: {task_id}")
+        agent_name: str = "planner_agent" if ag.agents_map is not None and "planner_agent" in ag.agents_map else "browser_nav_agent"
 
-        if start_url:
-            await page.goto(start_url, wait_until='load', timeout=30000)
-
-        start_time = time.time()
-        current_url = await browser_manager.get_current_url()
-        command_exec_result = await ag.process_command(command, current_url)
-        end_time = time.time()
-
-        command_cost = get_command_exec_cost(command_exec_result)
+        command_cost = get_command_exec_cost(command_exec_result) # type: ignore
         print(f"Command cost: {command_cost}")
+        single_task_result["compute_cost"] = command_cost
 
         logger.info(f"Command \"{command}\" took: {round(end_time - start_time, 2)} seconds.")
         logger.info(f"Task {task_id} completed.")
 
-        messages = ag.agents_map["browser_nav_agent"].chat_messages # type: ignore
+        messages = ag.agents_map[agent_name].chat_messages # type: ignore
         messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
         agent_key = list(messages.keys())[0] # type: ignore
         last_agent_response = extract_last_response(messages[agent_key]) # type: ignore
 
         dump_log(str(task_id), messages_str_keys, logs_dir)
+
+        single_task_result["last_statement"] = last_agent_response
+
 
         evaluator = evaluator_router(task_config)
         cdp_session = await page.context.new_cdp_session(page)
@@ -244,33 +268,15 @@ async def execute_single_task(task_config: dict[str, Any], browser_manager: Play
             answer=last_agent_response,
         )
 
-        return {
-            "task_id": task_id,
-            "start_url": start_url,
-            "intent": str(command),
-            "score": evaluator_result["score"],
-            "reason": evaluator_result["reason"],
-            "tct": end_time - start_time,
-            "last_statement": last_agent_response,
-            "last_url": page.url,
-            "compute_cost": command_cost,
-            "start_ts": start_ts,
-            "completion_ts": get_formatted_current_timestamp()
-        }
+        single_task_result["score"] = evaluator_result["score"]
+        single_task_result["reason"] = evaluator_result["reason"]
     except Exception as e:
-        logger.error(f"Error executing task {task_id}: {e}")
-        return {
-            "task_id": task_id,
-            "start_url": start_url,
-            "intent": str(command),
-            "score": -1,
-            "tct": 0,
-            "last_statement": None,
-            "last_url": page.url,
-            "error": str(e),
-            "start_ts": start_ts,
-            "completion_ts": get_formatted_current_timestamp()
-        }
+        logger.error(f"Error getting command cost: {e}")
+        command_cost = {"cost": -1, "total_tokens": -1}
+        single_task_result["compute_cost"] = command_cost
+        single_task_result["error"] = str(e)
+
+    return single_task_result
 
 
 async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_task_index: int, max_task_index: int,

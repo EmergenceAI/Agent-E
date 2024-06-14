@@ -330,17 +330,6 @@ class ManualContentEvaluator(Evaluator):
         elif answer_type.strip().lower() == "golden":
             print(colored("Golden answer (reference): ", "yellow") + reference_answer)
 
-        task:str = task_config["intent"]
-        reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
-        answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
-        id=task_config["task_id"]
-        print("Task ID: ",id)
-        print("Task: ",task)
-        print("Agent answer: ",answer)
-        if answer_type.strip().lower()=="possible":
-            print("Possible answer (reference): ~~~",reference_answer,"~~~")
-        elif answer_type.strip().lower()=="golden":
-            print("Golden answer (reference): ",reference_answer)
         user_response = input(colored("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ", "magenta", attrs=["bold"]))
         eval_response: dict[str, float|str] = {}
         if(user_response.lower()=="pass"):
