@@ -14,6 +14,7 @@ from typing import Any
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
+from termcolor import colored
 
 
 class Evaluator:
@@ -312,6 +313,23 @@ class ManualContentEvaluator(Evaluator):
         Returns:
             dict[str, float|str]: A score representig the status 1 = pass, 0 = fail and -0.1 is a skip. Additionaly, a reason can be provided for the score (mainly for fail/skip).
         """
+        task = task_config["intent"]
+        reference_answer = task_config["eval"]["reference_answers"]["manual_check"]["answer"]
+        answer_type = task_config["eval"]["reference_answers"]["manual_check"]["type"]
+        id = str(task_config["task_id"])
+        index = str(task_config["task_index"])
+
+        print(colored("\n\n***************************\n", "green", attrs=["bold"]))
+        print(colored("Task ID: ", "blue", attrs=["bold"]) + id + "\n")
+        print(colored("Task Index: ", "blue", attrs=["bold"]) + index + "\n")
+        print(colored("Task: ", "blue", attrs=["bold"]) + task + "\n")
+        print(colored("Agent answer: ", "blue", attrs=["bold"]) + str(answer or "") + "\n")
+
+        if answer_type.strip().lower() == "possible":
+            print(colored("Possible answer (reference): ", "yellow") + f"~~~{reference_answer}~~~")
+        elif answer_type.strip().lower() == "golden":
+            print(colored("Golden answer (reference): ", "yellow") + reference_answer)
+
         task:str = task_config["intent"]
         reference_answer=task_config["eval"]["reference_answers"]["manual_check"]["answer"]
         answer_type:str=task_config["eval"]["reference_answers"]["manual_check"]["type"]
@@ -323,7 +341,7 @@ class ManualContentEvaluator(Evaluator):
             print("Possible answer (reference): ~~~",reference_answer,"~~~")
         elif answer_type.strip().lower()=="golden":
             print("Golden answer (reference): ",reference_answer)
-        user_response = input("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ")
+        user_response = input(colored("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ", "magenta", attrs=["bold"]))
         eval_response: dict[str, float|str] = {}
         if(user_response.lower()=="pass"):
             eval_response["score"] = 1.0
@@ -332,6 +350,7 @@ class ManualContentEvaluator(Evaluator):
         elif user_response.lower()=="skip":
             eval_response["score"] = -0.1
         else:
+            print(colored(f"Received response: {user_response}", "red"))
             raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
         reason: str|None = None
 
