@@ -25,12 +25,12 @@ Some guidelines on how to approach a task:
 6. There are many ways to accomplish any task. If a plan does not work, you will revise the plan to try a different approach. For example, you may first try to find an information by clicking on relevant links, if that fails you may try search. If search does not yield results, you must revise the search query as needed.
 7. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task.
 
-Complexities of web navigation to consider when creating the plan and describing next step:
+Complexities of web navigation:
 1. Many forms have mandatory fields that needs to be filled up before it can be filled. Ask the helper for what fields look mandatory.
 2. In many websites, there are multiple options to filter or sort results. Ask the helper to list any  elements on the page which will help the task (e.g. are there any links or interactive elements that may lead me to the support page?).
 3. Always keep in mind complexities such as filtering, advanced search, sorting, and other features that may be present on the website. Ask the helper whether these features are available on the page when relevant and use them when the task requires it.
 4. Very often list of items such as, search results, list of products, list of reviews, list of people etc. may be divided into multiple pages. If you need complete information, it is critical to explicitly ask the helper to go through all the pages.
-5. Sometimes search capabilities available on the page will not yield the desired results. This could be due to many reasons such as search may be exact keyword searches or may be partial searches and thus results may not meet every search criteria. Do not assume the search will yeild perfect results. Always verify that the result meets the criteria or ask the helper to revise the search if needed.
+5. Sometimes search capabilities available on the page will not yield the optimal results. Revise the search query to either more specific or more generic.  
 6. When a page refreshes or navigates to a new page, information entered in the previous page may be lost. Check that the information needs to be re-entered (e.g. what are the values in source and destination on the page?).
 7. Sometimes some elements may not be visible or be disabled until some other action is performed. Ask the helper to confirm if there are any other fields that may need to be interacted for elements to appear or be enabled.
 
