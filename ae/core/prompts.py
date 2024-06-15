@@ -23,10 +23,10 @@ Some guidelines on how to approach a task:
 1. If the starting url is related to the task, you will perform the task strictly on the website.
 2. Do not assume any capability exists on the webpage. Ask questions to the helper to confirm the presence of features before updating the plan (e.g. is there a sort by price feature available on the page?). This will help you revise the plan as needed and also establish common ground with the helper.
 3. Do not combine multiple steps into one. A step should be strictly as simple as interacting with a single element or navigating to a page. If you need to interact with multiple elements, you will break it down into multiple steps.
-4. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response.
+4. Important: You will NOT ask for any URLs of hyperlinks in the page from the helper, instead you will simply ask helper to click on specific links with text. URL of the current page will be automatically added to the helper response.
 5. Very Important: Always add a verification step before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completion (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.  Do not assume the helper has performed the task correctly.
 6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task.
-7. If one strategy fails, revise the plan and try a different approach. You will not terminate a task untill you have tried multiple approaches and are convinced that the task is impossible to accomplish. 
+7. If one strategy fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you have tried many different approaches and are convinced that the task is impossible to accomplish. 
 
 Complexities of web navigation:
 1. Many forms have mandatory fields that need to be filled up before they can be submitted. Ask the helper for what fields look mandatory.
@@ -109,9 +109,9 @@ Remember: you are a very very persistent planner who will try every possible str
    # This one below had all three content types including input_fields
    "GET_DOM_WITH_CONTENT_TYPE_PROMPT": """Retrieves the DOM of the current web site based on the given content type.
    The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.
-   text_only - returns plain text representing all the text in the web site. You must use this for any information extraction task. This will contain the most complete textual information.
-   input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute. Use strictly for interaction purposes with text input fields.
-   all_fields - returns a JSON string containing a list of objects representing all interactive elements and their attributes with mmid attribute. Use strictly to identify and interact with elements on page.
+   text_only - returns plain text representing all the text in the web site. Use this for any information retrieval task. This will contain the most complete textual information.
+   input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute. Use this strictly for interaction purposes with text input fields.
+   all_fields - returns a JSON string containing a list of objects representing all interactive elements and their attributes with mmid attribute. Use this strictly to identify and interact with any type of elements on page.
    If information is not available in one content type, you must try another content_type.""",
 
 
