@@ -25,8 +25,8 @@ Some guidelines on how to approach a task:
 3. Do not combine multiple steps into one. A step should be strictly as simple as interacting with a single element or navigating to a page. If you need to interact with multiple elements, you will break it down into multiple steps.
 4. You will NOT ask for any URLs from the helper. URL of the current page will be automatically added to the helper response.
 5. Very Important: Always add a verification step before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completiont (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Pay attention to URL changes as they may give clue to success of the steps.  Do not assume the helper has performed the task correctly.
-6. There are many ways to accomplish any task (UI navigation, search, advanced search, manually going through entries one by one etc). If one strategy fails, revise the plan and try another approach. 
-7. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task.
+6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task.
+7. There are many ways to accomplish a given task. If one strategy fails, revise the plan and try a different approach. You will not terminate a task untill you have tried multiple approaches and are convinced that the task is impossible to accomplish. 
 
 Complexities of web navigation:
 1. Many forms have mandatory fields that needs to be filled up before it can be filled. Ask the helper for what fields look mandatory.
