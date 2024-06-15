@@ -14,6 +14,7 @@ from ae.config import PROJECT_TEST_ROOT
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
+from ae.utils.response_parser import parse_response
 from autogen.agentchat.chat import ChatResult  # type: ignore
 from playwright.async_api import Page
 from tabulate import tabulate
@@ -102,7 +103,7 @@ def extract_last_response(messages: list[dict[str, Any]]) -> str:
         for message in reversed(messages):
             if message and 'content' in message:
                 content=message.get('content', "")
-                content_json = json.loads(content)
+                content_json = parse_response(content)
                 final_answer = content_json.get('final_response', None)
                 if final_answer:
                     return final_answer

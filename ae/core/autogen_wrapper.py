@@ -21,6 +21,7 @@ from ae.core.agents.high_level_planner_agent import PlannerAgent
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
 from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
+from ae.utils.response_parser import parse_response
 from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
@@ -98,9 +99,7 @@ class AutogenWrapper:
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             content:str=manager.last_message()["content"] # type: ignore
-            print(f"Content: {content}")
-            content_json = json.loads(content)
-            print(f"Content JSON: {content_json}")
+            content_json=parse_response(content)
             next_step = content_json.get('next_step', None)
             print(f"Next Step: {next_step}")
             if next_step is None: 
@@ -130,7 +129,7 @@ class AutogenWrapper:
         
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
-            content_json = json.loads(last_message)
+            content_json = parse_response(last_message)
             next_step = content_json.get('next_step', None)
             if next_step is None: 
                 print ("Message to nested chat returned None")
@@ -233,7 +232,7 @@ class AutogenWrapper:
                 should_terminate = True
              else:
                 try:
-                    content_json = json.loads(content)
+                    content_json = parse_response(content)
                     _terminate = content_json.get('terminate', "no")
                     if(_terminate == "yes"):
                         should_terminate = True
