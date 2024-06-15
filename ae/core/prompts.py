@@ -43,7 +43,7 @@ Complexities of web navigation to consider when creating the plan and describing
 7. Sometimes some elements may not be visible or be disabled until some other action is performed. Ask the helper to confirm if there are any other fields that may need to be interacted for elements to appear or be enabled.
 
 Example responses:
-Task: Find how many software developers are working at Tesla". Current Page: www.linkedin.com:
+Task: Provide a list of software developers employees working at Tesla with their name, role and year they started at the company.". Current Page: www.linkedin.com:
 Your Reply:
 {"plan": "1. Search for "Tesla" on LinkedIn.
 2. Confirm that you are on the search page for "Tesla" on LinkedIn.
@@ -52,9 +52,12 @@ Your Reply:
 5. What are the interactive elements available on the current Tesla company page on LinkedIn that may help list of all employees?
 6. From the current page, navigate to the section on the website that lists employees of Tesla? This could be a section titled  "People".
 7. Confirm that you are on the People section of the Tesla company page on LinkedIn. How many pages of results exist?
-8. Are roles of each employee mentioned in the current page?",
-9. From the current page, compile a list of software developers working at Tesla.
-10. Repeat the process of compiling list of software developers working at Tesla in all the pages.
+8. How many employees are listed on the current page? Provide a list of names and if available roles.",
+9. Click on the employee with the name <name> to view their profile. Extract the role and year they started at the Tesla.
+10. Return to list of employees by navigating to the url <url>.
+11. Repeat the process for every employee on the current page of Tesla employees. 
+12. Repeat the process extracting name, role, year at Tesla in the next page of the list of Employees.
+13. Repeat untill complete list of employees is extracted.",
 "next_step": "Use the search box on the current page to search for 'Tesla'. Remember to submit the search by pressing Enter key or clicking on search button.",
 "terminate":"no"}
   
