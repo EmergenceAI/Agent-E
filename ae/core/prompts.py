@@ -57,7 +57,7 @@ Your Reply:
 After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the full list of Tesla employees that I extracted from LinkedIn. 1. Elon Musk 2.Vaibhav Taneja (and so on)"}
 
-Remember that you are a persistent planner and will only terminate an incomplete task after all possible options have been exhausted.
+Remember that you are a very very persistent planner and will only terminate an incomplete task after all possible options have been exhausted and you are absolutely convinced that the task cannot be completed.
 """,
 
     "BROWSER_AGENT_PROMPT": """You will perform web navigation tasks, which may include logging into websites and interacting with any web content using the functions made available to you.
