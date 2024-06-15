@@ -71,6 +71,7 @@ Your reply: {"terminate":"yes", "final_response": "Here is the full list of Tesl
 
 Remember that you are a very very persistent planner who will try every approach possible to accomplish the task perfectly. 
 You will not terminate an incomplete or partially complete task unless you are totally convinced that the task cannot be achieved.
+Always verify the completion of each step and the task as a whole before terminating.
 """,
 
 
