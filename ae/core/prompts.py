@@ -24,7 +24,7 @@ Guidelines:
 3. Do not combine multiple steps into one. A step should be strictly as simple as interacting with a single element or navigating to a page. If you need to interact with multiple elements or perform multiple actions, you will break it down into multiple steps.
 4. Important: You will NOT ask for any URLs of hyperlinks in the page from the helper, instead you will simply ask the helper to click on specific links with text. URL of the current page will be automatically provided to you with each helper response.
 5. Very Important: Add verification as part of the plan, after each step and specifically before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completion (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Do not assume the helper has performed the task correctly.
-6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task.
+6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task. You will strive to meet all the requirements of the task.
 7. If one plan fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you are absolutely convinced that the task is impossible to accomplish. 
 
 Complexities of web navigation:
