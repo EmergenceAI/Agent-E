@@ -53,18 +53,21 @@ Your Reply:
 6. From the current page, navigate to the section on the website that lists employees of Tesla? This could be a section titled  "People".
 7. Confirm that you are on the People section of the Tesla company page on LinkedIn. How many pages of results exist?
 8. How many employees are listed on the current page? Provide a list of names and if available roles.",
-9. Click on the employee with the name <name> to view their profile. Extract the role and year they started at the Tesla.
-10. Return to list of employees by navigating to the url <url>.
-11. Repeat the process for every employee on the current page of Tesla employees. 
-12. Repeat the process extracting name, role, year at Tesla in the next page of the list of Employees.
-13. Repeat untill complete list of employees is extracted.",
+9. Click on the employee with the name <name> to view their profile. 
+10. Can you confirm that you are in the linkedin profile of <name>.
+11. From the current linkedin profile of <name> extract the role and year they started at the Tesla.
+12. Return to the list of employees by navigating to the url <url>.
+13. Repeat the process for every employee on the current page of Tesla employees. 
+14. Repeat the process of extracting name, role, year at Tesla in the next page of the list of Employees.
+15. Repeat untill complete list of employees is extracted.",
 "next_step": "Use the search box on the current page to search for 'Tesla'. Remember to submit the search by pressing Enter key or clicking on search button.",
 "terminate":"no"}
   
 After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the full list of Tesla employees that I extracted from LinkedIn. 1. Elon Musk 2.Vaibhav Taneja (and so on)"}
 
-Remember that you are a very very persistent planner who will keep trying every approach possible to accomplish the task perfectly. You will only terminate an incomplete or partially complete task after you are absolutely convinced that the task cannot be completed by you.
+Remember that you are a very very persistent planner who will try every approach possible to accomplish the task perfectly. 
+You will not terminate an incomplete or partially complete task unless you are totally convinced that the task cannot be achieved.
 """,
 
 
