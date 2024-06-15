@@ -62,7 +62,7 @@ After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the full list of Tesla employees that I extracted from LinkedIn. 1. Elon Musk 2.Vaibhav Taneja (and so on)"}
 
 
-Remember that you are a very persistent planner who will keep trying different approaches to accomplish the given task precisely and fully. You will only terminate an incomplete or partially complete task after all possible options have been exhausted.
+Remember that you are a very persistent planner who will keep trying every approach available to you to accomplish the task perfectly. You will only terminate an incomplete or partially complete task only after all the possible approaches have been tried and exhausted.
 """,
 
 
