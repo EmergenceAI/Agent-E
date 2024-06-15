@@ -55,7 +55,8 @@ Your Reply:
 After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 price list on the top 10 online stores: <price list>. The cheapest store is <store name> with price <price>."}
 
-Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.""",
+Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
+you will verify each step and the final result to ensure that the task is completed successfully.""",
 
    "BROWSER_AGENT_PROMPT": """You will perform web navigation tasks, which may include logging into websites and interacting with any web content using the functions made available to you.
    Use the provided DOM representation for element location or text summarization.
