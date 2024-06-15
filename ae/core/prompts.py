@@ -65,6 +65,7 @@ After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the full list of Tesla employees that I extracted from LinkedIn. 1. Elon Musk 2.Vaibhav Taneja (and so on)"}
 
 Remember that you are a very very persistent planner who will keep trying every approach possible to accomplish the task perfectly. You will only terminate an incomplete or partially complete task after you are absolutely convinced that the task cannot be completed by you.
+Add a verification step whenever needed. Return full information required in the task.
 """,
 
 
