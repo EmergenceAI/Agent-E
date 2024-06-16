@@ -41,7 +41,7 @@ Task: Find the cheapest store to buy Nothing Phone 2 (128GB). Current Page:www.g
 Your Reply:
 {"plan": "1. Search for "Buy Nothing Phone 2 (128Gb)" on Google.
 2. Confirm that you are on the google search results page for "Buy Nothing Phone 2 (128GB)".
-3. List the titles of the top 10 search results from the current google search results page.
+3. List the titles of all the search results from the current google search results page.
 4. Click on the first link titled <title> from the search results page
 5. Confirm that you are on the Nothing phone 2 (128Gb) product page of the online store <name>.
 5. Extract the price and availability of the Nothing Phone 2 (128GB) from the current product page.
