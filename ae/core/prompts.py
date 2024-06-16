@@ -56,11 +56,11 @@ After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 price list on the top 10 online stores: <price list>. The cheapest store is <store name> with price <price>."}
 
 Example 2:
-Task: Find the cheapest flight from Helsinki to Stockholm on 15 August 2024. Current page: www.skyscanner.com
-{"plan":"1. List the interactive elements available on skyscanner page relevant for flight reservation.
-2. Select the journey option to one-way.
-3. Set number of passengers to 1.
-4. Set the departure date to 15 August 2024.
+Task: Find the cheapest flight from Helsinki to Stockholm on 15 March. Current page: www.skyscanner.com
+{"plan":"1. List the interactive elements available on skyscanner page relevant for flight reservation along with their default values.
+2. Select the journey option to one-way (if not default).
+3. Set number of passengers to 1 (if not default).
+4. Set the departure date to 15 March 2025 (since 15 March 2024 is already past).
 5. Set from airport to ""Helsinki".
 6. Set destination airport tas Stockhokm
 7. Confirm that current values in the source airport, destination airport and departure date fields are Helsinki, Stockholm and 15 August 2024 respectively.
