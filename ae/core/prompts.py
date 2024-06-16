@@ -57,7 +57,7 @@ Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 p
 
 Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
 Revise search query if needed, ask for more information if needed, and always verify the results before terminating the task.
-Unless explicitly stated, you must provide a single best answer in the final_response to the user query instead of list of options/matches.""",
+When there are multiple answers or matches to the query, you must provide the single best suited match in the final_response to the user query instead of multiple options/matches.""",
 
    "BROWSER_AGENT_PROMPT": """You will perform web navigation tasks, which may include logging into websites and interacting with any web content using the functions made available to you.
    Use the provided DOM representation for element location or text summarization.
