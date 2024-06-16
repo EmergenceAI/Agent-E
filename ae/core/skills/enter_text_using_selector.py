@@ -174,6 +174,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
+            await asyncio.sleep(0.1)
             await press_key_combination("Control+A")
             await asyncio.sleep(0.1)
             await press_key_combination("Backspace")

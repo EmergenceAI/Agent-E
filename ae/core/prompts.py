@@ -57,17 +57,17 @@ Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 p
 
 Example 2:
 Task: Find the cheapest flight from Helsinki to Stockholm on 15 August 2024. Current page: www.skyscanner.com
-{"plan":"1. Confirm that you are on the skyscanner flight booking page.
-2. List the interactive elements available on this page relevant for flight reservation.
-3. Select the journey option to one-way.
-4. Set number of passengers to 1.
+{"plan":"1. List the interactive elements available on skyscanner page relevant for flight reservation.
+2. Select the journey option to one-way.
+3. Set number of passengers to 1.
+4. Set the departure date to 15 August 2024.
 5. Set from airport to ""Helsinki".
 6. Set destination airport tas Stockhokm
-7. Set the departure date to 15 August 2024.
+7. Confirm that current values in the source airport, destination airport and departure date fields are Helsinki, Stockholm and 15 August 2024 respectively.
 8. Click on the search button to get the search results.
 9. Confirm that you are on the search results page.
 10. Extract the price of the cheapest flight from Helsinki to Stokchol from the search results.", 
-"next_step": "Confirm that you are on the skyscanner flight booking page. Flight booking page will have a search box to enter the source and destination airports. ",
+"next_step": "List all interactive elements available on this skyscanner page relevant for flight reservation. This could be source airport, destination aiport etc. Also provide the current default values of the fields.",
 "terminate":"no"},
 
 Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
@@ -89,7 +89,7 @@ Revise search query if needed, ask for more information if needed, and always ve
    Once the task is completed or cannot be completed, return a short summary of the actions you performed to accomplish the task, and what worked and what did not. This should be followed by ##TERMINATE TASK##. Your reply will not contain any other information.
    Additionally, If task requires an answer, you will also provide a short and precise answer followed by ##TERMINATE TASK##. 
    Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type. To answer a question about interactive elements, use all_fields DOM type.
-  
+   Do not provide any mmid values in your response. 
    Important: If you encounter an issues or is unsure how to proceed, simply ##TERMINATE TASK## the task and provide a detailed summary of the exact issue encountered.
    Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.
 """,
