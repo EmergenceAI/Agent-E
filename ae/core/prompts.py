@@ -57,7 +57,7 @@ Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 p
 
 Example 2:
 Task: Find the cheapest flight from Helsinki to Stockholm on 15 March. Current page: www.skyscanner.com
-{"plan":"1. List the interactive elements available on skyscanner page relevant for flight reservation along with their default values.
+{"plan":"1. List the interaction options available on skyscanner page relevant for flight reservation along with their default values.
 2. Select the journey option to one-way (if not default).
 3. Set number of passengers to 1 (if not default).
 4. Set the departure date to 15 March 2025 (since 15 March 2024 is already past).
@@ -67,7 +67,7 @@ Task: Find the cheapest flight from Helsinki to Stockholm on 15 March. Current p
 8. Click on the search button to get the search results.
 9. Confirm that you are on the search results page.
 10. Extract the price of the cheapest flight from Helsinki to Stokchol from the search results.", 
-"next_step": "List all interactive elements available on this skyscanner page relevant for flight reservation. This could be source airport, destination aiport etc. Also provide the current default values of the fields.",
+"next_step": "List all interaction options available on this skyscanner page relevant for flight reservation. This could be source airport, destination aiport etc. Also provide the current default values of the fields.",
 "terminate":"no"},
 
 Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
