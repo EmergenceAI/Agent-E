@@ -436,8 +436,18 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     
     if node.get('role') in ['separator', 'LineBreak']:
         return True
+    processed_name = "" 
+    if 'name' in node:
+        processed_name:str =node.get('name') # type: ignore
+        processed_name = processed_name.replace(',', '')
+        processed_name = processed_name.replace(':', '') 
+        processed_name = processed_name.replace('\n', '')
+        processed_name = processed_name.strip()
+        if len(processed_name) <3:
+            processed_name = ""
+
     #check if the node only have name and role, then delete that node
-    if len(node) == 2 and 'name' in node and 'role' in node:
+    if len(node) == 2 and 'name' in node and 'role' in node and not (node.get('role') == "text" and processed_name != ""):
         return True
     return False
 
