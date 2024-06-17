@@ -1,10 +1,8 @@
 import inspect
 from typing import Annotated
-
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 
-#Annotated[Page, "The page instance that navigated to the specified URL."]
 
 async def openurl(url: Annotated[str, "The URL to navigate to. Value must include the protocol (http:// or https://)."],
             timeout: Annotated[int, "Additional wait time in seconds after initial load."] = 3) -> Annotated[str, "Returns the result of this request in text form"]:
@@ -20,7 +18,6 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     - URL of the new page.
     """
     logger.info(f"Opening URL: {url}")
-
     browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
     await browser_manager.get_browser_context()
     page = await browser_manager.get_current_page()
@@ -38,8 +35,10 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
     await browser_manager.notify_user(f"Opened URL: {url}")
-    return f"Page loaded: {page.url.split('?')[0]}" # type: ignore
-
+        # Get the page title
+    title = await page.title()
+    url=page.url
+    return f"Page loaded: {url}, Title: {title}" # type: ignore
 
 def ensure_protocol(url: str) -> str:
     """

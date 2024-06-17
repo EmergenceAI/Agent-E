@@ -15,6 +15,7 @@ from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
+
 @dataclass
 class EnterTextEntry:
     """
@@ -62,11 +63,12 @@ async def custom_fill_element(page: Page, selector: str, text_to_enter: str):
     selector = f"{selector}"  # Ensures the selector is treated as a string
     await page.evaluate("""(inputParams) => {
         const selector = inputParams.selector;
-        const text_to_enter = inputParams.text_to_enter;
+        let text_to_enter = inputParams.text_to_enter;
+        text_to_enter = text_to_enter.trim();
         document.querySelector(selector).value = text_to_enter;
     }""", {"selector": selector, "text_to_enter": text_to_enter})
 
-async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
+async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute e.g. [mmid='114']) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
     """
     Enters text into a DOM element identified by a CSS selector.
 
@@ -111,6 +113,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     await browser_manager.take_screenshots(f"{function_name}_start", page)
 
     await browser_manager.highlight_element(query_selector, True)
+
     dom_changes_detected=None
     def detect_dom_changes(changes:str): # type: ignore
         nonlocal dom_changes_detected
@@ -126,11 +129,11 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
+        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action of entering text {text_to_enter} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
-async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=False):
+async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboard_fill: bool=True):
     """
     Performs the text entry operation on a DOM element.
 
@@ -157,6 +160,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         - If 'use_keyboard_fill' is set to False, the function uses the 'custom_fill_element' method to enter the text.
     """
     try:
+            
         logger.debug(f"Looking for selector {selector} to enter text: {text_to_enter}")
 
         elem = await page.query_selector(selector)
@@ -170,19 +174,20 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
 
         if use_keyboard_fill:
             await elem.focus()
+            await asyncio.sleep(0.1)
             await press_key_combination("Control+A")
             await asyncio.sleep(0.1)
             await press_key_combination("Backspace")
+            await asyncio.sleep(0.1)
             logger.debug(f"Focused element with selector {selector} to enter text")
-            await page.keyboard.type(text_to_enter, delay=2)
+            #add a 100ms delay
+
+            await page.keyboard.type(text_to_enter, delay=4)
         else:
             await custom_fill_element(page, selector, text_to_enter)
-        logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         await elem.focus()
-        await page.keyboard.type("") # some html pages can have placeholders that only disappear upon keyboard input
-        await asyncio.sleep(1)
+        logger.info(f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}")
         success_msg = f"Success. Text \"{text_to_enter}\" set successfully in the element with selector {selector}"
-        
         return {"summary_message": success_msg, "detailed_message": f"{success_msg} and outer HTML: {element_outer_html}."}
 
     except Exception as e:
