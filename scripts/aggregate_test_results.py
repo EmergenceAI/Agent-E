@@ -2,10 +2,30 @@ import argparse
 import json
 import os
 from collections import Counter
+from collections import defaultdict
 from typing import Any
 
+import pandas as pd
 
-def find_and_read_json_files(test_results_dir: str, target_directory_name: str):
+URL_ALIAS_MAP = {
+    "https://www.allrecipes.com/": "Allrecipes",
+    "https://www.amazon.com/": "Amazon",
+    "https://www.apple.com/": "Apple",
+    "https://arxiv.org/": "Arxiv",
+    "https://www.bbc.com/news/": "BBC",
+    "https://www.booking.com/": "Booking",
+    "https://dictionary.cambridge.org/": "Dictionary",
+    "https://www.coursera.org/": "Coursera",
+    "https://www.espn.com/": "ESPN",
+    "https://github.com/": "GitHub",
+    "https://www.google.com/travel/flights/": "Flights",
+    "https://www.google.com/maps/": "Maps",
+    "https://www.google.com/": "Google",
+    "https://huggingface.co/": "Hugging Face",
+    "https://www.wolframalpha.com/": "Wolfram"
+}
+
+def find_and_read_json_files(test_results_dir: str, target_directory_name: str) -> list[dict[str, Any]]:
     result_data: list[dict[str, Any]] = []
 
     # Walk through the test results directory
@@ -14,12 +34,11 @@ def find_and_read_json_files(test_results_dir: str, target_directory_name: str):
         if target_directory_name in root:
             # If found, iterate through the files in that directory
             for file in files:
-                print("Just saw file: ", file)
                 if file.endswith('.json'):
                     file_path = os.path.join(root, file)
-                    print("Reading contents of file: ", file_path)
                     # Read the JSON file and append its contents to the result_data list
                     with open(file_path, 'r') as json_file:
+                        print(f"Reading file: {file_path}")
                         try:
                             data = json.load(json_file)
                             result_data.append(data)
@@ -28,24 +47,33 @@ def find_and_read_json_files(test_results_dir: str, target_directory_name: str):
 
     return result_data
 
-def save_to_json_file(data: list[dict[str, Any]], output_file: str):
+def save_to_json_file(data: Any, output_file: str):
     with open(output_file, 'w') as json_output_file:
         json.dump(data, json_output_file, indent=4)
 
-def count_scores(data):
-    score_counter = Counter()
+def extract_alias(url: str) -> str:
+    for known_url, alias in URL_ALIAS_MAP.items():
+        if url.startswith(known_url):
+            return alias
+    return "Unknown"
+
+def count_scores_by_alias(data: list[dict[str, Any]]):
+    alias_score_counter = defaultdict(Counter)
+    overall_score_counter = Counter()
     for entry in data:
         score = entry.get('score')
+        start_url = entry.get('start_url')
         if score is not None:
-            score_counter[score] += 1
-    return score_counter
+            overall_score_counter[score] += 1
+            if start_url:
+                alias = extract_alias(start_url)
+                alias_score_counter[alias][score] += 1
+    return alias_score_counter, overall_score_counter
 
-def calculate_percentages(score_counter, total_count):
-    score_percentages = {}
-    for score, count in score_counter.items():
-        percentage = (count / total_count) * 100
-        score_percentages[score] = (percentage, count)
-    return score_percentages
+def calculate_percentages(score_counter: Counter) -> dict[str, float]:
+    total_count = sum(score_counter.values())
+    score_percentages = {score: (count / total_count) * 100 for score, count in score_counter.items()}
+    return score_percentages, total_count
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process some JSON files.")
@@ -77,20 +105,60 @@ if __name__ == "__main__":
     # Sort the compiled data by 'task_index'
     sorted_data: list[dict[str, Any]] = sorted(compiled_data, key=lambda x: x.get('task_index', -1))
 
-    print("Number of records found: ", len(sorted_data))
+    print(f"Number of records found: {len(sorted_data)}")
     # Save the compiled data to a JSON file
     save_to_json_file(sorted_data, output_file_path)
 
-    # Count the scores
-    score_counts = count_scores(sorted_data)
+    # Count the scores by alias and overall
+    alias_score_counts, overall_score_counts = count_scores_by_alias(sorted_data)
 
-    # Calculate percentages
-    total_scores = sum(score_counts.values())
-    score_percentages = calculate_percentages(score_counts, total_scores)
+    # Calculate percentages by alias and overall
+    alias_score_percentages = {
+        alias: calculate_percentages(score_counter)
+        for alias, score_counter in alias_score_counts.items()
+    }
+    overall_score_percentages, overall_total = calculate_percentages(overall_score_counts)
 
-    # Print the results
-    print(f"Compiled and sorted data has been saved to: {output_file_path}")
-    print("Score counts and percentages:")
-    for score, (percentage, count) in score_percentages.items():
-        print(f"{score}: {percentage:.2f}% ({count})")
+    # Save the alias score percentages to a JSON file
+    output_results = {
+        "overall": {
+            "percentages": overall_score_percentages,
+            "counts": dict(overall_score_counts),
+            "total": overall_total
+        },
+        "by_alias": {
+            alias: {
+                "percentages": percentages,
+                "counts": dict(alias_score_counts[alias]),
+                "total": total
+            }
+            for alias, (percentages, total) in alias_score_percentages.items()
+        }
+    }
+    alias_output_file_path = os.path.join(args.test_results_dir, "alias_score_percentages.json")
+    save_to_json_file(output_results, alias_output_file_path)
 
+    # Print the overall results to the command line
+    print("\nOverall Score Percentages and Counts:")
+    print(f"{'Score':<10}{'Percentage':<15}{'Count':<10}")
+    for score, percentage in overall_score_percentages.items():
+        count = overall_score_counts[score]
+        print(f"{score:<10}{percentage:.2f}%{count:<10}")
+
+    # Prepare data for DataFrame
+    data = []
+    for score in sorted(set(overall_score_counts.keys()).union(*[alias_score_counts[alias].keys() for alias in alias_score_counts])):
+        row = {"Score": score}
+        row["Overall"] = f"{overall_score_percentages.get(score, 0):.2f}% ({overall_score_counts.get(score, 0)})"
+        for alias in sorted(URL_ALIAS_MAP.values()):
+            percentages, _ = alias_score_percentages.get(alias, ({}, 0))
+            counts = alias_score_counts.get(alias, {})
+            row[alias] = f"{percentages.get(score, 0):.2f}% ({counts.get(score, 0)})"
+        data.append(row)
+
+    # Create DataFrame and save to HTML
+    df = pd.DataFrame(data)
+    html_output_file = os.path.join(args.test_results_dir, "benchmark_report.html")
+    df.to_html(html_output_file, index=False)
+
+    print(f"\nBenchmark report has been saved to: {html_output_file}")
