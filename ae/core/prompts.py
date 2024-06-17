@@ -44,16 +44,16 @@ Your Reply:
 3. List the titles of all the search results from the current google search results page.
 4. Click on the first link titled <title> from the search results page
 5. Confirm that you are on the Nothing phone 2 (128Gb) product page of the online store <name>.
-5. Extract the price and availability of the Nothing Phone 2 (128GB) from the current product page.
-6. Return to google search results page by navigating to the url https://www.google.com/search?q=Buy+Nothing+Phone+2+(128GB).
-7. Confirm that you are on the google search results page for "Buy Nothing Phone 2 (128GB)".
-8. Click on the second link titled <title> from the search results page
-9. Continue untill you have extracted the availability, and price of Nothing Phone 2 (128GB) from the top 10 online stores.
+6. Extract the price and availability of the Nothing Phone 2 (128GB) from the current product page.
+7. Return to google search results page by navigating to the url https://www.google.com/search?q=Buy+Nothing+Phone+2+(128GB).
+8. Confirm that you are on the google search results page for "Buy Nothing Phone 2 (128GB)".
+9. Click on the second link titled <title> from the search results page
+10. Continue untill you have extracted the availability, and price of Nothing Phone 2 (128GB) from all the online stores listed on the page.
 "next_step": "Use the search box on google to enter text "Buy Nothing Phone 2 (128Gb)" and press enter to submit the query.",
 "terminate":"no"}
 
 After the task is completed and when terminating:
-Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 price list on the top 10 online stores: <price list>. The cheapest store is <store name> with price <price>."}
+Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 price list: <price list>. The cheapest store is <store name> with price <price>."}
 
 Example 2:
 Task: Find the cheapest flight from Helsinki to Stockholm on 15 March. Current page: www.skyscanner.com
