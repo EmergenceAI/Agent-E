@@ -51,26 +51,43 @@ function injectOveralyStyles() {
   }
 
   #closebutton{
-    width:25px;
-    height:25px;
-    min-width:25px;
-    min-height:25px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    width:30px;
+    height:30px;
+    min-width:30px;
+    min-height:30px;
+    margin-left: auto;
     color:darkgray;
     cursor: pointer;
-    border: 1px solid lightgray;
     z-index: 20000001;
     background: white;
-
+    transition: transform 0.2s ease; 
   }
   #closebutton:hover{
-    border: 1px solid orange;
-    color:black;
-    font-weight: bold;
+    transform: scale(1.1);
   }
 
+  #closebutton:active{
+    transform: scale(1.5);
+    transform: rotate(90deg);
+  }
+
+  @keyframes gradient-animation {
+  0% {background-position: 100% 0%}
+  100% {background-position: 15% 100%}
+  }
+
+  .animateline {
+    background: linear-gradient(45deg, 
+                                rgba(255, 0, 0, 1) 0%,    /* Red */
+                                rgba(255, 127, 0, 1) 25%,  /* Orange */
+                                rgba(0, 255, 0, 1) 50%,    /* Green */
+                                rgba(0, 0, 255, 1) 75%,    /* Blue */
+                                rgba(255, 0, 0, 1) 90%,    /* Red */
+                                rgba(255, 0, 0, 1) 100%    /* Red */
+                                );
+    background-size: 500% 100%;
+    animation: gradient-animation 2s linear infinite;
+  }
   .collapsed{
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.1);
@@ -92,6 +109,8 @@ function injectOveralyStyles() {
     height:60vh;
     bottom: 2vh;
     position: relative;
+    display: flex;
+    flex-direction: column;
     top: 6%;
     box-sizing: border-box; /* Include padding in the width and height calculations */
   } 
@@ -166,8 +185,6 @@ function injectOveralyStyles() {
     border: 1px solid #ccc;
     bottom:3px;
     right:5px;
-    padding: 1%;
-    padding-top:30px;
     background: rgba(255, 255, 255, 1.0);
   }
   #chat-box {
@@ -192,6 +209,8 @@ function injectOveralyStyles() {
     z-index:20000000;
     scrollbar-color: gray lightgray; 
     margin-bottom: 1%;
+    display: flex;
+    flex-direction: column;
   }
 
   .agent1{
@@ -277,6 +296,8 @@ function injectOveralyStyles() {
     100% { border-color: rgba(128, 0, 128, 0); }
   }
   
+
+
   .ui_automation_pulsate {
     border-width: 2px !important;
     border-style: solid !important;
@@ -345,7 +366,20 @@ function createIcon(className) {
   return icon;
 }
 
+function animateLine() {
+  let element = document.getElementById("line-animation");
+  element.add.classList("animateline");
+}
+function stopAnimateLine(){
+
+  let element = document.getElementById("line-animation");
+  element.remove.classList("animateline");
+}
+
 function showExpandedOverlay() {
+  let agente_logo = `<svg width="85" height="12" viewBox="0 0 85 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 11.8027L3.43562 0.213699H8.35069L11.8027 11.8027H9.3863L8.23562 7.85753H3.53425L2.38356 11.8027H0ZM4.10959 5.86849H7.66027L6.18082 0.80548H5.58904L4.10959 5.86849Z" fill="#6B6673"/><path d="M19.0946 12C15.6096 12 13.7028 9.56712 13.7028 6.09863C13.7028 2.4 15.9055 0 19.4562 0C22.4151 0 24.5685 1.70959 24.9631 4.35616H22.6124C22.3822 2.87671 21.2151 1.9726 19.5713 1.9726C17.3192 1.9726 16.0535 3.58356 16.0535 6.09863C16.0535 8.35068 17.0726 10.011 19.637 10.011C21.7576 10.011 22.974 8.94247 22.974 7.15068H19.374V5.40822H23.9768C24.8151 5.40822 25.2918 5.85205 25.2918 6.69041V11.8027H23.0069V10.7671L23.4672 8.92603H22.8589C22.8754 9.6 22.4973 12 19.0946 12Z" fill="#6B6673"/><path d="M28.7192 11.8027V0.213699H37.3987V2.20274H31.0206V5.04658H36.5768V6.95342H31.0206V9.8137H37.3987V11.8027H28.7192Z" fill="#6B6673"/><path d="M40.533 11.8027V0.213699H45.0536L49.1631 11.211H49.7385L49.3275 9.76438V0.213699H51.6125V11.8027H47.0919L42.9823 0.80548H42.3905L42.8179 2.25205V11.8027H40.533Z" fill="#6B6673"/><path d="M54.4378 0.213699H64.4159V2.20274H60.5693V11.8027H58.2844V2.20274H54.4378V0.213699Z" fill="#6B6673"/><path d="M63.9401 6.6411H72.4551V8.30137H63.9401V6.6411Z" fill="#6B6673"/><path d="M75.3643 11.8027V0.213699H84.0438V2.20274H77.6657V5.04658H83.2219V6.95342H77.6657V9.8137H84.0438V11.8027H75.3643Z" fill="#6B6673"/></svg>`;
+  let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 5L5 19" stroke="#827C8C" stroke-width="1.5"/><path d="M19 19L5 5" stroke="#827C8C" stroke-width="1.5"/></svg>`
+  
   removeOverlay();
   window.overlay_state_changed(false);
   console.log("showing  expanded overlay");
@@ -355,16 +389,42 @@ function showExpandedOverlay() {
   newDiv.classList.add("agentDriveAutoOverlay");
   newDiv.setAttribute("aria-hidden", "true");
 
+  let header = document.createElement("div");
+  header.style.display = "flex";
+  header.style.flexDirection = "row";
+  header.style.margin = "3% 4%";
+  let logoDiv = document.createElement("div");
+  logoDiv.style.width = "100px";
+  logoDiv.style.height = "25px";
+  logoDiv.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(agente_logo)}')`;
+  logoDiv.style.backgroundRepeat = "no-repeat";
+  logoDiv.style.backgroundSize = "contain";
+  logoDiv.style.backgroundPosition = "bottom";
+  // Style the logoDiv and button
+  logoDiv.style.order = 1;
+
   let closeButton = document.createElement("button");
   closeButton.id = "closebutton";
-  closeButton.textContent = "X";
+  closeButton.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(close_icon)}')`;
+  closeButton.style.backgroundRepeat = "no-repeat";
+  closeButton.style.backgroundSize = "contain";
+  closeButton.style.backgroundPosition = "bottom";
   closeButton.onclick = function () {
     showCollapsedOverlay();
   };
-
+  closeButton.style.order = 2;
+  header.appendChild(logoDiv);
+  header.appendChild(closeButton);
   // Append the close button to the newDiv
-  newDiv.appendChild(closeButton);
+  newDiv.appendChild(header);
 
+  let animation = document.createElement("div");
+  animation.id = "line-animation";
+  animation.style.height = "2px";
+  animation.style.width = "100%";
+  animation.style.backgroundColor = "rgba(128, 0, 128, 0.5)";
+  animation.classList.add("animateline");
+  newDiv.appendChild(animation);
   let chatContainer = document.createElement("div");
   chatContainer.className = "chat-container";
 
@@ -514,7 +574,6 @@ function addMessage(message, sender) {
   }
 }
 
-
 function addSystemMessage(message, is_awaiting_user_response = false) {
   awaitingUserResponse = is_awaiting_user_response;
   addMessage(message, "system");
@@ -523,7 +582,6 @@ function addSystemMessage(message, is_awaiting_user_response = false) {
 function addUserMessage(message) {
   addMessage(message, "user");
 }
-
 
 function disableOverlay() {
   let element = document.getElementById("agentDriveAutoOverlay");
