@@ -34,7 +34,7 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
-    await browser_manager.notify_user(f"Opened URL: {url}")
+    #await browser_manager.notify_user(f"Opened URL: {url}")
         # Get the page title
     title = await page.title()
     url=page.url

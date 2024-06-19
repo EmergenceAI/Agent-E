@@ -8,9 +8,7 @@ def parse_response(message: str) -> Dict[str, Any]:
     # Parse the response content
     json_response = {}
     raw_messgae = message
-    message = message.replace("\n", "\\n") # type: ignore
-    # replace all \\n 
-    message = message.replace("\\n", "")
+   
     #if message starts with ``` and ends with ``` then remove them
     if message.startswith("```"):
         message = message[3:]
@@ -25,6 +23,9 @@ def parse_response(message: str) -> Dict[str, Any]:
     except:
         # If the response is not a valid JSON, try pass it using string matching. 
         #This should seldom be triggered
+
+        message = message.replace("\\n", "")
+        message = message.replace("\n", "") # type: ignore
         print(f"Error parsing JSON response {raw_messgae}. Attempting to parse using string matching.")
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")

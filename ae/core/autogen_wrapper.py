@@ -24,7 +24,9 @@ from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialF
 from ae.utils.response_parser import parse_response
 from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
-from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
 nest_asyncio.apply()  # type: ignore
 
 class AutogenWrapper:
@@ -103,14 +105,13 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
-                print_message_from_planner("Plan: "+ plan)
-            print(f"Next Step: {next_step}")
+                notify_plan(plan, level="plan")
             if next_step is None: 
-                print_message_from_planner("Received no response, terminating..") # type: ignore
+                notify_plan("Received no response, terminating..") # type: ignore
                 print("Trigger nested chat returned False")
                 return False
             else:
-                print_message_from_planner(next_step) # type: ignore
+                notify_plan(next_step, level="step") # type: ignore
                 return True 
 
         
@@ -126,7 +127,7 @@ class AutogenWrapper:
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 last_message=last_message+" "+  get_url() # type: ignore
-                print_message_from_planner("Response: "+ last_message) # type: ignore
+                #print_message_from_planner("Response: "+ last_message) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
         
@@ -237,8 +238,11 @@ class AutogenWrapper:
                 try:
                     content_json = parse_response(content)
                     _terminate = content_json.get('terminate', "no")
+                    final_response = content_json.get('final_response', None)
                     if(_terminate == "yes"):
                         should_terminate = True
+                        if final_response:
+                            notify_plan("Response: "+ final_response)
                 except json.JSONDecodeError:
                     print("Error decoding JSON content")
                     should_terminate = True

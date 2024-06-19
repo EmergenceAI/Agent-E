@@ -61,6 +61,7 @@ function injectOveralyStyles() {
     z-index: 20000001;
     background: white;
     transition: transform 0.2s ease; 
+    border: None;
   }
   #closebutton:hover{
     transform: scale(1.1);
@@ -766,7 +767,7 @@ function addMessage(message, sender) {
 
   let iconDiv2 = document.createElement("div");
   iconDiv2.classList.add("icon");
-
+  console.log("Message is", message);
   newDiv.appendChild(iconDiv1);
   newDiv.appendChild(chatDiv);
   newDiv.appendChild(iconDiv2);
@@ -782,11 +783,12 @@ function addMessage(message, sender) {
   if (sender === "system") {
     iconDiv1.classList.add("agent1");
     chatDiv.classList.add("agent1text", "pre-line");
-    chatDiv.innerText = parsedMessage;
+
+    chatDiv.textContent = parsedMessage;
   } else if (sender === "user") {
     iconDiv2.classList.add("user");
     chatDiv.classList.add("usertext", "pre-line");
-    chatDiv.innerText = parsedMessage;
+    chatDiv.textContent = parsedMessage;
   }
 
   let chatBox = document.getElementById('chat-box');

@@ -51,7 +51,7 @@ async def enter_text_and_click(
 
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
 
-    await browser_manager.notify_user(text_entry_result["summary_message"])
+    #await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         await browser_manager.take_screenshots(f"{function_name}_end", page)
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
@@ -63,16 +63,16 @@ async def enter_text_and_click(
         do_press_key_combination_result = await do_press_key_combination(browser_manager, page, "Enter")
         if do_press_key_combination_result:
             result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
-            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
+            #await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
         else:
             result["detailed_message"] += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
-            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
+            #await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
     else:
         await browser_manager.highlight_element(click_selector, True)
 
         do_click_result = await do_click(page, click_selector, wait_before_click_execution)
         result["detailed_message"] += f' {do_click_result["detailed_message"]}'
-        await browser_manager.notify_user(do_click_result["summary_message"])
+        #await browser_manager.notify_user(do_click_result["summary_message"])
 
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
 

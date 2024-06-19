@@ -128,7 +128,7 @@ class SystemOrchestrator:
                 print("Last message:", last_message)
                 if last_message and "terminate" in last_message and last_message["terminate"]=="yes":
                     print("Notifying the user and Terminating the session")
-                    await self.browser_manager.notify_user(last_message)
+                    await self.browser_manager.notify_user(last_message) # type: ignore
 
               
             await self.browser_manager.notify_user(f"Completed ({elapsed_time}s).") # type: ignore

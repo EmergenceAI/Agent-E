@@ -65,8 +65,8 @@ async def final_reply_callback_browser_agent(recipient: autogen.ConversableAgent
     return False, None
 
 
-def final_reply_callback_planner_agent(plan:str): # type: ignore 
+def final_reply_callback_planner_agent(plan:str, level:str = "others"): # type: ignore 
             browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(browser_manager.notify_user(plan))
+            loop.run_until_complete(browser_manager.notify_user(plan, level))
             return False, None  # required to ensure the agent communication flow continues

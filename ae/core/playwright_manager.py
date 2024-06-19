@@ -11,6 +11,7 @@ from ae.core.ui_manager import UIManager
 from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
 from ae.utils.js_helper import escape_js_message
+from ae.utils.js_helper import beautify_plan_message
 from ae.utils.logger import logger
 
 # Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
@@ -264,15 +265,23 @@ class PlaywrightManager:
         await context.expose_function('user_response', self.receive_user_response) # type: ignore
 
 
-    async def notify_user(self, message: str):
+    async def notify_user(self, message: str, message_type: str = "others"):
         """
         Notify the user with a message.
 
         Args:
             message (str): The message to notify the user with.
+            message_type (str, optional): The type of message. Defaults to "plan", other values are "step",  "actions",  "answer", "question" and "others". To Do: Convert to Enum.
         """
         logger.debug(f"Notification: \"{message}\" being sent to the user.")
+        print(f"Notification: \"{message}\" being sent to the user.")
+        if message_type == "plan":
+            message = beautify_plan_message(message)
+            message = "Here is the plan: \n" + message
+        if message_type == "step":
+            message = "Step: " + message
         safe_message = escape_js_message(message)
+        print(f"Safe message: {safe_message}")
         self.ui_manager.new_system_message(safe_message)
         try:
             js_code = f"addSystemMessage({safe_message}, false);"
