@@ -52,7 +52,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.take_screenshots(f"{function_name}_end", page)
-    await browser_manager.notify_user(result["summary_message"])
+    #await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
         return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action to click {selector} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."

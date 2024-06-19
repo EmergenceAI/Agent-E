@@ -101,13 +101,16 @@ class AutogenWrapper:
             content:str=manager.last_message()["content"] # type: ignore
             content_json=parse_response(content)
             next_step = content_json.get('next_step', None)
+            plan = content_json.get('plan', None)
+            if plan is not None:
+                print_message_from_planner("Plan: "+ plan)
             print(f"Next Step: {next_step}")
             if next_step is None: 
                 print_message_from_planner("Received no response, terminating..") # type: ignore
                 print("Trigger nested chat returned False")
                 return False
             else:
-                print_message_from_planner("Next Step: "+ next_step) # type: ignore
+                print_message_from_planner(next_step) # type: ignore
                 return True 
 
         
