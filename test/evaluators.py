@@ -9,6 +9,8 @@ from test.test_utils import evaluate_exact_match
 from test.test_utils import evaluate_fuzzy_match
 from test.test_utils import evaluate_must_include
 from test.test_utils import evaluate_ua_match
+from test.test_utils import list_items_in_folder
+from test.test_utils import compress_png
 from typing import Any
 
 from ae.utils.logger import logger
@@ -16,6 +18,7 @@ from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
 from termcolor import colored
 
+import os
 
 class Evaluator:
     """Base class for evaluation strategies.
@@ -396,6 +399,45 @@ class EvaluatorComb(Evaluator):
         return {"score": score, "reason": reason} # type: ignore
 
 
+class VQAEvaluator(Evaluator):
+    async def __call__(
+        self, 
+        task_config: dict[str, Any], 
+        page: Page, 
+        client: CDPSession, 
+        answer: str
+    ) -> float:
+        """Evaluates the current task using a VQA model
+        Parameters:
+            task_config (dict[str, Any]): The task configuration containing evaluation criteria.
+            page (Page): The Playwright page object for the current webpage.
+            client (CDPSession | None, optional): The Chrome DevTools Protocol session object.
+            answer (str | None, optional): Not used in this evaluator.
+        Returns:
+            float: 0.0 for failure and 1.0 if the VQA evaluates the task as complete
+        """
+        task_id = task_config["task_id"]
+        task = task_config["intent"]
+        state_seq: list[Any] = []
+        score = -1.0
+
+        # Get path to screenshots for the given task
+        test_folder = list_items_in_folder(f"{os. getcwd()}/test/logs/")[-1] # Get the most recent log folder, this may take look for the wrong folder TODO: fix to take correct folder
+        path_to_screenshots = f"{os. getcwd()}/test/logs/{test_folder}/log_for_task_{task_id}/snapshots"
+        screenshot_path_list = list_items_in_folder(path_to_screenshots) # type: ignore
+
+        # Load and compress screenshots
+        for screenshot_path in screenshot_path_list:
+            compress_png(screenshot_path)
+            state_seq.append({"id":task_id, "path_to_screenshot": screenshot_path}) 
+
+        #Calculate VQA Score
+        score_dict = validator.validate_task_vqa(state_seq, task) # type: ignore
+        score = score_dict["pred_task_completed"]
+
+        print(f"VQA score is {score}")
+        return {"score": score} 
+    
 def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
     """Creates and configures a composite evaluator based on the evaluation types specified in the configuration file.
 
@@ -425,6 +467,9 @@ def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
             case "manual":
                 logger.info("Adding manual evaluator")
                 evaluators.append(ManualContentEvaluator())
+            case "vqa":
+                logger.info("Adding vqa evaluator")
+                evaluators.append(VQAEvaluator())
             case _:
                 raise ValueError(f"eval_type {eval_type} is not supported")
 
