@@ -24,6 +24,9 @@ class UIManager:
     """
 
     overlay_is_collapsed: bool = True
+    overlay_processing_state: str = "init"  #init: initialised, processing: processing is ongoing, done: processing is done
+    overlay_show_steps:bool = False
+    
     conversation_history:list[dict[str, str]] = []
     __update_overlay_chat_history_running: bool = False
 
@@ -52,9 +55,9 @@ class UIManager:
             # Inject the JavaScript code into the page
             await frame.evaluate(js_code)
             if self.overlay_is_collapsed:
-                await frame.evaluate("showCollapsedOverlay();")
+                await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}');")
             else:
-                await frame.evaluate("showExpandedOverlay();")
+                await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}');")
             #update chat history in the overlay
             await self.update_overlay_chat_history(frame)
 
@@ -87,6 +90,19 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
+    async def update_processing_state(self, state: str, page: Page):
+        """
+        Updates the processing state of the overlay.
+
+        Args:
+            state (str): The processing state to update.
+        """
+        self.overlay_processing_state = state
+        try:
+            js_bool = str(self.overlay_is_collapsed).lower()
+            await page.evaluate(f"updateOverlayState('{self.overlay_processing_state}', {js_bool});")
+        except Exception as e:
+            logger.debug(f"JavaScript error: {e}")
         
     async def update_overlay_chat_history(self, frame_or_page: Frame | Page):
         """
@@ -122,6 +138,13 @@ class UIManager:
             self.__update_overlay_chat_history_running = False
   
 
+    def clear_conversation_history(self):
+        """
+        Clears the conversation history.
+        """
+        self.conversation_history = []
+        self.add_default_system_messages()
+    
     def get_conversation_history(self):
         """
         Returns the current conversation history.
@@ -139,6 +162,7 @@ class UIManager:
         Args:
             message (str): The message text to add.
         """
+
         self.conversation_history.append({"from":"user", "message":message})
 
 

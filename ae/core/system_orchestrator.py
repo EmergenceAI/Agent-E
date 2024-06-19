@@ -99,6 +99,7 @@ class SystemOrchestrator:
         Args:
             command (str): The command to process.
         """
+        print(f"Received command: {command}")
         if command.lower() == 'exit':
             await self.shutdown()
             return
@@ -107,10 +108,13 @@ class SystemOrchestrator:
             self.is_running = True
             start_time = time.time()
             current_url = await self.browser_manager.get_current_url() if self.browser_manager else None
+            self.browser_manager.ui_manager.clear_conversation_history() # type: ignore
             self.browser_manager.log_user_message(command) # type: ignore
 
             if self.autogen_wrapper:
+                await self.browser_manager.update_processing_state("processing") # type: ignore
                 await self.autogen_wrapper.process_command(command, current_url)
+                await self.browser_manager.update_processing_state("done") # type: ignore
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")

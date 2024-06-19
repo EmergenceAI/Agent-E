@@ -75,7 +75,33 @@ function injectOveralyStyles() {
   100% {background-position: 15% 100%}
   }
 
-  .animateline {
+  @keyframes rotate {
+    100% {
+      transform: rotate(1turn);
+    }
+  }
+  .processing{
+   background: linear-gradient(90deg, 
+                                rgba(255, 0, 0, 1) 0%,    /* Red */
+                                rgba(255, 127, 0, 1) 25%,  /* Orange */
+                                rgba(0, 255, 0, 1) 50%,    /* Green */
+                                rgba(0, 0, 255, 1) 75%,    /* Blue */
+                                rgba(255, 0, 0, 1) 90%,    /* Red */
+                                rgba(255, 0, 0, 1) 100%    /* Red */
+                                );
+    background-size: 200% 200%;
+    animation: rotate 2s linear infinite;
+  }
+  
+  .init{
+    background: lightgray;
+  }
+  
+  .done{
+  background: lightgreen;
+  }
+
+  .processingLine {
     background: linear-gradient(45deg, 
                                 rgba(255, 0, 0, 1) 0%,    /* Red */
                                 rgba(255, 127, 0, 1) 25%,  /* Orange */
@@ -87,18 +113,28 @@ function injectOveralyStyles() {
     background-size: 500% 100%;
     animation: gradient-animation 2s linear infinite;
   }
+
+  .initStateLine{
+  background: lightgray;
+  }
+
+  .doneStateLine{
+  background: lightgreen;
+  }
+
+
   .collapsed{
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.1);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  width: 5vh;
-  height: 5vh;
+  width: 6vh;
+  height: 6vh;
   border-radius: 50%;
   right: 1.5vw;
   bottom: 1.5vw;
-  padding: 0.5%;
+
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 20px
   }
 
@@ -196,7 +232,7 @@ function injectOveralyStyles() {
     overflow-y: auto;
     scrollbar-width: thin;
     height: 90%;
-    width:100%;
+    width:98%;
     display: flex;
     flex-direction: column;
     gap:1%;
@@ -366,21 +402,54 @@ function injectOveralyStyles() {
 }
 let savedSelection = null;
 
-function showCollapsedOverlay() {
+function showCollapsedOverlay(processing_state = "processing") {
   removeOverlay();
   window.overlay_state_changed(true);
-  let newDiv = document.createElement("div");
-  newDiv.id = "agentDriveAutoOverlay";
-  newDiv.classList.add("collapsed");
-  newDiv.setAttribute("aria-hidden", "true");
+  let collapsed_agente = document.createElement("div");
+  collapsed_agente.id = "agentDriveAutoOverlay";
+  collapsed_agente.classList.add("collapsed");
+  collapsed_agente.style.backgroundColor = "transparent";
+  collapsed_agente.setAttribute("aria-hidden", "true");
+  collapsed_agente.style.justifyContent = "center";
+  let wrapper = document.createElement("div");
+  wrapper.style.position = "relative";
+  wrapper.style.width = "6vh";
+  wrapper.style.height = "6vh";
+  wrapper.style.justifyContent = "center";
+  let logodiv= document.createElement("div");
+  logodiv.style.width = "5.4vh";
+  logodiv.style.height = "5.4vh";
+  logodiv.style.left = "0.3vh";
+  logodiv.style.top = "0.3vh";
+  let borderdiv = document.createElement("div");
+  borderdiv.style.width = "6vh";
+  borderdiv.style.height = "6vh";
+  borderdiv.style.borderRadius = "50%";
 
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" height="800" width="800" viewBox="0 0 64 64" xml:space="preserve"><style>.st3{fill:#fff}.st4{fill:#4f5d73}</style><g id="Layer_1"><circle cx="32" cy="32" r="32" fill="#9c27b0"/><path d="M52 32c0-9.9-9-18-20-18s-20 8.1-20 18c0 9.6 8.3 17.4 18.8 17.9.7 3.7 1.2 6.1 1.2 6.1s5-3 9.6-8.2C47.8 44.7 52 38.8 52 32z" fill="#231f20" opacity=".2"/><path class="st3" d="M49 28.8C49 43.8 32 54 32 54s-9.4-42 0-42 17 7.5 17 16.8z" fill="#000000"/><ellipse class="st3" cx="32" cy="30" rx="20" ry="18" fill="#000000"/><circle class="st4" cx="32" cy="30" r="2" fill="#000000"/><circle class="st4" cx="40" cy="30" r="2" fill="#000000"/><circle class="st4" cx="24" cy="30" r="2" fill="#000000"/></g></svg>`;
-  let encodedSvg = encodeURIComponent(svg);
+  let logo = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="7.5" width="11" height="11" rx="0.5" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 6 10)" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 20 10)" stroke="#827C8C"/><path d="M12 4V7.5" stroke="#827C8C" stroke-linecap="round"/><rect x="8.5" y="11.5" width="7" height="3" rx="1.5" stroke="#827C8C"/></svg>`;
+  let encodedSvg = encodeURIComponent(logo);
   let svgUrl = 'data:image/svg+xml;utf8,' + encodedSvg;
-
-  document.body.appendChild(newDiv);
+  logodiv.style.backgroundImage = `url("${svgUrl}")`;
+  logodiv.style.backgroundRepeat = "no-repeat";
+  logodiv.style.backgroundSize = "contain";
+  logodiv.style.borderRadius = "50%";
+  logodiv.style.backgroundPosition = "center";
+  logodiv.style.backgroundColor = "white";
+  logodiv.style.alignSelf = "center";
+  borderdiv.style.position = "absolute";
+  borderdiv.style.top = "0";
+  borderdiv.style.left = "0";
+  borderdiv.id="AgentEOverlayBorder";
+  logodiv.style.position = "absolute";
+  logodiv.style.justifySelf = "center";
+  wrapper.appendChild(borderdiv);
+  wrapper.appendChild(logodiv);
+  collapsed_agente.appendChild(wrapper);
+  document.body.appendChild(collapsed_agente);
+  
+  updateOverlayState(processing_state, true);
+  
   let element = document.getElementById('agentDriveAutoOverlay');
-  element.style.backgroundImage = `url("${svgUrl}")`;
   document.getElementById('agentDriveAutoOverlay').addEventListener('mouseover', function () {
     this.style.transform = 'scale(1.1)';
   });
@@ -389,7 +458,8 @@ function showCollapsedOverlay() {
     this.style.transform = 'scale(1)';
   });
   document.getElementById('agentDriveAutoOverlay').addEventListener('click', function () {
-    showExpandedOverlay();
+    let ui_state = document.getElementById("AgentEOverlayBorder").classList.contains("init") ? "init" : document.getElementById("AgentEOverlayBorder").classList.contains("processing") ? "processing" : "done";
+    showExpandedOverlay(ui_state);
   });
 }
 
@@ -425,18 +495,56 @@ function createIcon(className) {
 
 function animateLine() {
   let element = document.getElementById("line-animation");
-  element.add.classList("animateline");
+  element.add.classList("processingLine");
 }
 function stopAnimateLine(){
-
   let element = document.getElementById("line-animation");
-  element.remove.classList("animateline");
+  element.remove.classList("processingLine");
 }
 
-function showExpandedOverlay(loadingstate = "init") {
+function updateOverlayState(processing_state, is_collapsed) 
+{
+  if (is_collapsed) {
+    let borderdiv = document.getElementById("AgentEOverlayBorder");
+    if (processing_state=="init"){
+      borderdiv.classList.add("init");
+      borderdiv.classList.remove("processing");
+      borderdiv.classList.remove("done");
+    }
+    else if (processing_state=="processing"){
+      borderdiv.classList.remove("init");
+      borderdiv.classList.add("processing");
+      borderdiv.classList.remove("done");
+    }
+    else if (processing_state=="done"){
+      borderdiv.classList.remove("init");
+      borderdiv.classList.remove("processing");
+      borderdiv.classList.add("done");
+    }
+  } else {
+    let animation = document.getElementById("AgentEExpandedAnimation");
+    if (processing_state=="init"){
+      animation.classList.remove("processingLine");
+      animation.classList.add("initStateLine");
+      animation.classList.remove("doneStateLine");
+    }
+    else if (processing_state=="processing"){
+      animation.classList.add("processingLine");
+      animation.classList.remove("initStateLine");
+      animation.classList.remove("doneStateLine");
+    }
+    else if (processing_state=="done"){
+      animation.classList.remove("processingLine");
+      animation.classList.remove("initStateLine");
+      animation.classList.add("doneStateLine");
+    }
+  }
+}
+function showExpandedOverlay(processing_state = "init") {
+  ui_state = processing_state;
   let agente_logo = `<svg width="85" height="12" viewBox="0 0 85 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 11.8027L3.43562 0.213699H8.35069L11.8027 11.8027H9.3863L8.23562 7.85753H3.53425L2.38356 11.8027H0ZM4.10959 5.86849H7.66027L6.18082 0.80548H5.58904L4.10959 5.86849Z" fill="#6B6673"/><path d="M19.0946 12C15.6096 12 13.7028 9.56712 13.7028 6.09863C13.7028 2.4 15.9055 0 19.4562 0C22.4151 0 24.5685 1.70959 24.9631 4.35616H22.6124C22.3822 2.87671 21.2151 1.9726 19.5713 1.9726C17.3192 1.9726 16.0535 3.58356 16.0535 6.09863C16.0535 8.35068 17.0726 10.011 19.637 10.011C21.7576 10.011 22.974 8.94247 22.974 7.15068H19.374V5.40822H23.9768C24.8151 5.40822 25.2918 5.85205 25.2918 6.69041V11.8027H23.0069V10.7671L23.4672 8.92603H22.8589C22.8754 9.6 22.4973 12 19.0946 12Z" fill="#6B6673"/><path d="M28.7192 11.8027V0.213699H37.3987V2.20274H31.0206V5.04658H36.5768V6.95342H31.0206V9.8137H37.3987V11.8027H28.7192Z" fill="#6B6673"/><path d="M40.533 11.8027V0.213699H45.0536L49.1631 11.211H49.7385L49.3275 9.76438V0.213699H51.6125V11.8027H47.0919L42.9823 0.80548H42.3905L42.8179 2.25205V11.8027H40.533Z" fill="#6B6673"/><path d="M54.4378 0.213699H64.4159V2.20274H60.5693V11.8027H58.2844V2.20274H54.4378V0.213699Z" fill="#6B6673"/><path d="M63.9401 6.6411H72.4551V8.30137H63.9401V6.6411Z" fill="#6B6673"/><path d="M75.3643 11.8027V0.213699H84.0438V2.20274H77.6657V5.04658H83.2219V6.95342H77.6657V9.8137H84.0438V11.8027H75.3643Z" fill="#6B6673"/></svg>`;
-  let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10L10 10L10 5" stroke="#827C8C"/><path d="M19 14L14 14L14 19" stroke="#827C8C"/><path d="M14 5L14 10L19 10" stroke="#827C8C"/><path d="M10 19L10 14L5 14" stroke="#827C8C"/><path d="M6.35355 5.64645C6.15829 5.45118 5.84171 5.45118 5.64645 5.64645C5.45118 5.84171 5.45118 6.15829 5.64645 6.35355L6.35355 5.64645ZM10.3536 9.64645L6.35355 5.64645L5.64645 6.35355L9.64645 10.3536L10.3536 9.64645Z" fill="#827C8C"/><path d="M17.6464 18.3536C17.8417 18.5488 18.1583 18.5488 18.3536 18.3536C18.5488 18.1583 18.5488 17.8417 18.3536 17.6464L17.6464 18.3536ZM13.6464 14.3536L17.6464 18.3536L18.3536 17.6464L14.3536 13.6464L13.6464 14.3536Z" fill="#827C8C"/><path d="M18.3536 6.35355C18.5488 6.15829 18.5488 5.84171 18.3536 5.64645C18.1583 5.45119 17.8417 5.45119 17.6464 5.64645L18.3536 6.35355ZM14.3536 10.3536L18.3536 6.35355L17.6464 5.64645L13.6464 9.64645L14.3536 10.3536Z" fill="#827C8C"/><path d="M5.64645 17.6464C5.45118 17.8417 5.45118 18.1583 5.64645 18.3536C5.84171 18.5488 6.15829 18.5488 6.35355 18.3536L5.64645 17.6464ZM9.64645 13.6464L5.64645 17.6464L6.35355 18.3536L10.3536 14.3536L9.64645 13.6464Z" fill="#827C8C"/></svg>
-`
+  let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10L10 10L10 5" stroke="#827C8C"/><path d="M19 14L14 14L14 19" stroke="#827C8C"/><path d="M14 5L14 10L19 10" stroke="#827C8C"/><path d="M10 19L10 14L5 14" stroke="#827C8C"/><path d="M6.35355 5.64645C6.15829 5.45118 5.84171 5.45118 5.64645 5.64645C5.45118 5.84171 5.45118 6.15829 5.64645 6.35355L6.35355 5.64645ZM10.3536 9.64645L6.35355 5.64645L5.64645 6.35355L9.64645 10.3536L10.3536 9.64645Z" fill="#827C8C"/><path d="M17.6464 18.3536C17.8417 18.5488 18.1583 18.5488 18.3536 18.3536C18.5488 18.1583 18.5488 17.8417 18.3536 17.6464L17.6464 18.3536ZM13.6464 14.3536L17.6464 18.3536L18.3536 17.6464L14.3536 13.6464L13.6464 14.3536Z" fill="#827C8C"/><path d="M18.3536 6.35355C18.5488 6.15829 18.5488 5.84171 18.3536 5.64645C18.1583 5.45119 17.8417 5.45119 17.6464 5.64645L18.3536 6.35355ZM14.3536 10.3536L18.3536 6.35355L17.6464 5.64645L13.6464 9.64645L14.3536 10.3536Z" fill="#827C8C"/><path d="M5.64645 17.6464C5.45118 17.8417 5.45118 18.1583 5.64645 18.3536C5.84171 18.5488 6.15829 18.5488 6.35355 18.3536L5.64645 17.6464ZM9.64645 13.6464L5.64645 17.6464L6.35355 18.3536L10.3536 14.3536L9.64645 13.6464Z" fill="#827C8C"/></svg>`;
+  let icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="7.5" width="11" height="11" rx="0.5" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 6 10)" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 20 10)" stroke="#827C8C"/><path d="M12 4V7.5" stroke="#827C8C" stroke-linecap="round"/><rect x="8.5" y="11.5" width="7" height="3" rx="1.5" stroke="#827C8C"/></svg>`;
   
   removeOverlay();
   window.overlay_state_changed(false);
@@ -451,6 +559,18 @@ function showExpandedOverlay(loadingstate = "init") {
   header.style.display = "flex";
   header.style.flexDirection = "row";
   header.style.margin = "4%";
+  
+  let logoIcon= document.createElement("div");
+  logoIcon.style.width = "25px";
+  logoIcon.style.height = "25px";
+  logoIcon.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(icon)}')`;
+  logoIcon.style.backgroundRepeat = "no-repeat";
+  logoIcon.style.backgroundSize = "contain";
+  logoIcon.style.backgroundPosition = "bottom";
+  logoIcon.style.order = 1;
+  logoIcon.style.alignSelf = "flex-end";
+  logoIcon.style.marginRight = "1%";
+
   let logoDiv = document.createElement("div");
   logoDiv.style.width = "100px";
   logoDiv.style.height = "25px";
@@ -461,11 +581,7 @@ function showExpandedOverlay(loadingstate = "init") {
   // Style the logoDiv and button
   logoDiv.style.order = 1;
 
-  let load_animation= document.createElement("span");
-  load_animation.classList.add("loader");
-  load_animation.style.order = 2;
-  load_animation.style.marginLeft = "3%";
-  load_animation.style.alignSelf = "center";
+
   let closeButton = document.createElement("button");
   closeButton.id = "closebutton";
   closeButton.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(close_icon)}')`;
@@ -473,30 +589,22 @@ function showExpandedOverlay(loadingstate = "init") {
   closeButton.style.backgroundSize = "contain";
   closeButton.style.backgroundPosition = "bottom";
   closeButton.onclick = function () {
-    showCollapsedOverlay();
+    let ui_state = document.getElementById("AgentEExpandedAnimation").classList.contains("initStateLine") ? "init" : document.getElementById("AgentEExpandedAnimation").classList.contains("processingLine") ? "processing" : "done";
+    showCollapsedOverlay(ui_state);
   };
   closeButton.style.order = 3;
+  header.appendChild(logoIcon);
   header.appendChild(logoDiv);
-  if (loadingstate=="init"){
-
-  }
-  else if (loadingstate=="laoding"){
-    load_animation.style.display = "block";
-  }
-  else if (loadingstate=="done"){
-
-  }
-  header.appendChild(load_animation);
+  let animation = document.createElement("div");
+  animation.id = "AgentEExpandedAnimation";
+  animation.style.height = "2px";
+  animation.style.width = "100%";
+ 
   header.appendChild(closeButton);
   // Append the close button to the newDiv
   newDiv.appendChild(header);
 
-  let animation = document.createElement("div");
-  animation.id = "line-animation";
-  animation.style.height = "1px";
-  animation.style.width = "100%";
-  animation.style.backgroundColor = "rgba(128, 0, 128, 0.5)";
-  animation.classList.add("animateline");
+
   newDiv.appendChild(animation);
   let chatContainer = document.createElement("div");
   chatContainer.className = "chat-container";
@@ -577,7 +685,7 @@ function showExpandedOverlay(loadingstate = "init") {
   newDiv.appendChild(disclaimer);
 
   document.body.appendChild(newDiv);
-
+  updateOverlayState(processing_state, false);
   document.getElementById('send-btn').addEventListener('click', function () {
     let task = document.getElementById('user-input').value
     if (task && !isDisabled()) {
@@ -586,7 +694,7 @@ function showExpandedOverlay(loadingstate = "init") {
         document.getElementById('user-input').value = "";
       } else {
         console.log(`Sending ${task} to server`);
- 
+        clearOverlayMessages();
         addUserMessage(task);
         window.process_task(task)
         document.getElementById('user-input').value = "";

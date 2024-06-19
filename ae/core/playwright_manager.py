@@ -391,6 +391,16 @@ class PlaywrightManager:
         """
         self.ui_manager.new_system_message(message)
 
+    async def update_processing_state(self, processing_state: str):
+        """
+        Update the processing state of the overlay.
+
+        Args:
+            is_processing (str): "init", "processing", "done"
+        """
+        page = await self.get_current_page()
+
+        await self.ui_manager.update_processing_state(processing_state, page)
 
     async def command_completed(self, command: str, elapsed_time: float | None = None):
         """
