@@ -67,8 +67,7 @@ function injectOveralyStyles() {
   }
 
   #closebutton:active{
-    transform: scale(1.5);
-    transform: rotate(90deg);
+    transform: scale(0.8);
   }
 
   @keyframes gradient-animation {
@@ -105,8 +104,8 @@ function injectOveralyStyles() {
 
   .chat-container {
     margin:1%,1%,1%,1%;
-    width: 25vw;
-    height:60vh;
+    width: 30vw;
+    height:70vh;
     bottom: 2vh;
     position: relative;
     display: flex;
@@ -121,7 +120,25 @@ function injectOveralyStyles() {
     height: 25px;
   }
 
+.loader {
+    width: 24px;
+    height: 25px;
+    border: 5px solid #DDD;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
 
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
   
   .chat-input{
     display: flex;
@@ -136,12 +153,12 @@ function injectOveralyStyles() {
   #user-input {
     flex: 1;
     padding: 3px 3px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    width:80%;	
+    border: transparent;
+    width:100%;	
     resize: none;
-    font-family: 'CircularXX';
-    font-size: 14px;
+    font-family: 'Sans-serif';
+    font-size: 16px;
+    line-height: 1.5;
     display: flex; 
     vertical-align: middle;
     text-align: middle;
@@ -150,42 +167,30 @@ function injectOveralyStyles() {
     border-color: #ccc;
     background: white;
     color:black;
-    line-height: 1.2;
     min-height: calc(1.2em * 2);
     scrollbar-width: thin;
   }
 
   #user-input:focus {
     outline: none !important;
-    border:1px solid orange;
-    box-shadow: 0 0 10px #719ECE;
+    border:1px solid transparent;
   }
   #send-btn {
-    padding: 5px;
-    margin-left: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
     cursor: pointer;
-    color:black;
-    opacity: 0.9;
-    background: white;
-    height:100%;
-    font-family: 'CircularXX';
+    transition: transform 0.2s ease; 
   }
 
   #send-btn:hover{
-  background: orange;
-  opacity: 1;
-
+  transform: scale(1.1);
   }
 
   .highlight_overlay{
     box-shadow: 1px 1px 1px 1px rgb(50 50 50 / 40%);
-    border-radius: 10px;
-    border: 1px solid #ccc;
+    border-radius: 16px;
+    border: 1px solid #E1DEE2;
     bottom:3px;
     right:5px;
-    background: rgba(255, 255, 255, 1.0);
+    background: #FBFAFA;
   }
   #chat-box {
     overflow-y: auto;
@@ -229,8 +234,13 @@ function injectOveralyStyles() {
 
   .input-container {
     display: flex;
-    padding: 0%;
-    height:8%;
+    flex-direction: column;
+    margin: 1% 3%;
+    padding: 1%;
+    height:20%;
+    background: white;
+    border: 1px solid #E1DEE2;
+    border-radius: 8px;
   }
   
   .chat{
@@ -296,13 +306,60 @@ function injectOveralyStyles() {
     100% { border-color: rgba(128, 0, 128, 0); }
   }
   
-
-
   .ui_automation_pulsate {
     border-width: 2px !important;
     border-style: solid !important;
     animation: automation_blink 5s linear 1 forwards !important;
   }
+
+  .toggle {
+  all: unset;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  display: inline-block;
+  position: relative;
+  border-radius: 50px;
+  overflow: hidden;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  background-color: #E1DEE2;
+  transition: background-color ease 0.3s;
+  align-self: center;
+}
+.toggle:focus {
+  border: none; !important;
+  outline: none; !important;
+}
+.toggle:before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 2;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  color: #fff;
+  text-shadow: -1px -1px rgba(0,0,0,0.15);
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+}
+
+.toggle:checked {
+  background-color: #786E96;
+}
+
+.toggle:checked:before {
+  left: 20px;
+}
 `;
   // Append the style element to the head of the document
   document.head.appendChild(style);
@@ -376,9 +433,10 @@ function stopAnimateLine(){
   element.remove.classList("animateline");
 }
 
-function showExpandedOverlay() {
+function showExpandedOverlay(loadingstate = "init") {
   let agente_logo = `<svg width="85" height="12" viewBox="0 0 85 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 11.8027L3.43562 0.213699H8.35069L11.8027 11.8027H9.3863L8.23562 7.85753H3.53425L2.38356 11.8027H0ZM4.10959 5.86849H7.66027L6.18082 0.80548H5.58904L4.10959 5.86849Z" fill="#6B6673"/><path d="M19.0946 12C15.6096 12 13.7028 9.56712 13.7028 6.09863C13.7028 2.4 15.9055 0 19.4562 0C22.4151 0 24.5685 1.70959 24.9631 4.35616H22.6124C22.3822 2.87671 21.2151 1.9726 19.5713 1.9726C17.3192 1.9726 16.0535 3.58356 16.0535 6.09863C16.0535 8.35068 17.0726 10.011 19.637 10.011C21.7576 10.011 22.974 8.94247 22.974 7.15068H19.374V5.40822H23.9768C24.8151 5.40822 25.2918 5.85205 25.2918 6.69041V11.8027H23.0069V10.7671L23.4672 8.92603H22.8589C22.8754 9.6 22.4973 12 19.0946 12Z" fill="#6B6673"/><path d="M28.7192 11.8027V0.213699H37.3987V2.20274H31.0206V5.04658H36.5768V6.95342H31.0206V9.8137H37.3987V11.8027H28.7192Z" fill="#6B6673"/><path d="M40.533 11.8027V0.213699H45.0536L49.1631 11.211H49.7385L49.3275 9.76438V0.213699H51.6125V11.8027H47.0919L42.9823 0.80548H42.3905L42.8179 2.25205V11.8027H40.533Z" fill="#6B6673"/><path d="M54.4378 0.213699H64.4159V2.20274H60.5693V11.8027H58.2844V2.20274H54.4378V0.213699Z" fill="#6B6673"/><path d="M63.9401 6.6411H72.4551V8.30137H63.9401V6.6411Z" fill="#6B6673"/><path d="M75.3643 11.8027V0.213699H84.0438V2.20274H77.6657V5.04658H83.2219V6.95342H77.6657V9.8137H84.0438V11.8027H75.3643Z" fill="#6B6673"/></svg>`;
-  let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 5L5 19" stroke="#827C8C" stroke-width="1.5"/><path d="M19 19L5 5" stroke="#827C8C" stroke-width="1.5"/></svg>`
+  let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10L10 10L10 5" stroke="#827C8C"/><path d="M19 14L14 14L14 19" stroke="#827C8C"/><path d="M14 5L14 10L19 10" stroke="#827C8C"/><path d="M10 19L10 14L5 14" stroke="#827C8C"/><path d="M6.35355 5.64645C6.15829 5.45118 5.84171 5.45118 5.64645 5.64645C5.45118 5.84171 5.45118 6.15829 5.64645 6.35355L6.35355 5.64645ZM10.3536 9.64645L6.35355 5.64645L5.64645 6.35355L9.64645 10.3536L10.3536 9.64645Z" fill="#827C8C"/><path d="M17.6464 18.3536C17.8417 18.5488 18.1583 18.5488 18.3536 18.3536C18.5488 18.1583 18.5488 17.8417 18.3536 17.6464L17.6464 18.3536ZM13.6464 14.3536L17.6464 18.3536L18.3536 17.6464L14.3536 13.6464L13.6464 14.3536Z" fill="#827C8C"/><path d="M18.3536 6.35355C18.5488 6.15829 18.5488 5.84171 18.3536 5.64645C18.1583 5.45119 17.8417 5.45119 17.6464 5.64645L18.3536 6.35355ZM14.3536 10.3536L18.3536 6.35355L17.6464 5.64645L13.6464 9.64645L14.3536 10.3536Z" fill="#827C8C"/><path d="M5.64645 17.6464C5.45118 17.8417 5.45118 18.1583 5.64645 18.3536C5.84171 18.5488 6.15829 18.5488 6.35355 18.3536L5.64645 17.6464ZM9.64645 13.6464L5.64645 17.6464L6.35355 18.3536L10.3536 14.3536L9.64645 13.6464Z" fill="#827C8C"/></svg>
+`
   
   removeOverlay();
   window.overlay_state_changed(false);
@@ -392,7 +450,7 @@ function showExpandedOverlay() {
   let header = document.createElement("div");
   header.style.display = "flex";
   header.style.flexDirection = "row";
-  header.style.margin = "3% 4%";
+  header.style.margin = "4%";
   let logoDiv = document.createElement("div");
   logoDiv.style.width = "100px";
   logoDiv.style.height = "25px";
@@ -403,6 +461,11 @@ function showExpandedOverlay() {
   // Style the logoDiv and button
   logoDiv.style.order = 1;
 
+  let load_animation= document.createElement("span");
+  load_animation.classList.add("loader");
+  load_animation.style.order = 2;
+  load_animation.style.marginLeft = "3%";
+  load_animation.style.alignSelf = "center";
   let closeButton = document.createElement("button");
   closeButton.id = "closebutton";
   closeButton.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(close_icon)}')`;
@@ -412,15 +475,25 @@ function showExpandedOverlay() {
   closeButton.onclick = function () {
     showCollapsedOverlay();
   };
-  closeButton.style.order = 2;
+  closeButton.style.order = 3;
   header.appendChild(logoDiv);
+  if (loadingstate=="init"){
+
+  }
+  else if (loadingstate=="laoding"){
+    load_animation.style.display = "block";
+  }
+  else if (loadingstate=="done"){
+
+  }
+  header.appendChild(load_animation);
   header.appendChild(closeButton);
   // Append the close button to the newDiv
   newDiv.appendChild(header);
 
   let animation = document.createElement("div");
   animation.id = "line-animation";
-  animation.style.height = "2px";
+  animation.style.height = "1px";
   animation.style.width = "100%";
   animation.style.backgroundColor = "rgba(128, 0, 128, 0.5)";
   animation.classList.add("animateline");
@@ -443,19 +516,65 @@ function showExpandedOverlay() {
 
   let userInput = document.createElement("textarea");
   userInput.id = "user-input";
-  userInput.placeholder = "Type the task for the agent...";
+  userInput.placeholder = "What can i help you solve today?";
 
-  let sendBtn = document.createElement("button");
+  let userinput_footer = document.createElement("div");
+  userinput_footer.style.display = "flex";
+  userinput_footer.style.flexDirection = "row";
+  userinput_footer.style.justifyContent = "space-between";
+  userinput_footer.style.alignItems = "center";
+  userinput_footer.style.height = "40%";
+  userinput_footer.style.margin = "2% 1%";
+  
+  let toggleLabel = document.createElement("label");  // Create a new label element
+  toggleLabel.textContent = "Show Steps";  // Set the text content of the label
+  toggleLabel.style.color = "#6B6673";  // Set the color of the label
+  toggleLabel.style.fontFamily = "Sans-serif";  // Set the font of the label
+  toggleLabel.style.fontSize = "14px";  // Set the font size of the label
+  toggleLabel.style.fontWeight = "400";  // Set the font weight of the label
+  toggleLabel.style.margin = "0px";  // Add some margin to the right of the label
+  toggleLabel.style.marginRight = "10px";  // Add some margin to the right of the label
+  
+  let toggleSwitch = document.createElement("input");
+  toggleSwitch.type = "checkbox";
+  toggleSwitch.className = "toggle";
+  toggleSwitch.style.margin = "0px";
+  
+  let sendicon =`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#EEEEEF"/><path d="M15 20H25" stroke="#AEA9B4" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="#AEA9B4" stroke-width="1.5"/></svg>`;
+  
+  let sendBtn = document.createElement("div");
   sendBtn.id = "send-btn";
-  sendBtn.textContent = "Send";
+  sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(sendicon)}')`;
+  sendBtn.style.backgroundRepeat = "no-repeat";
+  sendBtn.style.backgroundSize = "contain";
+  sendBtn.style.backgroundPosition = "right";
+  sendBtn.style.width = "8%";
+  sendBtn.style.height = "100%";
+  sendBtn.style.marginLeft = "auto";
+  
+  userinput_footer.appendChild(toggleLabel);  // Add the label to the div
+  userinput_footer.appendChild(toggleSwitch);
+  userinput_footer.appendChild(sendBtn);
 
   inputContainer.appendChild(userInput);
-  inputContainer.appendChild(sendBtn);
+  inputContainer.appendChild(userinput_footer);
 
   chatContainer.appendChild(chatBox);
   chatContainer.appendChild(inputContainer);
 
   newDiv.appendChild(chatContainer);
+
+  let disclaimer = document.createElement("p");
+  disclaimer.style.fontFamily = "Sans-serif";
+  disclaimer.style.fontSize = "12px";
+  disclaimer.style.color = "#6B6673";
+  disclaimer.style.alignSelf = "center";
+  disclaimer.style.position = "absolute";
+  disclaimer.style.bottom = "0%";
+  disclaimer.style.margin = "0% 0% 1% 0%";
+  disclaimer.textContent = "Agent-E may make mistakes. Verify key info.";
+
+  newDiv.appendChild(disclaimer);
 
   document.body.appendChild(newDiv);
 
