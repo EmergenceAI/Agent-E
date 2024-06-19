@@ -15,7 +15,6 @@ from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
-
 @dataclass
 class EnterTextEntry:
     """
@@ -127,7 +126,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
-    await browser_manager.notify_user(result["summary_message"])
+    #await browser_manager.notify_user(result["summary_message"])
     if dom_changes_detected:
         return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action of entering text {text_to_enter} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]

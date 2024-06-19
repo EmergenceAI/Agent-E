@@ -70,7 +70,7 @@ async def get_dom_with_content_type(
 
     elapsed_time = time.time() - start_time
     logger.info(f"Get DOM Command executed in {elapsed_time} seconds")
-    await browser_manager.notify_user(user_success_message)
+    #await browser_manager.notify_user(user_success_message)
     return extracted_data # type: ignore
 
 
