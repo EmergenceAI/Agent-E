@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import time
-from tkinter import N
 
 import ae.core.playwright_manager as browserManager
 from ae.config import SOURCE_LOG_FOLDER_PATH
@@ -152,6 +151,8 @@ class SystemOrchestrator:
                 orchestrated_command = await self.__orchestrate_command(command)
                 if orchestrated_command is not None:
                     await self.autogen_wrapper.process_command(orchestrated_command, current_url)
+                else:
+                    await self.autogen_wrapper.process_command(command, current_url)
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")
