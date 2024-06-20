@@ -279,7 +279,7 @@ class PlaywrightManager:
             message = beautify_plan_message(message)
             message = "Here is the plan: \n" + message
         if message_type == "step":
-            message = "Step: " + message
+            message = "Next step: " + message
         safe_message = escape_js_message(message)
         print(f"Safe message: {safe_message}")
         self.ui_manager.new_system_message(safe_message)

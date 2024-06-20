@@ -82,16 +82,12 @@ function injectOveralyStyles() {
     }
   }
   .processing{
-   background: linear-gradient(90deg, 
-                                rgba(255, 0, 0, 1) 0%,    /* Red */
-                                rgba(255, 127, 0, 1) 25%,  /* Orange */
-                                rgba(0, 255, 0, 1) 50%,    /* Green */
-                                rgba(0, 0, 255, 1) 75%,    /* Blue */
-                                rgba(255, 0, 0, 1) 90%,    /* Red */
-                                rgba(255, 0, 0, 1) 100%    /* Red */
-                                );
-    background-size: 200% 200%;
-    animation: rotate 2s linear infinite;
+  background: linear-gradient(90deg, 
+                              rgba(255, 0, 255, 1) 0%,  /* Bright Magenta */
+                              rgba(0, 191, 255, 1) 100%    /* Deep Sky Blue */
+                              );
+  background-size: 100% 200%;
+  animation: rotate 1s linear infinite;
   }
   
   .init{
@@ -112,7 +108,7 @@ function injectOveralyStyles() {
                                 rgba(255, 0, 0, 1) 100%    /* Red */
                                 );
     background-size: 500% 100%;
-    animation: gradient-animation 2s linear infinite;
+    animation: gradient-animation 3s linear infinite;
   }
 
   .initStateLine{
