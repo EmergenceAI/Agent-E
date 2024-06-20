@@ -118,10 +118,11 @@ class SystemOrchestrator:
             print("Checking Result:", result)
             if result is not None:
                 print("Result:", result)
-                chat_history=result.get("chat_history")
+                chat_history=result.chat_history#result.get("chat_history")
                 print("Chat history:", chat_history)
-                last_message = chat_history[-1] if chat_history else None
+                last_message = chat_history[-1].get("content") if chat_history else None
                 print("Last message:", last_message)
+                last_message = json.loads(last_message) #convert string to json
                 if last_message and "terminate" in last_message and last_message["terminate"]=="yes":
                     print("Notifying the user and Terminating the session")
                     await self.browser_manager.notify_user(last_message)
