@@ -224,7 +224,7 @@ function injectOveralyStyles() {
   #chat-box {
     overflow-y: auto;
     scrollbar-width: thin;
-    height: 90%;f
+    height: 90%;
     display: flex;
     flex-direction: column;
     gap:1%;
@@ -383,7 +383,6 @@ function injectOveralyStyles() {
 }
 let savedSelection = null;
 let show_details = true;
-console.log("Show details status 1: "+show_details);
 function showCollapsedOverlay(processing_state = "processing", steps) {
   show_details = steps;
   removeOverlay();
@@ -442,7 +441,6 @@ function showCollapsedOverlay(processing_state = "processing", steps) {
   });
   document.getElementById('agentDriveAutoOverlay').addEventListener('click', function () {
     let ui_state = document.getElementById("AgentEOverlayBorder").classList.contains("init") ? "init" : document.getElementById("AgentEOverlayBorder").classList.contains("processing") ? "processing" : "done";
-    console.log("Show details status 2: "+show_details);
     showExpandedOverlay(ui_state, show_details);
   });
 }
@@ -461,7 +459,6 @@ function clearOverlayMessages(keep_default=false) {
     if (!chatBox) {
       return;
     }
-    console.log("Clearing chat box");
     while (chatBox.firstChild) {
       chatBox.removeChild(chatBox.firstChild);
     }
@@ -471,20 +468,7 @@ function clearOverlayMessages(keep_default=false) {
   }
 }
 
-function createIcon(className) {
-  let icon = document.createElement("div");
-  icon.className = `icon ${className}`;
-  return icon;
-}
 
-function animateLine() {
-  let element = document.getElementById("line-animation");
-  element.add.classList("processingLine");
-}
-function stopAnimateLine(){
-  let element = document.getElementById("line-animation");
-  element.remove.classList("processingLine");
-}
 
 function updateOverlayState(processing_state, is_collapsed) 
 {
@@ -533,7 +517,6 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
   
   removeOverlay();
   window.overlay_state_changed(false);
-  console.log("showing  expanded overlay");
   let newDiv = document.createElement("div");
   newDiv.id = "agentDriveAutoOverlay";
   newDiv.classList.add("highlight_overlay");
@@ -638,12 +621,10 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
   
   toggleSwitch.addEventListener('change', function() {
     if(this.checked) {
-        console.log("Show details status 3: "+show_details);
         show_details = true;
         window.show_steps_state_changed(true)
     } else {
       show_details = false;
-      console.log("Show details status 4: "+show_details);
       window.show_steps_state_changed(false)
     }
 });
@@ -692,7 +673,6 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
         addUserMessage(task);
         document.getElementById('user-input').value = "";
       } else {
-        console.log(`Sending ${task} to server`);
         clearOverlayMessages();
         addUserMessage(task);
         window.process_task(task)
@@ -753,7 +733,6 @@ function focusOnOverlayInput() {
 }
 
 function addMessage(message, sender, message_type = "plan") {
-  //console.log(`Adding ${sender} message: ${message}`);
   let newDiv = document.createElement("div");
   newDiv.classList.add("chat-input");
 
@@ -794,8 +773,7 @@ function addMessage(message, sender, message_type = "plan") {
   chatBox.appendChild(newDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
   newDiv.scrollIntoView({ behavior: 'instant' });
-  console.log("Message added to chat box: "+message +", Type: "+message_type);
-  
+
   if (sender === "user" && awaitingUserResponse) {
     awaitingUserResponse = false;
     // Notify the server that the user has responded to the agent's prompt
