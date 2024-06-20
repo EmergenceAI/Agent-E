@@ -5,8 +5,6 @@ import autogen  # type: ignore
 from autogen.agentchat.conversable_agent import register_function  # type: ignore
 
 from ae.core.memory.static_ltm import get_user_ltm
-from ae.core.post_process_responses import final_reply_callback_browser_agent as print_message_from_user_proxy  # type: ignore
-from ae.core.post_process_responses import final_reply_callback_user_proxy as print_message_from_browser_agent  # type: ignore
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
 from ae.core.skills.enter_text_using_selector import bulk_enter_text

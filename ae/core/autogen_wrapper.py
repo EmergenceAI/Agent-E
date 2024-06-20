@@ -24,9 +24,8 @@ from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialF
 from ae.utils.response_parser import parse_response
 from ae.core.skills.get_url import geturl
 import nest_asyncio # type: ignore
-from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
-from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
-from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_plan  # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_planner_messages  # type: ignore
+
 nest_asyncio.apply()  # type: ignore
 
 class AutogenWrapper:
@@ -105,13 +104,13 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
-                notify_plan(plan, level="plan")
+                notify_planner_messages(plan, level="plan")
             if next_step is None: 
-                notify_plan("Received no response, terminating..") # type: ignore
+                notify_planner_messages("Received no response, terminating..", level="others") # type: ignore
                 print("Trigger nested chat returned False")
                 return False
             else:
-                notify_plan(next_step, level="step") # type: ignore
+                notify_planner_messages(next_step, level="step") # type: ignore
                 return True 
 
         
@@ -242,7 +241,8 @@ class AutogenWrapper:
                     if(_terminate == "yes"):
                         should_terminate = True
                         if final_response:
-                            notify_plan("Response: "+ final_response)
+                            print("Notifying Final Answer")
+                            notify_planner_messages(final_response, level="answer")
                 except json.JSONDecodeError:
                     print("Error decoding JSON content")
                     should_terminate = True

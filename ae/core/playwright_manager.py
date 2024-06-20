@@ -252,45 +252,58 @@ class PlaywrightManager:
         logger.debug("Setting overlay state handler")
         context = await self.get_browser_context()
         await context.expose_function('overlay_state_changed', self.overlay_state_handler) # type: ignore
-
+        await context.expose_function('show_steps_state_changed',self.show_steps_state_handler) # type: ignore
+    
     async def overlay_state_handler(self, is_collapsed: bool):
         page = await self.get_current_page()
         self.ui_manager.update_overlay_state(is_collapsed)
         if not is_collapsed:
             await self.ui_manager.update_overlay_chat_history(page)
 
+    async def show_steps_state_handler(self, show_details: bool):
+        self.ui_manager.update_overlay_show_details(show_details)
 
     async def set_user_response_handler(self):
         context = await self.get_browser_context()
         await context.expose_function('user_response', self.receive_user_response) # type: ignore
 
 
-    async def notify_user(self, message: str, message_type: str = "others"):
+    async def notify_user(self, message: str, message_type: str = "step"):
         """
         Notify the user with a message.
 
         Args:
             message (str): The message to notify the user with.
-            message_type (str, optional): The type of message. Defaults to "plan", other values are "step",  "actions",  "answer", "question" and "others". To Do: Convert to Enum.
+            message_type (str, optional): The type of message. Defaults to "step", other values are "plan",  "answer", "question". To Do: Convert to Enum.
         """
-        logger.debug(f"Notification: \"{message}\" being sent to the user.")
-        print(f"Notification: \"{message}\" being sent to the user.")
+        print(f"User notification: {message} , {message_type}")
+        
+        safe_message_type = escape_js_message(message_type)
         if message_type == "plan":
             message = beautify_plan_message(message)
-            message = "Here is the plan: \n" + message
+            message = "Plan: \n" + message
         if message_type == "step":
-            message = "Next step: " + message
+            if "confirm" in message.lower():
+                message = "Verify: " + message
+            else:
+                message = "Next step: " + message
+        if message_type == "answer":
+            print("Adding Response to the prefix since message_type is answer")
+            message = "Response: " + message
         safe_message = escape_js_message(message)
-        print(f"Safe message: {safe_message}")
-        self.ui_manager.new_system_message(safe_message)
+        self.ui_manager.new_system_message(safe_message, message_type)
+
         try:
-            js_code = f"addSystemMessage({safe_message}, false);"
+            js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
+
+            print(f"js_code: {js_code}")
             page = await self.get_current_page()
             await page.evaluate(js_code)
             logger.debug("User notification completed")
         except Exception as e:
+            print(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
             logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
-
+        
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()
@@ -337,7 +350,8 @@ class PlaywrightManager:
         self.log_system_message(message) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
 
         safe_message = escape_js_message(message)
-        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true);"
+        
+        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true, message_type='answer');"
         await page.evaluate(js_code)
 
         await self.user_response_event.wait()

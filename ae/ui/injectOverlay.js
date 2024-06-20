@@ -6,20 +6,8 @@ function injectOveralyStyles() {
   let style = document.createElement('style');
   // Set the styles
   style.textContent = `
-  @font-face {
-    font-family: 'CircularXX';
-    src: url('https://assets.website-files.com/627028e6193b2d840a066eab/627028e6193b2d9dd2066edf_CircularXXWeb-Book.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: auto;
-}
-@font-face {
-    font-family: 'CircularXXLight';
-    src: url('https://assets.website-files.com/627028e6193b2d840a066eab/627028e6193b2d710b066eda_CircularXXWeb-Light.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-    font-display: auto;
-}
+@import url(https://fonts.googleapis.com/earlyaccess/notosanssc.css);
+
 ::-webkit-scrollbar {
     width: 6px;
     border: solid 3px transparent;
@@ -58,8 +46,7 @@ function injectOveralyStyles() {
     margin-left: auto;
     color:darkgray;
     cursor: pointer;
-    z-index: 20000001;
-    background: white;
+    background: transparent;
     transition: transform 0.2s ease; 
     border: None;
   }
@@ -138,13 +125,15 @@ function injectOveralyStyles() {
   .chat-container {
     margin:1%,1%,1%,1%;
     width: 30vw;
+    min-width: 350px;
     height:70vh;
     bottom: 2vh;
     position: relative;
     display: flex;
     flex-direction: column;
     top: 6%;
-    box-sizing: border-box; /* Include padding in the width and height calculations */
+    padding: 1%;
+    box-sizing: border-box; 
   } 
   
   .icon{
@@ -176,11 +165,17 @@ function injectOveralyStyles() {
   .chat-input{
     display: flex;
     flex-direction: row;
-    gap:2%;
-    justify-content: center;
     align-items: center;
-    width: 100%;
-    margin-top:2vh;
+    width: 95%;
+    margin-top:1.5vh;
+  }
+
+  .agent{
+    justify-content: flex-start;
+  }
+  
+  .user{
+    justify-content: flex-end;
   }
 
   #user-input {
@@ -189,8 +184,9 @@ function injectOveralyStyles() {
     border: transparent;
     width:100%;	
     resize: none;
-    font-family: 'Sans-serif';
-    font-size: 16px;
+    font-family: 'Noto Sans SC';
+    font-size: 1.6vh;
+    min-font-size: 12px;
     line-height: 1.5;
     display: flex; 
     vertical-align: middle;
@@ -228,12 +224,11 @@ function injectOveralyStyles() {
   #chat-box {
     overflow-y: auto;
     scrollbar-width: thin;
-    height: 90%;
-    width:98%;
+    height: 90%;f
     display: flex;
     flex-direction: column;
     gap:1%;
-    margin:1%;
+    margin:1% 5%;
     padding-bottom:1%;
     margin-top:10%;
   }
@@ -260,10 +255,7 @@ function injectOveralyStyles() {
     background: rgba(150, 255, 150, 1);
     border-radius: 50%;
   }
-  .user{
-    background: orange;
-    border-radius: 50%;
-  }
+
 
   .input-container {
     display: flex;
@@ -280,58 +272,50 @@ function injectOveralyStyles() {
     width: 80%;
     color: black;
     overflow-wrap: break-word;
-    font-family: 'CircularXX';
-    font-size: 14px;
+    font-family: 'Noto Sans SC';
+
   }
 
   .agent1text{
     text-align: left;
     justify-content: flex-start;
-    margin-right: auto;
-    margin-left: auto;
-    font-family: 'CircularXX';
-    padding: 5%;
+    font-family: 'Noto Sans SC';
+    padding: 4%;
+    font-size: 1.5vh;
+    min-font-size: 12px;
     min-height: 30px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.12) 100%);
-    box-shadow: 1px 1px 1px 1px rgb(150 150 150 / 60%);
-    padding-left: 10px;
-    border-radius: 20px;
-    border: 1px solid blueviolet;
-    width:72%;
-  }
-  .agent2text{
-    text-align: left;
-    justify-content: flex-start;
-    margin-right: auto;
-    margin-left: auto;
-    font-family: 'CircularXX';
-    padding: 5%;
-    min-height: 30px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.12) 100%);
-    box-shadow: 1px 1px 1px 1px rgb(150 150 150 / 60%);
-    padding-left: 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(150, 255, 150, 1);
-    width:72%;
+    background: #EEEEEF;
+    line-height: 1.7;
+    border-radius: 10px;
+    width:auto;
+
   }
 
   .usertext{
     text-align: right;
-    justify-content: flex-start;
-    margin-right: auto;
-    margin-left: auto;
-    font-family: 'CircularXX';
-    padding: 5%;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-family: 'Noto Sans SC';
+    font-size: 1.5vh;
+    min-font-size: 12px;
+    padding: 4%;
+    line-height: 1.7;
     min-height: 30px;
-    width:72%;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.20) 100%)
-    /* White Glass Effect */
-    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.12), inset 1px 1px 2px rgba(255, 255, 255, 0.64), inset -1px -1px 2px rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
+    width:auto;
+    background: #ECEBF3;
+    border-radius: 10px;
     color: black;
-    border: 1px solid orange;
   }
-
+  
+  .agentstep{
+  color: #4B4B4B;
+  }
+  .agentplan{
+  color: #4B4B4B;
+  }
+  .agentanswer{
+  color: black;
+  }
   
   @keyframes automation_blink {
     0% { border-color: rgba(128, 0, 128, 1); }
@@ -468,7 +452,7 @@ function removeOverlay() {
 }
 
 
-function clearOverlayMessages() {
+function clearOverlayMessages(keep_default=false) {
   try {
     let chatBox = document.getElementById('chat-box');
     if (!chatBox) {
@@ -611,9 +595,6 @@ function showExpandedOverlay(processing_state = "init") {
 
   let chatInput = document.createElement("div");
   chatInput.className = "chat-input";
-
-  let iconAgent1 = createIcon("agent1");
-
   chatBox.appendChild(chatInput);
 
   let inputContainer = document.createElement("div");
@@ -632,9 +613,9 @@ function showExpandedOverlay(processing_state = "init") {
   userinput_footer.style.margin = "2% 1%";
   
   let toggleLabel = document.createElement("label");  // Create a new label element
-  toggleLabel.textContent = "Show Steps";  // Set the text content of the label
+  toggleLabel.textContent = "Show Details";  // Set the text content of the label
   toggleLabel.style.color = "#6B6673";  // Set the color of the label
-  toggleLabel.style.fontFamily = "Sans-serif";  // Set the font of the label
+  toggleLabel.style.fontFamily = "Noto Sans SC";  // Set the font of the label
   toggleLabel.style.fontSize = "14px";  // Set the font size of the label
   toggleLabel.style.fontWeight = "400";  // Set the font weight of the label
   toggleLabel.style.margin = "0px";  // Add some margin to the right of the label
@@ -644,7 +625,14 @@ function showExpandedOverlay(processing_state = "init") {
   toggleSwitch.type = "checkbox";
   toggleSwitch.className = "toggle";
   toggleSwitch.style.margin = "0px";
-  
+  toggleSwitch.checked = true;
+  toggleSwitch.addEventListener('change', function() {
+    if(this.checked) {
+        window.show_steps_state_changed(true)
+    } else {
+      window.show_steps_state_changed(false)
+    }
+});
   let sendicon =`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#EEEEEF"/><path d="M15 20H25" stroke="#AEA9B4" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="#AEA9B4" stroke-width="1.5"/></svg>`;
   
   let sendBtn = document.createElement("div");
@@ -670,7 +658,7 @@ function showExpandedOverlay(processing_state = "init") {
   newDiv.appendChild(chatContainer);
 
   let disclaimer = document.createElement("p");
-  disclaimer.style.fontFamily = "Sans-serif";
+  disclaimer.style.fontFamily = "Noto Sans SC";
   disclaimer.style.fontSize = "12px";
   disclaimer.style.color = "#6B6673";
   disclaimer.style.alignSelf = "center";
@@ -750,23 +738,15 @@ function focusOnOverlayInput() {
   document.getElementById('user-input').focus();
 }
 
-function addMessage(message, sender) {
+function addMessage(message, sender, message_type = "plan") {
   //console.log(`Adding ${sender} message: ${message}`);
   let newDiv = document.createElement("div");
   newDiv.classList.add("chat-input");
 
-  let iconDiv1 = document.createElement("div");
-  iconDiv1.classList.add("icon");
-
   let chatDiv = document.createElement("div");
   chatDiv.classList.add("chat");
 
-  let iconDiv2 = document.createElement("div");
-  iconDiv2.classList.add("icon");
-  console.log("Message is", message);
-  newDiv.appendChild(iconDiv1);
-  newDiv.appendChild(chatDiv);
-  newDiv.appendChild(iconDiv2);
+
   let parsedMessage = message;
 
   try {
@@ -777,31 +757,42 @@ function addMessage(message, sender) {
 
   // Customize based on the sender
   if (sender === "system") {
-    iconDiv1.classList.add("agent1");
+    newDiv.classList.add("agent");
     chatDiv.classList.add("agent1text", "pre-line");
+      if (message_type === "step") {
+      chatDiv.classList.add("agentstep");
+      }
+      else if (message_type === "plan") {
+        chatDiv.classList.add("agentplan");
+      }
 
+      else if (message_type === "answer") {
+      chatDiv.classList.add("agentanswer");
+      }
     chatDiv.textContent = parsedMessage;
   } else if (sender === "user") {
-    iconDiv2.classList.add("user");
+    newDiv.classList.add("user")
     chatDiv.classList.add("usertext", "pre-line");
     chatDiv.textContent = parsedMessage;
   }
-
+  newDiv.appendChild(chatDiv);
   let chatBox = document.getElementById('chat-box');
   chatBox.appendChild(newDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
   newDiv.scrollIntoView({ behavior: 'instant' });
-
+  console.log("Message added to chat box: "+message +", Type: "+message_type);
+  
   if (sender === "user" && awaitingUserResponse) {
     awaitingUserResponse = false;
     // Notify the server that the user has responded to the agent's prompt
     window.user_response(message);
   }
+
 }
 
-function addSystemMessage(message, is_awaiting_user_response = false) {
+function addSystemMessage(message, is_awaiting_user_response = false, message_type = "plan") {
   awaitingUserResponse = is_awaiting_user_response;
-  addMessage(message, "system");
+  addMessage(message, "system", message_type);
 }
 
 function addUserMessage(message) {

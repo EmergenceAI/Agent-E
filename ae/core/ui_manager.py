@@ -24,8 +24,9 @@ class UIManager:
     """
 
     overlay_is_collapsed: bool = True
+
     overlay_processing_state: str = "init"  #init: initialised, processing: processing is ongoing, done: processing is done
-    overlay_show_steps:bool = False
+    overlay_show_details:bool = True
     
     conversation_history:list[dict[str, str]] = []
     __update_overlay_chat_history_running: bool = False
@@ -90,6 +91,16 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
+    def update_overlay_show_details(self, show_details: bool):
+        """
+        Updates the state of the overlay to either show steps or not.
+
+        Args:
+            show_steps (bool): True to show steps, False to hide them.
+        """
+        print(f"Updating overlay show details: {show_details}")
+        self.overlay_show_details = show_details
+
     async def update_processing_state(self, state: str, page: Page):
         """
         Updates the processing state of the overlay.
@@ -127,10 +138,18 @@ class UIManager:
             await frame_or_page.evaluate("clearOverlayMessages();")
             for message in self.conversation_history:
                 safe_message = escape_js_message(message["message"])
+                
                 if message["from"] == "user":
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
-                    await frame_or_page.evaluate(f"addSystemMessage({safe_message});")
+                   print(f"Message {message}")
+                   safe_message_type = escape_js_message(message["message_type"]) if "message_type" in message else escape_js_message("step")
+                   if (safe_message_type == "step" or safe_message_type=="action") and self.overlay_show_details == False:
+                       continue
+
+                   js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
+                   print(f"JS Code: {js_code}")
+                   await frame_or_page.evaluate(js_code)
             logger.debug("Chat history updated in overlay, removing update lock flag")
         except Exception:
             traceback.print_exc()
@@ -166,22 +185,22 @@ class UIManager:
         self.conversation_history.append({"from":"user", "message":message})
 
 
-    def new_system_message(self, message: str):
+    def new_system_message(self, message: str, type:str="step"):
         """
         Adds a new system message to the conversation history.
 
         Args:
             message (str): The message text to add.
         """
-        self.conversation_history.append({"from":"system", "message":message})
+        self.conversation_history.append({"from":"system", "message":message, "message_type":type})
 
 
     def add_default_system_messages(self):
         """
         Adds default system messages to the conversation history to greet the user or provide initial instructions.
         """
-        self.new_system_message(json.dumps("Agent-E at your service, what can I do for you?"))
-
+        #self.new_system_message(json.dumps("Agent-E at your service, what can I do for you?"))
+        pass
 
     async def command_completed(self, page: Page, command: str, elapsed_time: float|None = None):
         """
