@@ -40,7 +40,7 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 100):
+    def __init__(self, max_chat_round: int = 1000):
         self.number_of_rounds = max_chat_round
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
@@ -49,7 +49,7 @@ class AutogenWrapper:
         self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
+    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
 
