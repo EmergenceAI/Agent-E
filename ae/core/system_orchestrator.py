@@ -2,11 +2,13 @@ import asyncio
 import json
 import os
 import time
+from tkinter import N
 
 import ae.core.playwright_manager as browserManager
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.utils.cli_helper import async_input  # type: ignore
+from ae.utils.http_helper import make_post_request
 from ae.utils.logger import logger
 
 
@@ -37,8 +39,26 @@ class SystemOrchestrator:
         self.browser_manager = None
         self.autogen_wrapper = None
         self.is_running = False
+
+        if os.getenv('ORCHESTRATOR_API_KEY', None) is not None and os.getenv('ORCHESTRATOR_GATEWAY', None) is not None:
+            self.__populate_orchestrator_info()
+            logger.info(f"Orchestrator endpoint: {self.orchestrator_endpoint}")
+        else:
+            self.use_orchestrator = False
+
         self.__parse_user_and_browser_agent_names()
         self.shutdown_event = asyncio.Event() #waits for an exit command to be processed
+
+
+    def __populate_orchestrator_info(self):
+            """
+            Populates the orchestrator information by retrieving the API key, gateway, and endpoint from environment variables.
+            """
+            self.orchestrator_api_key = os.getenv('ORCHESTRATOR_API_KEY')
+            self.orchestrator_gateway = os.getenv('ORCHESTRATOR_GATEWAY')
+            self.orchestrator_endpoint = f"{self.orchestrator_gateway}/api/orchestrate"
+            self.use_orchestrator = True
+
 
     def __parse_user_and_browser_agent_names(self):
         """
@@ -92,6 +112,25 @@ class SystemOrchestrator:
         """
         await self.process_command(command)
 
+    async def __orchestrate_command(self, command: str):
+        if not self.use_orchestrator:
+            return command
+
+        orch_response = make_post_request(self.orchestrator_endpoint, {"query": command}, self.orchestrator_api_key, api_key_header_name="X-API-Key") # type: ignore
+
+        if not orch_response:
+            return command
+
+        if "user_notification" in orch_response:
+            await self.browser_manager.notify_user(orch_response["user_notification"]) # type: ignore
+        if "is_terminating" in orch_response and orch_response["is_terminating"]:
+            logger.info("Orchestrator indicated command execution completed.")
+            return None
+        if "reformulated_query" in orch_response:
+            logger.info(f"Orchestrator reformulated command to: {orch_response['reformulated_query']}")
+            return orch_response["reformulated_query"]
+
+
     async def process_command(self, command: str):
         """
         Processes a given command, coordinating with the Autogen wrapper for execution and handling special commands like 'exit'.
@@ -110,7 +149,9 @@ class SystemOrchestrator:
             self.browser_manager.log_user_message(command) # type: ignore
 
             if self.autogen_wrapper:
-                await self.autogen_wrapper.process_command(command, current_url)
+                orchestrated_command = await self.__orchestrate_command(command)
+                if orchestrated_command is not None:
+                    await self.autogen_wrapper.process_command(orchestrated_command, current_url)
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")
