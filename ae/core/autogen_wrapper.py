@@ -103,7 +103,7 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
-                print_message_from_planner("Plan: "+ plan)
+                print_message_from_planner("Plan: "+ str(plan))
             print(f"Next Step: {next_step}")
             if next_step is None: 
                 print_message_from_planner("Received no response, terminating..") # type: ignore
