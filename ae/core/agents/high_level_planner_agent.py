@@ -26,6 +26,8 @@ class PlannerAgent:
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
         system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
+        print(f">>> Planner system_message: {system_message}")
+        print ("****************")
         self.agent = autogen.AssistantAgent(
             name="planner_agent",
             system_message=system_message,

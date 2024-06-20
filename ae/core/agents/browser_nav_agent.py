@@ -36,7 +36,7 @@ class BrowserNavAgent:
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
-
+            
         self.agent = autogen.ConversableAgent(
             name="browser_navigation_agent",
             system_message=system_message,
@@ -68,9 +68,9 @@ class BrowserNavAgent:
         self.browser_nav_executor.register_for_execution()(openurl)
 
         # Register enter_text_and_click skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
+        # self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
         # Register enter_text_and_click skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(enter_text_and_click)
+        # self.browser_nav_executor.register_for_execution()(enter_text_and_click)
 
         # Register get_dom_with_content_type skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
