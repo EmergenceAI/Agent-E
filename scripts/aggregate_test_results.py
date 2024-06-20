@@ -4,8 +4,10 @@ import os
 from collections import Counter
 from collections import defaultdict
 from typing import Any
+from typing import List
 
 import pandas as pd
+from pandas.io.formats.style import Styler
 
 URL_ALIAS_MAP = {
     "https://www.allrecipes.com/": "Allrecipes",
@@ -75,6 +77,13 @@ def calculate_percentages(score_counter: Counter) -> dict[str, float]:
     score_percentages = {score: (count / total_count) * 100 for score, count in score_counter.items()}
     return score_percentages, total_count
 
+def adjust_scores(data: list[dict[str, Any]], task_ids_to_flip: List[int]):
+    for entry in data:
+        if entry.get('task_id') in task_ids_to_flip:
+            if entry.get('score') == 1.0:
+                entry['score'] = 0.0
+    return data
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process some JSON files.")
     parser.add_argument(
@@ -93,6 +102,11 @@ if __name__ == "__main__":
         type=str,
         default="compiled_test_results.json",
         help="The name of the output file."
+    )
+    parser.add_argument(
+        "--adjust_task_ids",
+        type=str,
+        help="Comma-separated list of task_id values to flip from score 1.0 to 0.0."
     )
 
     args = parser.parse_args()
@@ -139,26 +153,69 @@ if __name__ == "__main__":
     save_to_json_file(output_results, alias_output_file_path)
 
     # Print the overall results to the command line
-    print("\nOverall Score Percentages and Counts:")
+    print("\nOverall Score Percentages and Counts (Pre-adjustment):")
     print(f"{'Score':<10}{'Percentage':<15}{'Count':<10}")
     for score, percentage in overall_score_percentages.items():
         count = overall_score_counts[score]
         print(f"{score:<10}{percentage:.2f}%{count:<10}")
 
-    # Prepare data for DataFrame
+    # Adjust scores based on provided task IDs
+    if args.adjust_task_ids:
+        task_ids_to_flip = list(map(int, args.adjust_task_ids.split(',')))
+        sorted_data = adjust_scores(sorted_data, task_ids_to_flip)
+
+    # Recount the scores by alias and overall after adjustment
+    alias_score_counts_adjusted, overall_score_counts_adjusted = count_scores_by_alias(sorted_data)
+
+    # Recalculate percentages by alias and overall after adjustment
+    alias_score_percentages_adjusted = {
+        alias: calculate_percentages(score_counter)
+        for alias, score_counter in alias_score_counts_adjusted.items()
+    }
+    overall_score_percentages_adjusted, overall_total_adjusted = calculate_percentages(overall_score_counts_adjusted)
+
+    # Save the adjusted alias score percentages to a JSON file
+    adjusted_output_results = {
+        "overall": {
+            "percentages": overall_score_percentages_adjusted,
+            "counts": dict(overall_score_counts_adjusted),
+            "total": overall_total_adjusted
+        },
+        "by_alias": {
+            alias: {
+                "percentages": percentages,
+                "counts": dict(alias_score_counts_adjusted[alias]),
+                "total": total
+            }
+            for alias, (percentages, total) in alias_score_percentages_adjusted.items()
+        }
+    }
+    adjusted_alias_output_file_path = os.path.join(args.test_results_dir, "adjusted_alias_score_percentages.json")
+    save_to_json_file(adjusted_output_results, adjusted_alias_output_file_path)
+
+    # Print the overall results to the command line post adjustment
+    print("\nOverall Score Percentages and Counts (Post-adjustment):")
+    print(f"{'Score':<10}{'Percentage':<15}{'Count':<10}")
+    for score, percentage in overall_score_percentages_adjusted.items():
+        count = overall_score_counts_adjusted[score]
+        print(f"{score:<10}{percentage:.2f}%{count:<10}")
+
+    # Prepare data for DataFrame post adjustment
     data = []
-    for score in sorted(set(overall_score_counts.keys()).union(*[alias_score_counts[alias].keys() for alias in alias_score_counts])):
+    for score in sorted(set(overall_score_counts_adjusted.keys()).union(*[alias_score_counts_adjusted[alias].keys() for alias in alias_score_counts_adjusted])):
         row = {"Score": score}
-        row["Overall"] = f"{overall_score_percentages.get(score, 0):.2f}% ({overall_score_counts.get(score, 0)})"
+        row["Overall"] = f"{overall_score_percentages_adjusted.get(score, 0):.2f}% ({overall_score_counts_adjusted.get(score, 0)})"
         for alias in sorted(URL_ALIAS_MAP.values()):
-            percentages, _ = alias_score_percentages.get(alias, ({}, 0))
-            counts = alias_score_counts.get(alias, {})
+            percentages, _ = alias_score_percentages_adjusted.get(alias, ({}, 0))
+            counts = alias_score_counts_adjusted.get(alias, {})
             row[alias] = f"{percentages.get(score, 0):.2f}% ({counts.get(score, 0)})"
         data.append(row)
 
-    # Create DataFrame and save to HTML
+    # Create DataFrame and save to HTML post adjustment
     df = pd.DataFrame(data)
     html_output_file = os.path.join(args.test_results_dir, "benchmark_report.html")
     df.to_html(html_output_file, index=False)
 
     print(f"\nBenchmark report has been saved to: {html_output_file}")
+# Sample how to run:
+# python scripts/aggregate_test_results.py /path/to/folder/agent_e_annotators_tests/round2 --adjust_task_ids "14, 26, 51, 63, 93, 141"
