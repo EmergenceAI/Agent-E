@@ -19,6 +19,7 @@ from playwright.sync_api import Page
 from termcolor import colored
 
 import os
+from .validation_agent.validator import validate_task_vqa
 
 class Evaluator:
     """Base class for evaluation strategies.
@@ -423,16 +424,17 @@ class VQAEvaluator(Evaluator):
 
         # Get path to screenshots for the given task
         test_folder = list_items_in_folder(f"{os. getcwd()}/test/logs/")[-1] # Get the most recent log folder, this may take look for the wrong folder TODO: fix to take correct folder
-        path_to_screenshots = f"{os. getcwd()}/test/logs/{test_folder}/log_for_task_{task_id}/snapshots"
-        screenshot_path_list = list_items_in_folder(path_to_screenshots) # type: ignore
-
+        path_to_screenshots = f"{os. getcwd()}/test/logs/{test_folder}/logs_for_task_{task_id}/snapshots"
+        screenshot_names = list_items_in_folder(path_to_screenshots) # type: ignore        
+        
         # Load and compress screenshots
-        for screenshot_path in screenshot_path_list:
+        for screenshot_name in screenshot_names:
+            screenshot_path = f"{path_to_screenshots}/{screenshot_name}"
             compress_png(screenshot_path)
-            state_seq.append({"id":task_id, "path_to_screenshot": screenshot_path}) 
+            state_seq.append({"id":task_id, "path_to_screenshot": f"{path_to_screenshots}/{screenshot_name}"}) 
 
         #Calculate VQA Score
-        score_dict = validator.validate_task_vqa(state_seq, task) # type: ignore
+        score_dict = validate_task_vqa(state_seq, task) # type: ignore
         score = score_dict["pred_task_completed"]
 
         print(f"VQA score is {score}")
