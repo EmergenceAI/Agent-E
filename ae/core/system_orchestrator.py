@@ -146,17 +146,28 @@ class SystemOrchestrator:
             start_time = time.time()
             current_url = await self.browser_manager.get_current_url() if self.browser_manager else None
             self.browser_manager.log_user_message(command) # type: ignore
-
+            result = None
             if self.autogen_wrapper:
                 orchestrated_command = await self.__orchestrate_command(command)
                 if orchestrated_command is not None:
-                    await self.autogen_wrapper.process_command(orchestrated_command, current_url)
+                    result = await self.autogen_wrapper.process_command(orchestrated_command, current_url)
                 else:
-                    await self.autogen_wrapper.process_command(command, current_url)
+                    result = await self.autogen_wrapper.process_command(command, current_url)
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")
-            await self.save_chat_messages()
+            #await self.save_chat_messages()
+            print("Checking Result:", result)
+            if result is not None:
+                print("Result:", result)
+                chat_history= result.get("chat_history") # type: ignore
+                print("Chat history:", chat_history) # type: ignore
+                last_message = chat_history[-1] if chat_history else None # type: ignore
+                print("Last message:", last_message) # type: ignore
+                if last_message and "terminate" in last_message and last_message["terminate"]=="yes":
+                    print("Notifying the user and Terminating the session")
+                    await self.browser_manager.notify_user(last_message) # type: ignore
+
             await self.browser_manager.notify_user(f"Completed ({elapsed_time}s).") # type: ignore
             await self.browser_manager.command_completed(command, elapsed_time) # type: ignore
             self.is_running = False
