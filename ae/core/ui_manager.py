@@ -55,10 +55,13 @@ class UIManager:
 
             # Inject the JavaScript code into the page
             await frame.evaluate(js_code)
+            js_bool = str(self.overlay_show_details).lower()
             if self.overlay_is_collapsed:
-                await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}');")
+                await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}', {js_bool});")
             else:
-                await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}');")
+                print (f"Calling JS Code: showExpandedOverlay('{self.overlay_processing_state}', {js_bool};")
+                await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}', {js_bool});")
+      
             #update chat history in the overlay
             await self.update_overlay_chat_history(frame)
 
@@ -98,7 +101,6 @@ class UIManager:
         Args:
             show_steps (bool): True to show steps, False to hide them.
         """
-        print(f"Updating overlay show details: {show_details}")
         self.overlay_show_details = show_details
 
     async def update_processing_state(self, state: str, page: Page):
@@ -142,13 +144,11 @@ class UIManager:
                 if message["from"] == "user":
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
-                   print(f"Message {message}")
                    safe_message_type = escape_js_message(message["message_type"]) if "message_type" in message else escape_js_message("step")
                    if (safe_message_type == "step" or safe_message_type=="action") and self.overlay_show_details == False:
                        continue
 
                    js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
-                   print(f"JS Code: {js_code}")
                    await frame_or_page.evaluate(js_code)
             logger.debug("Chat history updated in overlay, removing update lock flag")
         except Exception:

@@ -382,8 +382,10 @@ function injectOveralyStyles() {
   document.head.appendChild(style);
 }
 let savedSelection = null;
-
-function showCollapsedOverlay(processing_state = "processing") {
+let show_details = true;
+console.log("Show details status 1: "+show_details);
+function showCollapsedOverlay(processing_state = "processing", steps) {
+  show_details = steps;
   removeOverlay();
   window.overlay_state_changed(true);
   let collapsed_agente = document.createElement("div");
@@ -440,7 +442,8 @@ function showCollapsedOverlay(processing_state = "processing") {
   });
   document.getElementById('agentDriveAutoOverlay').addEventListener('click', function () {
     let ui_state = document.getElementById("AgentEOverlayBorder").classList.contains("init") ? "init" : document.getElementById("AgentEOverlayBorder").classList.contains("processing") ? "processing" : "done";
-    showExpandedOverlay(ui_state);
+    console.log("Show details status 2: "+show_details);
+    showExpandedOverlay(ui_state, show_details);
   });
 }
 
@@ -521,8 +524,9 @@ function updateOverlayState(processing_state, is_collapsed)
     }
   }
 }
-function showExpandedOverlay(processing_state = "init") {
+function showExpandedOverlay(processing_state = "init", show_steps=true) {
   ui_state = processing_state;
+  show_details = show_steps;
   let agente_logo = `<svg width="85" height="12" viewBox="0 0 85 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 11.8027L3.43562 0.213699H8.35069L11.8027 11.8027H9.3863L8.23562 7.85753H3.53425L2.38356 11.8027H0ZM4.10959 5.86849H7.66027L6.18082 0.80548H5.58904L4.10959 5.86849Z" fill="#6B6673"/><path d="M19.0946 12C15.6096 12 13.7028 9.56712 13.7028 6.09863C13.7028 2.4 15.9055 0 19.4562 0C22.4151 0 24.5685 1.70959 24.9631 4.35616H22.6124C22.3822 2.87671 21.2151 1.9726 19.5713 1.9726C17.3192 1.9726 16.0535 3.58356 16.0535 6.09863C16.0535 8.35068 17.0726 10.011 19.637 10.011C21.7576 10.011 22.974 8.94247 22.974 7.15068H19.374V5.40822H23.9768C24.8151 5.40822 25.2918 5.85205 25.2918 6.69041V11.8027H23.0069V10.7671L23.4672 8.92603H22.8589C22.8754 9.6 22.4973 12 19.0946 12Z" fill="#6B6673"/><path d="M28.7192 11.8027V0.213699H37.3987V2.20274H31.0206V5.04658H36.5768V6.95342H31.0206V9.8137H37.3987V11.8027H28.7192Z" fill="#6B6673"/><path d="M40.533 11.8027V0.213699H45.0536L49.1631 11.211H49.7385L49.3275 9.76438V0.213699H51.6125V11.8027H47.0919L42.9823 0.80548H42.3905L42.8179 2.25205V11.8027H40.533Z" fill="#6B6673"/><path d="M54.4378 0.213699H64.4159V2.20274H60.5693V11.8027H58.2844V2.20274H54.4378V0.213699Z" fill="#6B6673"/><path d="M63.9401 6.6411H72.4551V8.30137H63.9401V6.6411Z" fill="#6B6673"/><path d="M75.3643 11.8027V0.213699H84.0438V2.20274H77.6657V5.04658H83.2219V6.95342H77.6657V9.8137H84.0438V11.8027H75.3643Z" fill="#6B6673"/></svg>`;
   let close_icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 10L10 10L10 5" stroke="#827C8C"/><path d="M19 14L14 14L14 19" stroke="#827C8C"/><path d="M14 5L14 10L19 10" stroke="#827C8C"/><path d="M10 19L10 14L5 14" stroke="#827C8C"/><path d="M6.35355 5.64645C6.15829 5.45118 5.84171 5.45118 5.64645 5.64645C5.45118 5.84171 5.45118 6.15829 5.64645 6.35355L6.35355 5.64645ZM10.3536 9.64645L6.35355 5.64645L5.64645 6.35355L9.64645 10.3536L10.3536 9.64645Z" fill="#827C8C"/><path d="M17.6464 18.3536C17.8417 18.5488 18.1583 18.5488 18.3536 18.3536C18.5488 18.1583 18.5488 17.8417 18.3536 17.6464L17.6464 18.3536ZM13.6464 14.3536L17.6464 18.3536L18.3536 17.6464L14.3536 13.6464L13.6464 14.3536Z" fill="#827C8C"/><path d="M18.3536 6.35355C18.5488 6.15829 18.5488 5.84171 18.3536 5.64645C18.1583 5.45119 17.8417 5.45119 17.6464 5.64645L18.3536 6.35355ZM14.3536 10.3536L18.3536 6.35355L17.6464 5.64645L13.6464 9.64645L14.3536 10.3536Z" fill="#827C8C"/><path d="M5.64645 17.6464C5.45118 17.8417 5.45118 18.1583 5.64645 18.3536C5.84171 18.5488 6.15829 18.5488 6.35355 18.3536L5.64645 17.6464ZM9.64645 13.6464L5.64645 17.6464L6.35355 18.3536L10.3536 14.3536L9.64645 13.6464Z" fill="#827C8C"/></svg>`;
   let icon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="7.5" width="11" height="11" rx="0.5" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 6 10)" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 20 10)" stroke="#827C8C"/><path d="M12 4V7.5" stroke="#827C8C" stroke-linecap="round"/><rect x="8.5" y="11.5" width="7" height="3" rx="1.5" stroke="#827C8C"/></svg>`;
@@ -571,7 +575,7 @@ function showExpandedOverlay(processing_state = "init") {
   closeButton.style.backgroundPosition = "bottom";
   closeButton.onclick = function () {
     let ui_state = document.getElementById("AgentEExpandedAnimation").classList.contains("initStateLine") ? "init" : document.getElementById("AgentEExpandedAnimation").classList.contains("processingLine") ? "processing" : "done";
-    showCollapsedOverlay(ui_state);
+    showCollapsedOverlay(ui_state, show_details);
   };
   closeButton.style.order = 3;
   header.appendChild(logoIcon);
@@ -625,11 +629,21 @@ function showExpandedOverlay(processing_state = "init") {
   toggleSwitch.type = "checkbox";
   toggleSwitch.className = "toggle";
   toggleSwitch.style.margin = "0px";
-  toggleSwitch.checked = true;
+  if (show_details){
+    toggleSwitch.checked = true;
+  }
+  else{
+    toggleSwitch.checked = false;
+  }
+  
   toggleSwitch.addEventListener('change', function() {
     if(this.checked) {
+        console.log("Show details status 3: "+show_details);
+        show_details = true;
         window.show_steps_state_changed(true)
     } else {
+      show_details = false;
+      console.log("Show details status 4: "+show_details);
       window.show_steps_state_changed(false)
     }
 });

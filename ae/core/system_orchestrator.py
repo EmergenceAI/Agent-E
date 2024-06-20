@@ -118,16 +118,11 @@ class SystemOrchestrator:
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")
-            #await self.save_chat_messages()
-            print("Checking Result:", result)
+            await self.save_chat_messages()
             if result is not None:
-                print("Result:", result)
                 chat_history=result.get("chat_history")
-                print("Chat history:", chat_history)
                 last_message = chat_history[-1] if chat_history else None
-                print("Last message:", last_message)
                 if last_message and "terminate" in last_message and last_message["terminate"]=="yes":
-                    print("Notifying the user and Terminating the session")
                     await self.browser_manager.notify_user(last_message, "answer") # type: ignore
 
             await self.browser_manager.command_completed(command, elapsed_time) # type: ignore

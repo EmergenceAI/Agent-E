@@ -274,11 +274,19 @@ class PlaywrightManager:
 
         Args:
             message (str): The message to notify the user with.
-            message_type (str, optional): The type of message. Defaults to "step", other values are "plan",  "answer", "question". To Do: Convert to Enum.
+            message_type (str, optional): The type of message. Defaults to "step", other values are "plan", "action",  "answer", "question", "info". 
+            To Do: Convert to Enum.
         """
-        print(f"User notification: {message} , {message_type}")
-        
+
         safe_message_type = escape_js_message(message_type)
+        if self.ui_manager.overlay_show_details == False:
+            if not (message_type == "plan" or message_type == "question" or message_type == "answer"):
+                return
+
+        if self.ui_manager.overlay_show_details == True:
+            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "step"):
+                return
+            
         if message_type == "plan":
             message = beautify_plan_message(message)
             message = "Plan: \n" + message
@@ -287,16 +295,16 @@ class PlaywrightManager:
                 message = "Verify: " + message
             else:
                 message = "Next step: " + message
+        if message_type == "question":
+            message = "Question: " + message
+
         if message_type == "answer":
-            print("Adding Response to the prefix since message_type is answer")
             message = "Response: " + message
         safe_message = escape_js_message(message)
         self.ui_manager.new_system_message(safe_message, message_type)
 
         try:
             js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
-
-            print(f"js_code: {js_code}")
             page = await self.get_current_page()
             await page.evaluate(js_code)
             logger.debug("User notification completed")
