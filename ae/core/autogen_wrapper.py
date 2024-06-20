@@ -229,6 +229,12 @@ class AutogenWrapper:
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
              should_terminate = False
+             print ("Checking Termination for Content:", x)
+             function: Any = x.get("function", None)
+             if function is not None:
+                 print("Function is not None")
+                 return False
+             
              content:Any = x.get("content", "") 
              if content is None:
                 content = ""
@@ -249,13 +255,18 @@ class AutogenWrapper:
             
              return should_terminate # type: ignore
         
-        task_delegate_agent = autogen.ConversableAgent(
+        task_delegate_agent = UserProxyAgent_SequentialFunctionExecution(
             name="user",
             llm_config=False, 
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
             is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
             max_consecutive_auto_reply=self.number_of_rounds,
+            code_execution_config={
+                                "last_n_messages": 1,
+                                "work_dir": "tasks",
+                                "use_docker": False,
+                                },
         )
         return task_delegate_agent
 

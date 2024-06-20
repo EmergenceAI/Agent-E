@@ -274,17 +274,17 @@ class PlaywrightManager:
 
         Args:
             message (str): The message to notify the user with.
-            message_type (str, optional): The type of message. Defaults to "step", other values are "plan", "action",  "answer", "question", "info". 
+            message_type (str, optional): The type of message. Defaults to "step", other values are "plan", "action", "answer", "question", "info". 
             To Do: Convert to Enum.
         """
 
         safe_message_type = escape_js_message(message_type)
         if self.ui_manager.overlay_show_details == False:
-            if not (message_type == "plan" or message_type == "question" or message_type == "answer"):
+            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "info"):
                 return
 
         if self.ui_manager.overlay_show_details == True:
-            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "step"):
+            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "info" or message_type == "step"):
                 return
             
         if message_type == "plan":
@@ -359,7 +359,7 @@ class PlaywrightManager:
 
         safe_message = escape_js_message(message)
         
-        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true, message_type='answer');"
+        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true, message_type='question');"
         await page.evaluate(js_code)
 
         await self.user_response_event.wait()

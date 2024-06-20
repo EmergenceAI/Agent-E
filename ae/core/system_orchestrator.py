@@ -124,7 +124,8 @@ class SystemOrchestrator:
                 last_message = chat_history[-1] if chat_history else None
                 if last_message and "terminate" in last_message and last_message["terminate"]=="yes":
                     await self.browser_manager.notify_user(last_message, "answer") # type: ignore
-
+            
+            await self.browser_manager.notify_user(f"Task Completed.", "info") # type: ignore
             await self.browser_manager.command_completed(command, elapsed_time) # type: ignore
             self.is_running = False
 
