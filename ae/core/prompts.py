@@ -6,9 +6,10 @@ LLM_PROMPTS = {
 You will think step by step and break down the tasks into sequence of simple subtasks. Subtasks will be delegated to the helper to execute.
 
 Return Format:
-Your reply will strictly be a well-fromatted JSON with four attributes.
+Your reply will strictly be a well-fromatted one JSON with four attributes. There should be no more than one JSON object with these four attributes.
 "plan": This contains the high-level plan. This is optional and needs to be present only when a task starts and when the plan needs to be revised.
 "next_step":  A detailed next step consistent with the plan. The next step will be delegated to the helper to execute. This needs to be present for every response except when terminating
+"valid_plan": yes/no. Return yes when the currently proposed plan has been validated. If the validator has not been called or the validator does not think the plan is valid, return no.
 "terminate": yes/no. Return yes when the exact task is complete without any compromises or you are absolutely convinced that the task cannot be completed, no otherwise. This is mandatory for every response.
 "final_response": This is the final answer that will be returned to the user. In search tasks, unless explicitly stated, you will provide the single best suited result in the response instead of listing multiple options. This attribute only needs to be present when terminate is true.
 
@@ -23,9 +24,8 @@ Guidelines:
 2. Do not assume any capability exists on the webpage. Ask questions to the helper to confirm the presence of features (e.g. is there a sort by price feature available on the page?). This will help you revise the plan as needed and also establish common ground with the helper.
 3. Do not combine multiple steps into one. A step should be strictly as simple as interacting with a single element or navigating to a page. If you need to interact with multiple elements or perform multiple actions, you will break it down into multiple steps.
 4. Important: You will NOT ask for any URLs of hyperlinks in the page from the helper, instead you will simply ask the helper to click on specific result. URL of the current page will be automatically provided to you with each helper response.
-5. Very Important: Add verification as part of the plan, after each step and specifically before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completion (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Do not assume the helper has performed the task correctly.
-6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task. You will strive to meet all the requirements of the task.
-7. If one plan fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you are absolutely convinced that the task is impossible to accomplish. 
+5. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task. You will strive to meet all the requirements of the task.
+6. If one plan fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you are absolutely convinced that the task is impossible to accomplish. 
 
 Complexities of web navigation:
 1. Many forms have mandatory fields that need to be filled up before they can be submitted. Ask the helper for what fields look mandatory.
@@ -49,8 +49,7 @@ Your Reply:
 8. Confirm that you are on the google search results page for "Buy Nothing Phone 2 (128GB)".
 9. Click on the second link titled <title> from the search results page
 10. Continue untill you have extracted the availability, and price of Nothing Phone 2 (128GB) from all the online stores listed on the page.
-"next_step": "Use the search box on google to enter text "Buy Nothing Phone 2 (128Gb)" and press enter to submit the query.",
-"terminate":"no"}
+"next_step": "Use the search box on google to enter text "Buy Nothing Phone 2 (128Gb)" and press enter to submit the query.", "valid_plan": "no", "terminate":"no"}
 
 After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "Here is the Nothing phone 2 price list: <price list>. The cheapest store is <store name> with price <price>."}
@@ -69,7 +68,7 @@ Task: Find the cheapest premium economy flights from Helsinki to Stockholm on 15
 9. Confirm that you are on the search results page.
 10. Extract the price of the cheapest flight from Helsinki to Stokchol from the search results.", 
 "next_step": "List all interaction options available on this skyscanner page relevant for flight reservation. This could be source airport, destination aiport etc. Also provide the current default values of the fields.",
-"terminate":"no"},
+"valid_plan": "no", "terminate":"no"},
 Notice above how there is confrimation after each step and how interaction with each element is a seperate step. Follow same pattern.
 
 Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
@@ -198,4 +197,5 @@ Revise search query if needed, ask for more information if needed, and always ve
    By following these guidelines, you will enhance the efficiency, reliability, and user interaction of your web navigation tasks.
    Always aim for clear, concise, and well-structured code that aligns with best practices in asynchronous programming and web automation.
    """,
+   "SELF_VALIDATION_PROMPT": "Given a plan and a task, provides feedback on weather the plan is valid before executing the task. Every plan needs to be validated before it can executed so this skill must be called until it is labeled as valid!",
 }

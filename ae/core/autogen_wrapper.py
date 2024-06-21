@@ -98,21 +98,25 @@ class AutogenWrapper:
         self.agents_map = await self.__initialize_agents(agents_needed)
         
         def trigger_nested_chat(manager: autogen.ConversableAgent):
+            #TODO: Move the validation process to this function
             content:str=manager.last_message()["content"] # type: ignore
             content_json=parse_response(content)
             next_step = content_json.get('next_step', None)
+            valid_plan = content_json.get('valid_plan', None) #Issue: This is looking at wrong output possibly, should debug here!
             plan = content_json.get('plan', None)
             if plan is not None:
                 print_message_from_planner("Plan: "+ str(plan))
-            print(f"Next Step: {next_step}")
+            print(f"Checking nested_chat trigger...\nValid Plan: {valid_plan}, Next Step: {next_step}\n")
             if next_step is None: 
-                print_message_from_planner("Received no response, terminating..") # type: ignore
-                print("Trigger nested chat returned False")
+                print_message_from_planner("Received no next step response, terminating..") # type: ignore
                 return False
-            else:
+            if valid_plan is None:
+                print_message_from_planner("Received no valid_plan response, terminating..") # type: ignore
+                return False
+            if valid_plan == "yes" and next_step:
                 print_message_from_planner(next_step) # type: ignore
                 return True 
-
+            return False
         
         def get_url() -> str:
             return asyncio.run(geturl())

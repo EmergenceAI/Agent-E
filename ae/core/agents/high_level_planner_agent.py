@@ -3,6 +3,7 @@ from ae.core.post_process_responses import final_reply_callback_planner_agent as
 import autogen  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.skills.get_user_input import get_user_input
+from ae.core.skills.do_self_validation import do_self_validation
 from ae.core.prompts import LLM_PROMPTS
 from datetime import datetime
 from autogen import Agent  # type: ignore
@@ -36,10 +37,14 @@ class PlannerAgent:
             },
         )
 
-        # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
-        # Register get_user_input skill for execution by user_proxy_agent
-        user_proxy_agent.register_for_execution()(get_user_input)
+        # # Register get_user_input skill for LLM by assistant agent
+        # self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+        # # Register get_user_input skill for execution by user_proxy_agent
+        # user_proxy_agent.register_for_execution()(get_user_input)
+
+        # Register do_self_validation to planner and user_proxy_agent
+        self.agent.register_for_llm(description=LLM_PROMPTS["SELF_VALIDATION_PROMPT"])(do_self_validation)
+        user_proxy_agent.register_for_execution()(do_self_validation)
 
         self.agent.register_reply( # type: ignore
             [autogen.AssistantAgent, None],
