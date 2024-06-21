@@ -13,7 +13,7 @@ from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observ
 from ae.utils.js_helper import escape_js_message
 from ae.utils.js_helper import beautify_plan_message
 from ae.utils.logger import logger
-
+from ae.utils.ui_messagetype import MessageType
 # Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
 os.environ["PW_TEST_SCREENSHOT_NO_FONTS_READY"] = "1"
 
@@ -268,50 +268,47 @@ class PlaywrightManager:
         await context.expose_function('user_response', self.receive_user_response) # type: ignore
 
 
-    async def notify_user(self, message: str, message_type: str = "step"):
+    async def notify_user(self, message: str, message_type: MessageType = MessageType.STEP):
         """
         Notify the user with a message.
 
         Args:
             message (str): The message to notify the user with.
-            message_type (str, optional): The type of message. Defaults to "step", other values are "plan", "action", "answer", "question", "info". 
+            message_type (enum, optional): Values can be 'PLAN', 'QUESTION', 'ANSWER', 'INFO', 'STEP'. Defaults to 'STEP'.
             To Do: Convert to Enum.
         """
 
-        safe_message_type = escape_js_message(message_type)
         if self.ui_manager.overlay_show_details == False:
-            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "info"):
+            if not (message_type == MessageType.PLAN or message_type == MessageType.QUESTION or message_type == MessageType.ANSWER or message_type == MessageType.INFO):
                 return
 
         if self.ui_manager.overlay_show_details == True:
-            if not (message_type == "plan" or message_type == "question" or message_type == "answer" or message_type == "info" or message_type == "step"):
+            if not (message_type == MessageType.PLAN  or message_type == MessageType.QUESTION  or message_type == MessageType.ANSWER or message_type == MessageType.INFO or message_type == MessageType.STEP):
                 return
             
-        if message_type == "plan":
+        if message_type == MessageType.PLAN:
             message = beautify_plan_message(message)
             message = "Plan: \n" + message
-        if message_type == "step":
+        if message_type == MessageType.STEP:
             if "confirm" in message.lower():
                 message = "Verify: " + message
             else:
                 message = "Next step: " + message
-        if message_type == "question":
+        if message_type == MessageType.QUESTION:
             message = "Question: " + message
 
-        if message_type == "answer":
+        if message_type == MessageType.ANSWER:
             message = "Response: " + message
         safe_message = escape_js_message(message)
         self.ui_manager.new_system_message(safe_message, message_type)
-
+        safe_message_type = escape_js_message(message_type.value)
         try:
             js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
             page = await self.get_current_page()
             await page.evaluate(js_code)
-            logger.debug("User notification completed")
         except Exception as e:
-            print(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
             logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
-        
+        print("Notify Complete...")
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()
@@ -355,7 +352,7 @@ class PlaywrightManager:
         page = await self.get_current_page()
 
         await self.ui_manager.show_overlay(page)
-        self.log_system_message(message) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
+        self.log_system_message(message, MessageType.QUESTION) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
 
         safe_message = escape_js_message(message)
         
@@ -398,7 +395,7 @@ class PlaywrightManager:
         try:
             await page.wait_for_load_state(state=load_state, timeout=take_snapshot_timeout) # type: ignore
             await page.screenshot(path=screenshot_path, full_page=full_page, timeout=take_snapshot_timeout, caret="initial", scale="device")
-            print(f"Screen shot saved to: {screenshot_path}")
+            logger.info(f"Screen shot saved to: {screenshot_path}")
         except Exception as e:
             logger.error(f"Failed to take screenshot and save to \"{screenshot_path}\". Error: {e}")
 
@@ -413,14 +410,14 @@ class PlaywrightManager:
         self.ui_manager.new_user_message(message)
 
 
-    def log_system_message(self, message: str):
+    def log_system_message(self, message: str, type: MessageType = MessageType.STEP):
         """
         Log a system message.
 
         Args:
             message (str): The system message to log.
         """
-        self.ui_manager.new_system_message(message)
+        self.ui_manager.new_system_message(message, type)
 
     async def update_processing_state(self, processing_state: str):
         """

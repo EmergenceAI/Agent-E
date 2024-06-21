@@ -7,6 +7,7 @@ from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def enter_text_and_click(
@@ -63,10 +64,10 @@ async def enter_text_and_click(
         do_press_key_combination_result = await do_press_key_combination(browser_manager, page, "Enter")
         if do_press_key_combination_result:
             result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
-            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".", message_type="action")
+            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".", message_type=MessageType.ACTION)
         else:
             result["detailed_message"] += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
-            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".", message_type="action")
+            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".", message_type=MessageType.ACTION)
     else:
         await browser_manager.highlight_element(click_selector, True)
 

@@ -1,7 +1,6 @@
 import asyncio
 import json
 import os
-import re
 import tempfile
 import traceback
 from string import Template
@@ -20,6 +19,7 @@ from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent  
 from ae.core.prompts import LLM_PROMPTS
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
 from ae.utils.response_parser import parse_response
 from ae.core.skills.get_url import geturl
@@ -104,16 +104,15 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
-                notify_planner_messages(plan, level="plan")
+                notify_planner_messages(plan, message_type=MessageType.PLAN)
+            
             if next_step is None: 
-                notify_planner_messages("Received no response, terminating..", level="others") # type: ignore
-                print("Trigger nested chat returned False")
+                notify_planner_messages("Received no response, terminating..", message_type=MessageType.INFO) # type: ignore
                 return False
             else:
-                notify_planner_messages(next_step, level="step") # type: ignore
+                notify_planner_messages(next_step, message_type=MessageType.STEP) # type: ignore
                 return True 
 
-        
         def get_url() -> str:
             return asyncio.run(geturl())
 
@@ -135,7 +134,6 @@ class AutogenWrapper:
             content_json = parse_response(last_message)
             next_step = content_json.get('next_step', None)
             if next_step is None: 
-                print ("Message to nested chat returned None")
                 return None
             else:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
@@ -229,10 +227,8 @@ class AutogenWrapper:
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
              should_terminate = False
-             print ("Checking Termination for Content:", x)
              function: Any = x.get("function", None)
              if function is not None:
-                 print("Function is not None")
                  return False
              
              content:Any = x.get("content", "") 
@@ -247,10 +243,9 @@ class AutogenWrapper:
                     if(_terminate == "yes"):
                         should_terminate = True
                         if final_response:
-                            print("Notifying Final Answer")
-                            notify_planner_messages(final_response, level="answer")
+                            notify_planner_messages(final_response, message_type=MessageType.ANSWER)
                 except json.JSONDecodeError:
-                    print("Error decoding JSON content")
+                    logger.error("Error decoding JSON response {content}. Terminating..")
                     should_terminate = True
             
              return should_terminate # type: ignore

@@ -7,6 +7,7 @@ import pdfplumber
 from ae.config import PROJECT_TEMP_PATH
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def extract_text_from_pdf(pdf_url: Annotated[str, "The URL of the PDF file to extract text from."]) -> Annotated[str, "All the text found in the PDF file."]:
@@ -35,7 +36,7 @@ async def extract_text_from_pdf(pdf_url: Annotated[str, "The URL of the PDF file
                     text += page_text + "\n"
         extracted_text = text.strip()
         word_count = len(extracted_text.split())
-        await browser_manager.notify_user(f"Extracted text from the PDF successfully. Found {word_count} words.", message_type="action")
+        await browser_manager.notify_user(f"Extracted text from the PDF successfully. Found {word_count} words.", message_type=MessageType.ACTION)
         return "Text found in the PDF:\n" + extracted_text
     except httpx.HTTPStatusError as e:
         logger.error(f"An error occurred while downloading the PDF from {pdf_url}: {str(e)}")

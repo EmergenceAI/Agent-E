@@ -1,5 +1,4 @@
 
-import json
 import os
 import traceback
 
@@ -9,7 +8,7 @@ from playwright.async_api import Page
 from ae.config import PROJECT_SOURCE_ROOT
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
-
+from ae.utils.ui_messagetype import MessageType
 
 class UIManager:
     """
@@ -140,14 +139,13 @@ class UIManager:
             await frame_or_page.evaluate("clearOverlayMessages();")
             for message in self.conversation_history:
                 safe_message = escape_js_message(message["message"])
-                
+                safe_message_type = escape_js_message(message.get("message_type", MessageType.STEP.value))  
                 if message["from"] == "user":
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
-                   safe_message_type = escape_js_message(message["message_type"]) if "message_type" in message else escape_js_message("step")
-                   if (safe_message_type == "step" or safe_message_type=="action") and self.overlay_show_details == False:
+                   #choose chich message types to be shown depending on UI setting
+                   if (safe_message_type == MessageType.STEP or safe_message_type==MessageType.ACTION) and self.overlay_show_details == False:
                        continue
-
                    js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
                    await frame_or_page.evaluate(js_code)
             logger.debug("Chat history updated in overlay, removing update lock flag")
@@ -185,21 +183,21 @@ class UIManager:
         self.conversation_history.append({"from":"user", "message":message})
 
 
-    def new_system_message(self, message: str, type:str="step"):
+    def new_system_message(self, message: str, type:MessageType=MessageType.STEP):
         """
         Adds a new system message to the conversation history.
 
         Args:
             message (str): The message text to add.
         """
-        self.conversation_history.append({"from":"system", "message":message, "message_type":type})
-
+       
+        self.conversation_history.append({"from":"system", "message":message, "message_type":type.value})
+        print(f"Adding system message: {message}")
 
     def add_default_system_messages(self):
         """
         Adds default system messages to the conversation history to greet the user or provide initial instructions.
         """
-        #self.new_system_message(json.dumps("Agent-E at your service, what can I do for you?"))
         pass
 
     async def command_completed(self, page: Page, command: str, elapsed_time: float|None = None):

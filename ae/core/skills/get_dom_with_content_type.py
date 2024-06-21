@@ -8,6 +8,7 @@ from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import wait_for_non_loading_dom_state
 from ae.utils.get_detailed_accessibility_tree import do_get_accessibility_info
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 async def get_dom_with_content_type(
     content_type: Annotated[str, "The type of content to extract: 'text_only': Extracts the innerText of the highest element in the document and responds with text, or 'input_fields': Extracts the text input and button elements in the dom."]
@@ -70,7 +71,7 @@ async def get_dom_with_content_type(
 
     elapsed_time = time.time() - start_time
     logger.info(f"Get DOM Command executed in {elapsed_time} seconds")
-    await browser_manager.notify_user(user_success_message, message_type="action")
+    await browser_manager.notify_user(user_success_message, message_type=MessageType.ACTION)
     return extracted_data # type: ignore
 
 

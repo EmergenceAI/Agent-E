@@ -25,8 +25,6 @@ def beautify_plan_message(message:str) -> str:
     Returns:
         str: The plan message with newlines added between each numbered step.
     """
-    print(f"Beautify Plan Message: {message}")
     # Add a newline before each numbered step that is not already preceded by a newline
     plan_with_newlines = re.sub(r'(?<!\n)( \d+\.)', r'\n\1', message)
-    print(f"Beautified Plan Message: {plan_with_newlines}")
     return plan_with_newlines

@@ -20,14 +20,13 @@ def parse_response(message: str) -> Dict[str, Any]:
     message = message.strip()
     try:
         json_response = json.loads(message)
-        print(f"JSON response parsed successfully: {json_response}")
     except:
         # If the response is not a valid JSON, try pass it using string matching. 
         #This should seldom be triggered
        
-        message = message.replace("\\n", "")
+        message = message.replace("\\n", "\n")
         message = message.replace("\n", "") # type: ignore
-        print(f"Error parsing JSON response {raw_messgae}. Attempting to parse using string matching.")
+
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")
             end = message.index("next_step")

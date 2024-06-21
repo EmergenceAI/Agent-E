@@ -4,7 +4,7 @@ import autogen  # type: ignore
 import asyncio
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
-
+from ae.utils.ui_messagetype import MessageType
 
 def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, messages: list[dict[str, Any]], sender: autogen.Agent, config: dict[str, Any]):
     """
@@ -35,8 +35,8 @@ def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, message
     return False, None
 
 
-def final_reply_callback_planner_agent(message:str, level:str = "plan"): # type: ignore 
+def final_reply_callback_planner_agent(message:str, message_type:MessageType = MessageType.STEP): # type: ignore 
             browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(browser_manager.notify_user(message, message_type=level))
+            loop.run_until_complete(browser_manager.notify_user(message, message_type=message_type))
             return False, None  # required to ensure the agent communication flow continues

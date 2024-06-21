@@ -8,6 +8,7 @@ from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_mutation_observer import subscribe  # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe  # type: ignore
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def press_key_combination(key_combination: Annotated[str, "The key to press, e.g., Enter, PageDown etc"]) -> str:
@@ -61,7 +62,7 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
     if dom_changes_detected:
         return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This means that the action is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     
-    await browser_manager.notify_user(f"Key {key_combination} executed successfully", message_type="action")
+    await browser_manager.notify_user(f"Key {key_combination} executed successfully", message_type=MessageType.ACTION)
     return f"Key {key_combination} executed successfully"
 
 

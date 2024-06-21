@@ -99,7 +99,7 @@ class SystemOrchestrator:
         Args:
             command (str): The command to process.
         """
-        print(f"Received command: {command}")
+        logger.info(f"Received command: {command}")
         if command.lower() == 'exit':
             await self.shutdown()
             return
