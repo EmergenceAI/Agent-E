@@ -1,7 +1,6 @@
 import asyncio
 import json
 import os
-import re
 import tempfile
 import traceback
 from string import Template
@@ -9,7 +8,7 @@ from time import time_ns
 from typing import Any
 
 import autogen  # type: ignore
-import nest_asyncio  # type: ignore
+import nest_asyncio  # type: ignore  # type: ignore
 import openai
 
 #from autogen import Cache
@@ -17,14 +16,14 @@ from dotenv import load_dotenv
 
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
-from ae.core.agents.high_level_planner_agent import PlannerAgent  
-from ae.core.prompts import LLM_PROMPTS
-from ae.utils.logger import logger
-from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
-from ae.utils.response_parser import parse_response
-from ae.core.skills.get_url import geturl
-import nest_asyncio # type: ignore
+from ae.core.agents.high_level_planner_agent import PlannerAgent
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
+from ae.core.prompts import LLM_PROMPTS
+from ae.core.skills.get_url import geturl
+from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
+from ae.utils.logger import logger
+from ae.utils.response_parser import parse_response
+
 nest_asyncio.apply()  # type: ignore
 
 class AutogenWrapper:
@@ -96,7 +95,7 @@ class AutogenWrapper:
 
         self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {autogen_model_name}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
-        
+
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             content:str=manager.last_message()["content"] # type: ignore
             content_json=parse_response(content)
@@ -111,9 +110,8 @@ class AutogenWrapper:
                 return False
             else:
                 print_message_from_planner(next_step) # type: ignore
-                return True 
+                return True
 
-        
         def get_url() -> str:
             return asyncio.run(geturl())
 
@@ -129,7 +127,7 @@ class AutogenWrapper:
                 print_message_from_planner("Response: "+ last_message) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
-        
+
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
             content_json = parse_response(last_message)
@@ -141,7 +139,7 @@ class AutogenWrapper:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
                 return next_step # type: ignore
 
-        print(f">>> Registering nested chat. Available agents: {self.agents_map}")
+        # print(f">>> Registering nested chat. Available agents: {self.agents_map}")
         self.agents_map["user"].register_nested_chats( # type: ignore
             [
                 {
