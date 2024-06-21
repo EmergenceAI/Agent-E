@@ -308,7 +308,7 @@ class PlaywrightManager:
             await page.evaluate(js_code)
         except Exception as e:
             logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
-        print("Notify Complete...")
+
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()

@@ -125,7 +125,7 @@ class AutogenWrapper:
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 last_message=last_message+" "+  get_url() # type: ignore
-                #print_message_from_planner("Response: "+ last_message) # type: ignore
+                notify_planner_messages(last_message, message_type=MessageType.ACTION) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
         
