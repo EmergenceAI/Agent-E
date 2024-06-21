@@ -160,7 +160,7 @@ class SystemOrchestrator:
             print("Checking Result:", result)
             if result is not None:
                 print("Result:", result)
-                chat_history= result.get("chat_history") # type: ignore
+                chat_history= result.chat_history # type: ignore
                 print("Chat history:", chat_history) # type: ignore
                 last_message = chat_history[-1] if chat_history else None # type: ignore
                 print("Last message:", last_message) # type: ignore
