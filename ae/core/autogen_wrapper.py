@@ -16,15 +16,14 @@ from dotenv import load_dotenv
 
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
-from ae.core.agents.high_level_planner_agent import PlannerAgent  
-from ae.core.prompts import LLM_PROMPTS
-from ae.utils.logger import logger
-from ae.utils.ui_messagetype import MessageType
-from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
-from ae.utils.response_parser import parse_response
-from ae.core.skills.get_url import geturl
-import nest_asyncio # type: ignore
+from ae.core.agents.high_level_planner_agent import PlannerAgent
 from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_planner_messages  # type: ignore
+from ae.core.prompts import LLM_PROMPTS
+from ae.core.skills.get_url import geturl
+from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
+from ae.utils.logger import logger
+from ae.utils.response_parser import parse_response
+from ae.utils.ui_messagetype import MessageType
 
 nest_asyncio.apply()  # type: ignore
 
@@ -41,7 +40,7 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 100):
+    def __init__(self, max_chat_round: int = 1000):
         self.number_of_rounds = max_chat_round
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
@@ -50,7 +49,7 @@ class AutogenWrapper:
         self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 100):
+    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
 
@@ -97,7 +96,7 @@ class AutogenWrapper:
 
         self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {autogen_model_name}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
-        
+
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             content:str=manager.last_message()["content"] # type: ignore
             content_json=parse_response(content)
@@ -105,13 +104,13 @@ class AutogenWrapper:
             plan = content_json.get('plan', None)
             if plan is not None:
                 notify_planner_messages(plan, message_type=MessageType.PLAN)
-            
-            if next_step is None: 
+
+            if next_step is None:
                 notify_planner_messages("Received no response, terminating..", message_type=MessageType.INFO) # type: ignore
                 return False
             else:
                 notify_planner_messages(next_step, message_type=MessageType.STEP) # type: ignore
-                return True 
+                return True
 
         def get_url() -> str:
             return asyncio.run(geturl())
@@ -128,7 +127,7 @@ class AutogenWrapper:
                 notify_planner_messages(last_message, message_type=MessageType.ACTION) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
-        
+
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
             content_json = parse_response(last_message)
@@ -139,7 +138,7 @@ class AutogenWrapper:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
                 return next_step # type: ignore
 
-        print(f">>> Registering nested chat. Available agents: {self.agents_map}")
+        # print(f">>> Registering nested chat. Available agents: {self.agents_map}")
         self.agents_map["user"].register_nested_chats( # type: ignore
             [
                 {
@@ -148,7 +147,7 @@ class AutogenWrapper:
             "message":reflection_message,  
             "max_turns": self.number_of_rounds,
             "summary_method": my_custom_summary_method,
-                }   
+                }
             ],
             trigger=trigger_nested_chat, # type: ignore
         )
@@ -200,11 +199,11 @@ class AutogenWrapper:
         user_delegate_agent = await self.__create_user_delegate_agent()
         agents_map["user"] = user_delegate_agent
         agents_needed.remove("user")
-        
+
         browser_nav_executor = self.__create_browser_nav_executor_agent()
         agents_map["browser_nav_executor"] = browser_nav_executor
         agents_needed.remove("browser_nav_executor")
-        
+
         for agent_needed in agents_needed:
             if agent_needed == "browser_nav_agent":
                 browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
@@ -230,8 +229,8 @@ class AutogenWrapper:
              function: Any = x.get("function", None)
              if function is not None:
                  return False
-             
-             content:Any = x.get("content", "") 
+
+             content:Any = x.get("content", "")
              if content is None:
                 content = ""
                 should_terminate = True
@@ -247,12 +246,12 @@ class AutogenWrapper:
                 except json.JSONDecodeError:
                     logger.error("Error decoding JSON response {content}. Terminating..")
                     should_terminate = True
-            
+
              return should_terminate # type: ignore
-        
+
         task_delegate_agent = UserProxyAgent_SequentialFunctionExecution(
             name="user",
-            llm_config=False, 
+            llm_config=False,
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
             is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
@@ -274,7 +273,7 @@ class AutogenWrapper:
                 return False
              else:
                 return True
-        
+
         browser_nav_executor_agent = UserProxyAgent_SequentialFunctionExecution(
             name="browser_nav_executor",
             is_termination_msg=is_browser_executor_termination_message,
@@ -339,7 +338,7 @@ class AutogenWrapper:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
             print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
-            
+
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
                 max_turns=self.number_of_rounds,
@@ -357,5 +356,3 @@ class AutogenWrapper:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
 
-
-    

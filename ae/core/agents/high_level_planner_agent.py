@@ -1,13 +1,17 @@
-from string import Template
-from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
-import autogen  # type: ignore
-from ae.core.memory.static_ltm import get_user_ltm
-from ae.core.skills.get_user_input import get_user_input
-from ae.core.prompts import LLM_PROMPTS
 from datetime import datetime
+from string import Template
+
+import autogen  # type: ignore
 from autogen import Agent  # type: ignore
-from autogen import ConversableAgent # type: ignore
+from autogen import ConversableAgent  # type: ignore
 from autogen import OpenAIWrapper  # type: ignore
+
+from ae.core.memory.static_ltm import get_user_ltm
+from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
+from ae.core.prompts import LLM_PROMPTS
+from ae.core.skills.get_user_input import get_user_input
+
+
 class PlannerAgent:
     def __init__(self, config_list, user_proxy_agent:ConversableAgent): # type: ignore
         """
