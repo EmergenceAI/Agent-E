@@ -211,11 +211,26 @@ if __name__ == "__main__":
             row[alias] = f"{percentages.get(score, 0):.2f}% ({counts.get(score, 0)})"
         data.append(row)
 
-    # Create DataFrame and save to HTML post adjustment
+    # Create DataFrame
     df = pd.DataFrame(data)
+
+    # Styling the DataFrame
+    styled_df = df.style.set_table_styles(
+        [
+            {'selector': 'thead th', 'props': 'font-weight: bold; text-align: center;'},
+            {'selector': 'th', 'props': 'text-align: center;'},
+            {'selector': 'td', 'props': 'text-align: center;'},
+            {'selector': 'table', 'props': 'border-collapse: collapse; width: 100%;'},
+            {'selector': 'table, th, td', 'props': 'border: 1px solid black;'}
+        ]
+    ).set_caption("Benchmark Report")
+
+    # Save to HTML with styled format
     html_output_file = os.path.join(args.test_results_dir, "benchmark_report.html")
-    df.to_html(html_output_file, index=False)
+    styled_df.to_html(html_output_file)
 
     print(f"\nBenchmark report has been saved to: {html_output_file}")
+
+
 # Sample how to run:
 # python scripts/aggregate_test_results.py /path/to/folder/agent_e_annotators_tests/round2 --adjust_task_ids "14, 26, 51, 63, 93, 141"
