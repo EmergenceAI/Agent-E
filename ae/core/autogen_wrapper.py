@@ -257,11 +257,6 @@ class AutogenWrapper:
             is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
             max_consecutive_auto_reply=self.number_of_rounds,
-            code_execution_config={
-                                "last_n_messages": 1,
-                                "work_dir": "tasks",
-                                "use_docker": False,
-                                },
         )
         return task_delegate_agent
 

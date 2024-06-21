@@ -279,11 +279,11 @@ class PlaywrightManager:
         """
 
         if self.ui_manager.overlay_show_details == False:
-            if not (message_type == MessageType.PLAN or message_type == MessageType.QUESTION or message_type == MessageType.ANSWER or message_type == MessageType.INFO):
+            if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
                 return
 
         if self.ui_manager.overlay_show_details == True:
-            if not (message_type == MessageType.PLAN  or message_type == MessageType.QUESTION  or message_type == MessageType.ANSWER or message_type == MessageType.INFO or message_type == MessageType.STEP):
+            if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
                 return
             
         if message_type == MessageType.PLAN:
@@ -307,7 +307,7 @@ class PlaywrightManager:
             page = await self.get_current_page()
             await page.evaluate(js_code)
         except Exception as e:
-            logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
+            logger.error(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
 
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
@@ -424,7 +424,7 @@ class PlaywrightManager:
         Update the processing state of the overlay.
 
         Args:
-            is_processing (str): "init", "processing", "done"
+            is_processing (str): "init", "processing", "done"  TODO: Convert to Enum
         """
         page = await self.get_current_page()
 
