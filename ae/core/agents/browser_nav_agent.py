@@ -120,5 +120,5 @@ class BrowserNavAgent:
             config={"callback": None},
         )
         '''
-        print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
-        print(">>> Registered skills for BrowserNavAgent and BrowserNavExecutorAgent")
+        # print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
+        # print(">>> Registered skills for BrowserNavAgent and BrowserNavExecutorAgent")
