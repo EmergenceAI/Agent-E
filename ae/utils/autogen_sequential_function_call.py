@@ -1,9 +1,15 @@
 
+import asyncio
 import inspect
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 from autogen import Agent
 from autogen import UserProxyAgent
-import asyncio
 
 
 class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
@@ -59,7 +65,7 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
 
             if ("as a consequence of this action" in content.lower()): # type: ignore
                 skip_flag = True
-                
+
             tool_call_id = tool_call.get("id", None) # type: ignore
             if tool_call_id is not None:
                 tool_call_response = { # type: ignore
