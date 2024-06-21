@@ -285,10 +285,16 @@ class PlaywrightManager:
         if self.ui_manager.overlay_show_details == True:
             if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
                 return
-            
+
+        if message.startswith(":"):
+            message = message[1:]
+
+        if message.endswith(","):
+            message = message[:-1]
+
         if message_type == MessageType.PLAN:
             message = beautify_plan_message(message)
-            message = "Plan: \n" + message
+            message = "Plan:\n" + message
         if message_type == MessageType.STEP:
             if "confirm" in message.lower():
                 message = "Verify: " + message
