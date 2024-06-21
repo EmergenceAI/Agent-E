@@ -147,6 +147,7 @@ class SystemOrchestrator:
             current_url = await self.browser_manager.get_current_url() if self.browser_manager else None
             self.browser_manager.log_user_message(command) # type: ignore
             result = None
+            logger.info(f"Processing command: {command}")
             if self.autogen_wrapper:
                 orchestrated_command = await self.__orchestrate_command(command)
                 if orchestrated_command is not None:
