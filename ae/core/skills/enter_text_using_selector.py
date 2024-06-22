@@ -1,11 +1,13 @@
 import asyncio
 import inspect
+import platform
 import traceback
 from dataclasses import dataclass
 from typing import Annotated
 from typing import List  # noqa: UP035
 
 from playwright.async_api import Page
+from playwright.async_api._generated import ElementHandle
 
 from ae.core.playwright_manager import PlaywrightManager
 from ae.core.skills.press_key_combination import press_key_combination
@@ -159,7 +161,6 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         - If 'use_keyboard_fill' is set to False, the function uses the 'custom_fill_element' method to enter the text.
     """
     try:
-            
         logger.debug(f"Looking for selector {selector} to enter text: {text_to_enter}")
 
         elem = await page.query_selector(selector)
@@ -172,14 +173,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         element_outer_html = await get_element_outer_html(elem, page)
 
         if use_keyboard_fill:
-            await elem.focus()
-            await asyncio.sleep(0.1)
-            await press_key_combination("Control+A")
-            await asyncio.sleep(0.1)
-            await press_key_combination("Backspace")
-            await asyncio.sleep(0.1)
-            logger.debug(f"Focused element with selector {selector} to enter text")
-            #add a 100ms delay
+            await remove_text_from_element(page, elem)
 
             await page.keyboard.type(text_to_enter, delay=4)
         else:
@@ -194,6 +188,98 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         error = f"Error entering text in selector {selector}."
         return {"summary_message": error, "detailed_message": f"{error} Error: {e}"}
 
+
+async def remove_text_from_element(page: Page,  elem: ElementHandle):
+    logger.info(f"Removing text from element: {elem}")
+    if platform.system().lower() == "darwin":
+        if await remove_text_from_element_using_controlmeta_delete(page, elem):
+            return True
+    else:
+        if await remove_text_from_element_using_selectall_backspace(page, elem):
+            return True
+
+    if await remove_text_from_element_using_js_set_empty(page, elem):
+        return True
+    if await remove_text_from_element_using_fill(page, elem):
+        return True
+
+    logger.error(f"Failed to remove text from element after trying all methods. Element: {elem}")
+    return False
+
+async def remove_text_from_element_using_selectall_backspace(page: Page,  elem: ElementHandle) -> bool:
+    try:
+        await focus_element(elem, click=True)
+        await asyncio.sleep(0.1)
+        await press_key_combination("Control+A")
+        await asyncio.sleep(0.1)
+        await press_key_combination("Backspace")
+        await asyncio.sleep(1)
+        #await unfocus_element(page)
+        element_value = await page.evaluate('(element) => element.value', elem)
+        print(f">>> Element value from remove text from element selectall/backspace: \"{element_value}\"")
+        return element_value == ""
+    except Exception as e:
+        logger.error(f"Error removing text from element using selectall/backspace: {e}")
+        traceback.print_exc()
+        return False
+
+async def remove_text_from_element_using_controlmeta_delete(page: Page,  elem: ElementHandle) -> bool:
+    try:
+        await focus_element(elem, click=True)
+        await asyncio.sleep(0.1)
+        await press_key_combination("ControlOrMeta+A")
+        await asyncio.sleep(0.1)
+        await press_key_combination("Delete")
+        await asyncio.sleep(1)
+        # await unfocus_element(page)
+        element_value = await page.evaluate('(element) => element.value', elem)
+        print(f">>> Element value from remove text from element controlmeta/delete: \"{element_value}\"")
+        return element_value == ""
+    except Exception as e:
+        logger.error(f"Error removing text from element using controlmeta/delete: {e}")
+        traceback.print_exc()
+        return False
+
+async def remove_text_from_element_using_js_set_empty(page: Page, elem: ElementHandle) -> bool:
+    try:
+        await focus_element(elem, click=True)
+        await asyncio.sleep(0.1)
+        await page.evaluate('element => element.value = ""', elem)
+        await asyncio.sleep(1)
+        # await unfocus_element(page)
+        element_value = await page.evaluate('(element) => element.value', elem)
+        print(f">>> Element value from remove text from element JS set empty: \"{element_value}\"")
+        return element_value == ""
+    except Exception as e:
+        logger.error(f"Error removing text from element using JS set empty: {e}")
+        traceback.print_exc()
+        return False
+
+async def remove_text_from_element_using_fill(page: Page, elem: ElementHandle) -> bool:
+    try:
+        await focus_element(elem, click=True)
+        await asyncio.sleep(0.1)
+        await elem.fill('')
+        await asyncio.sleep(1)
+        # await unfocus_element(page)
+        element_value = await page.evaluate('(element) => element.value', elem)
+        print(f">>> Element value from remove text from element fill: \"{element_value}\"")
+        return element_value == ""
+    except Exception as e:
+        logger.error(f"Error removing text from element using fill: {e}")
+        traceback.print_exc()
+        return False
+
+async def focus_element(elem: ElementHandle, click: bool = True):
+    await elem.focus()
+    if click:
+        await elem.click()
+
+async def unfocus_element(page: Page):
+    await page.evaluate('document.activeElement.blur()')
+    await asyncio.sleep(0.1)
+    await page.focus('body')
+    await asyncio.sleep(0.1)
 
 async def bulk_enter_text(
     entries: Annotated[List[dict[str, str]], "List of objects, each containing 'query_selector' and 'text'."]  # noqa: UP006
