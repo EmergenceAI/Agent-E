@@ -679,7 +679,20 @@ newDiv.addEventListener('keyup', function(event) {
   let userInput = document.createElement("textarea");
   userInput.id = "user-input";
   userInput.placeholder = "What can i help you solve today?";
-
+  userInput.addEventListener('input', function(event) {
+    let text = event.target.value;
+    if (text.trim() == "") {
+      let button_disabled_svg =`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#EEEEEF"/><path d="M15 20H25" stroke="#AEA9B4" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="#AEA9B4" stroke-width="1.5"/></svg>`;  
+      let sendBtn = document.getElementById('send-btn');
+      sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(button_disabled_svg)}')`;
+    }
+    else{
+      let button_enabled_svg= `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#252539"/><path d="M15 20H25" stroke="white" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="white" stroke-width="1.5"/></svg>`;
+      let sendBtn = document.getElementById('send-btn');
+      sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(button_enabled_svg)}')`;
+    }
+    console.log('Text changed:', event.target.value);
+  });
   let userinput_footer = document.createElement("div");
   userinput_footer.style.display = "flex";
   userinput_footer.style.flexDirection = "row";
@@ -758,7 +771,8 @@ newDiv.addEventListener('keyup', function(event) {
   updateOverlayState(processing_state, false);
   document.getElementById('send-btn').addEventListener('click', function () {
     let task = document.getElementById('user-input').value
-    if (task && !isDisabled()) {
+    let task_trimmed = task.trim();
+    if (task_trimmed && !isDisabled() && task_trimmed.length > 0) {
       if (awaitingUserResponse) {
         addUserMessage(task);
         document.getElementById('user-input').value = "";
