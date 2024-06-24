@@ -1,12 +1,13 @@
 import json
+import re
 from typing import Dict, Any
 
 def parse_response(message: str) -> Dict[str, Any]:
     """
     Parse the response from the browser agent and return the response as a dictionary.
     """
-    # Parse the response content
-    json_response = {}
+    # Parse the response conte    json_response = {}
+
     raw_messgae = message
     message = message.replace("\n", "\\n") # type: ignore
     # replace all \\n 
@@ -21,7 +22,10 @@ def parse_response(message: str) -> Dict[str, Any]:
     
     message = message.strip()
     try:
-        json_response = json.loads(message)
+        json_objects = re.findall(r'\{.*?\}(?=\{|\Z)', message)
+        json_responses = [json.loads(obj) for obj in json_objects]
+        json_response = json_responses[-1]
+
     except:
         # If the response is not a valid JSON, try pass it using string matching. 
         #This should seldom be triggered
