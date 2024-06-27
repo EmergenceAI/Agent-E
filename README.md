@@ -173,7 +173,7 @@ html_theme = 'sphinx_rtd_theme'
 
 ## Social:
 
-[Discord](https://discord.gg/czHhPDMk)
+[Discord](https://discord.gg/wgNfmFuqJF)
 
 ## Contributing
 
