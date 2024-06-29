@@ -14,6 +14,8 @@ from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observ
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 
+from browserbase import Browserbase, CreateSessionOptions
+
 # Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
 os.environ["PW_TEST_SCREENSHOT_NO_FONTS_READY"] = "1"
 
@@ -133,26 +135,28 @@ class PlaywrightManager:
         if self.browser_type == "chromium":
             logger.info(f"User dir: {user_dir}")
             try:
-                PlaywrightManager._browser_context = await PlaywrightManager._playwright.chromium.launch_persistent_context(user_dir,
-                    channel= "chrome", headless=self.isheadless,
-                    args=["--disable-blink-features=AutomationControlled",
-                        "--disable-session-crashed-bubble",  # disable the restore session bubble
-                        "--disable-infobars",  # disable informational popups,
-                        ],
-                        no_viewport=True
-                )
+                browserbase = Browserbase(os.environ["BROWSERBASE_API_KEY"])
+                options = CreateSessionOptions()
+                session = browserbase.create_session(options)
+                browser = await PlaywrightManager._playwright.chromium.connect_over_cdp(browserbase.get_connect_url(session.id))
+                PlaywrightManager._browser_context = browser.contexts[0]
+
+                debug_urls = browserbase.get_debug_connection_urls(session.id)
+                logger.info(f"Browser is connected and running here: {debug_urls.debuggerUrl}")
+                
             except Exception as e:
                 if "Target page, context or browser has been closed" in str(e):
                     new_user_dir = tempfile.mkdtemp()
                     logger.error(f"Failed to launch persistent context with user dir {user_dir}: {e} Trying to launch with a new user dir {new_user_dir}")
-                    PlaywrightManager._browser_context = await PlaywrightManager._playwright.chromium.launch_persistent_context(new_user_dir,
-                        channel= "chrome", headless=self.isheadless,
-                        args=["--disable-blink-features=AutomationControlled",
-                            "--disable-session-crashed-bubble",  # disable the restore session bubble
-                            "--disable-infobars",  # disable informational popups,
-                            ],
-                            no_viewport=True
-                    )
+                    browserbase = Browserbase(os.environ["BROWSERBASE_API_KEY"])
+                    options = CreateSessionOptions()
+                    session = browserbase.create_session(options)
+                    browser = await PlaywrightManager._playwright.chromium.connect_over_cdp(browserbase.get_connect_url(session.id))
+                    PlaywrightManager._browser_context = browser.contexts[0]
+
+                    debug_urls = browserbase.get_debug_connection_urls(session.id)
+                    logger.info(f"Browser is connected and running here: {debug_urls.debuggerUrl}")
+
                 elif "Chromium distribution 'chrome' is not found " in str(e):
                     raise ValueError("Chrome is not installed on this device. Install Google Chrome or install playwright using 'playwright install chrome'. Refer to the readme for more information.") from None
                 else:
