@@ -4,6 +4,7 @@ from typing import List  # noqa: UP035
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.cli_helper import answer_questions_over_cli
 
+
 async def get_user_input(questions: Annotated[List[str], "List of questions to ask the user each one represented as a string"] ) -> dict[str, str]:  # noqa: UP006
     """
     Asks the user a list of questions and returns the answers in a dictionary.
