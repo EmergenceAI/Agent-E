@@ -1,6 +1,6 @@
 from typing import Annotated
+
 from ae.core.playwright_manager import PlaywrightManager
-from ae.utils.logger import logger
 
 
 async def geturl() -> Annotated[str, "Returns the full URL of the current active web site/page."]:
@@ -21,9 +21,9 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
 
         if not page:
             raise ValueError('No active page found. OpenURL command opens a new page.')
-        
+
         await page.wait_for_load_state("domcontentloaded")
-       
+
         # Get the URL of the current page
         try:
             title = await page.title()
@@ -31,7 +31,7 @@ async def geturl() -> Annotated[str, "Returns the full URL of the current active
             if len(current_url) >250:
                 current_url = current_url[:250] + "..."
             return f"Current Page: {current_url}, Title: {title}" # type: ignore
-        except:
+        except:  # noqa: E722
             current_url = page.url
             return f"Current Page: {current_url}"
 

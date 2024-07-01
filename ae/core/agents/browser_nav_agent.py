@@ -2,23 +2,20 @@ from datetime import datetime
 from string import Template
 
 import autogen  # type: ignore
-from autogen.agentchat.conversable_agent import register_function  # type: ignore
 
 from ae.core.memory.static_ltm import get_user_ltm
-from ae.core.post_process_responses import final_reply_callback_browser_agent as print_message_from_user_proxy  # type: ignore
-from ae.core.post_process_responses import final_reply_callback_user_proxy as print_message_from_browser_agent  # type: ignore
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
-from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_and_click import enter_text_and_click
-from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
+from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
 from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
+from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
+
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
-
 
 
 class BrowserNavAgent:

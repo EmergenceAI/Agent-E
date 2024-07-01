@@ -1,1 +1,1 @@
-from ae import core
+from ae import core  # type: ignore # noqa: F401

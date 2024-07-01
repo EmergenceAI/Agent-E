@@ -1,7 +1,8 @@
 import json
-from typing import Dict, Any
+from typing import Any
 
-def parse_response(message: str) -> Dict[str, Any]:
+
+def parse_response(message: str) -> dict[str, Any]:
     """
     Parse the response from the browser agent and return the response as a dictionary.
     """
@@ -9,7 +10,7 @@ def parse_response(message: str) -> Dict[str, Any]:
     json_response = {}
     raw_messgae = message
     message = message.replace("\n", "\\n") # type: ignore
-    # replace all \\n 
+    # replace all \\n
     message = message.replace("\\n", "")
     #if message starts with ``` and ends with ``` then remove them
     if message.startswith("```"):
@@ -18,14 +19,14 @@ def parse_response(message: str) -> Dict[str, Any]:
         message = message[:-3]
     if message.startswith("json"):
         message = message[4:]
-    
+
     message = message.strip()
     try:
-        json_response = json.loads(message)
-    except:
-        # If the response is not a valid JSON, try pass it using string matching. 
+        json_response: dict[str, Any] = json.loads(message)
+    except Exception as e:
+        # If the response is not a valid JSON, try pass it using string matching.
         #This should seldom be triggered
-        print(f"Error parsing JSON response {raw_messgae}. Attempting to parse using string matching.")
+        print(f"Error parsing JSON response {raw_messgae}. Error; {e}. Attempting to parse using string matching.")
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")
             end = message.index("next_step")
@@ -42,7 +43,7 @@ def parse_response(message: str) -> Dict[str, Any]:
                 json_response["terminate"] = "yes"
             else:
                 json_response["terminate"] = "no"
-            
+
             start=message.index("final_response") + len("final_response")
             end=len(message)-1
             json_response["final_response"] = message[start:end].replace('"', '').strip()
@@ -55,5 +56,5 @@ def parse_response(message: str) -> Dict[str, Any]:
                 json_response["terminate"] = "yes"
             else:
                 json_response["terminate"] = "no"
-    
+
     return json_response
