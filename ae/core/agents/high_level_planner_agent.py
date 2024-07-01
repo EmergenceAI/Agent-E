@@ -2,9 +2,7 @@ from datetime import datetime
 from string import Template
 
 import autogen  # type: ignore
-from autogen import Agent  # type: ignore
 from autogen import ConversableAgent  # type: ignore
-from autogen import OpenAIWrapper  # type: ignore
 
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
