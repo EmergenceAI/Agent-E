@@ -1,9 +1,9 @@
-import asyncio
-from anthropic import AsyncAnthropic
-import anthropic
-from dotenv import load_dotenv
 import os
-from ae.core.prompts import LLM_PROMPTS
+
+import anthropic
+from anthropic import AsyncAnthropic
+from dotenv import load_dotenv
+
 
 class AnthropicLLMHelper:
     def __init__(self):
@@ -14,7 +14,7 @@ class AnthropicLLMHelper:
         formatted_user_msgs: list[dict[str, str]] = []
         for user_msg in user_msgs:
             formatted_user_msgs.append({"type": "text", "text": user_msg})
-        
+
         try:
             message = await self.client.messages.create(
                 model=model_name,
@@ -24,8 +24,8 @@ class AnthropicLLMHelper:
                 messages=[
                     {
                         "role": "user",
-                        "content": formatted_user_msgs
-                        
+                        "content": formatted_user_msgs # type: ignore
+
                     }
                 ]
             )
@@ -34,16 +34,17 @@ class AnthropicLLMHelper:
         except anthropic.APIConnectionError as e:
             print("The server could not be reached")
             print(e.__cause__)  # an underlying Exception, likely raised within httpx.
-            raise Exception(f"Calling {model_name} LLM failed. The server could not be reached. Error: {e}")
+            raise Exception(f"Calling {model_name} LLM failed. The server could not be reached. Error: {e}")  # noqa: B904
         except anthropic.RateLimitError as e:
             print("A 429 status code was received; we should back off a bit.")
-            raise Exception(f"Calling {model_name} LLM failed. Rate limit error. Error: {e}")
+            raise Exception(f"Calling {model_name} LLM failed. Rate limit error. Error: {e}")  # noqa: B904
         except anthropic.APIStatusError as e:
             print(e.status_code)
             print(e.response)
-            raise Exception(f"Calling {model_name} LLM failed. Error: {e}")
+            raise Exception(f"Calling {model_name} LLM failed. Error: {e}")  # noqa: B904
 
 # async def main():
+#     from ae.core.prompts import LLM_PROMPTS
 #     helper = AnthropicLLMHelper()
 #     response = await helper.get_chat_completion_response_async(LLM_PROMPTS["SKILLS_HARVESTING_PROMPT"], ["What is the weather like today?"], temperature=0, max_tokens=4000)
 #     print("*******\nResponse: ", response, "\n*******\n")

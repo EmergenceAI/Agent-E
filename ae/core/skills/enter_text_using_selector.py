@@ -107,7 +107,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
     if page is None: # type: ignore
         return "Error: No active page found. OpenURL command opens a new page."
 
-    function_name = inspect.currentframe().f_code.co_name
+    function_name = inspect.currentframe().f_code.co_name # type: ignore
 
     await browser_manager.take_screenshots(f"{function_name}_start", page)
 
@@ -159,7 +159,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
         - If 'use_keyboard_fill' is set to False, the function uses the 'custom_fill_element' method to enter the text.
     """
     try:
-            
+
         logger.debug(f"Looking for selector {selector} to enter text: {text_to_enter}")
 
         elem = await page.query_selector(selector)
