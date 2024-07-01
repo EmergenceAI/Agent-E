@@ -1,7 +1,5 @@
 from typing import Annotated
 from ae.core.playwright_manager import PlaywrightManager
-from ae.utils.logger import logger
-
 
 async def geturl() -> Annotated[str, "Returns the full URL of the current active web site/page."]:
     """

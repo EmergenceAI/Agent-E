@@ -8,7 +8,7 @@ from time import time_ns
 from typing import Any
 
 import autogen  # type: ignore
-import nest_asyncio  # type: ignore  # type: ignore
+import nest_asyncio  # type: ignore
 import openai
 
 #from autogen import Cache
@@ -17,12 +17,13 @@ from dotenv import load_dotenv
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent
-from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_from_planner  # type: ignore
+from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_planner_messages  # type: ignore
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.get_url import geturl
 from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
 from ae.utils.logger import logger
 from ae.utils.response_parser import parse_response
+from ae.utils.ui_messagetype import MessageType
 
 nest_asyncio.apply()  # type: ignore
 
@@ -102,14 +103,13 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
-                print_message_from_planner("Plan: "+ plan)
-            print(f"Next Step: {next_step}")
-            if next_step is None: 
-                print_message_from_planner("Received no response, terminating..") # type: ignore
-                print("Trigger nested chat returned False")
+                notify_planner_messages(plan, message_type=MessageType.PLAN)
+
+            if next_step is None:
+                notify_planner_messages("Received no response, terminating..", message_type=MessageType.INFO) # type: ignore
                 return False
             else:
-                print_message_from_planner(next_step) # type: ignore
+                notify_planner_messages(next_step, message_type=MessageType.STEP) # type: ignore
                 return True
 
         def get_url() -> str:
@@ -124,7 +124,7 @@ class AutogenWrapper:
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 last_message=last_message+" "+  get_url() # type: ignore
-                print_message_from_planner("Response: "+ last_message) # type: ignore
+                notify_planner_messages(last_message, message_type=MessageType.ACTION) # type: ignore
                 return last_message #  type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
 
@@ -133,7 +133,6 @@ class AutogenWrapper:
             content_json = parse_response(last_message)
             next_step = content_json.get('next_step', None)
             if next_step is None: 
-                print ("Message to nested chat returned None")
                 return None
             else:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
@@ -148,7 +147,7 @@ class AutogenWrapper:
             "message":reflection_message,  
             "max_turns": self.number_of_rounds,
             "summary_method": my_custom_summary_method,
-                }   
+                }
             ],
             trigger=trigger_nested_chat, # type: ignore
         )
@@ -200,11 +199,11 @@ class AutogenWrapper:
         user_delegate_agent = await self.__create_user_delegate_agent()
         agents_map["user"] = user_delegate_agent
         agents_needed.remove("user")
-        
+
         browser_nav_executor = self.__create_browser_nav_executor_agent()
         agents_map["browser_nav_executor"] = browser_nav_executor
         agents_needed.remove("browser_nav_executor")
-        
+
         for agent_needed in agents_needed:
             if agent_needed == "browser_nav_agent":
                 browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
@@ -227,7 +226,11 @@ class AutogenWrapper:
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
              should_terminate = False
-             content:Any = x.get("content", "") 
+             function: Any = x.get("function", None)
+             if function is not None:
+                 return False
+
+             content:Any = x.get("content", "")
              if content is None:
                 content = ""
                 should_terminate = True
@@ -235,17 +238,20 @@ class AutogenWrapper:
                 try:
                     content_json = parse_response(content)
                     _terminate = content_json.get('terminate', "no")
+                    final_response = content_json.get('final_response', None)
                     if(_terminate == "yes"):
                         should_terminate = True
+                        if final_response:
+                            notify_planner_messages(final_response, message_type=MessageType.ANSWER)
                 except json.JSONDecodeError:
-                    print("Error decoding JSON content")
+                    logger.error("Error decoding JSON response {content}. Terminating..")
                     should_terminate = True
-            
+
              return should_terminate # type: ignore
-        
-        task_delegate_agent = autogen.ConversableAgent(
+
+        task_delegate_agent = UserProxyAgent_SequentialFunctionExecution(
             name="user",
-            llm_config=False, 
+            llm_config=False,
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
             is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
@@ -267,7 +273,7 @@ class AutogenWrapper:
                 return False
              else:
                 return True
-        
+
         browser_nav_executor_agent = UserProxyAgent_SequentialFunctionExecution(
             name="browser_nav_executor",
             is_termination_msg=is_browser_executor_termination_message,
@@ -332,7 +338,7 @@ class AutogenWrapper:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
             print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
-            
+
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
                 max_turns=self.number_of_rounds,
@@ -350,5 +356,3 @@ class AutogenWrapper:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
 
-
-    

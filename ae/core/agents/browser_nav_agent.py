@@ -5,8 +5,6 @@ import autogen  # type: ignore
 from autogen.agentchat.conversable_agent import register_function  # type: ignore
 
 from ae.core.memory.static_ltm import get_user_ltm
-from ae.core.post_process_responses import final_reply_callback_browser_agent as print_message_from_user_proxy  # type: ignore
-from ae.core.post_process_responses import final_reply_callback_user_proxy as print_message_from_browser_agent  # type: ignore
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
 from ae.core.skills.enter_text_using_selector import bulk_enter_text
@@ -38,7 +36,7 @@ class BrowserNavAgent:
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
-
+            
         self.agent = autogen.ConversableAgent(
             name="browser_navigation_agent",
             system_message=system_message,
@@ -70,9 +68,9 @@ class BrowserNavAgent:
         self.browser_nav_executor.register_for_execution()(openurl)
 
         # Register enter_text_and_click skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
+        # self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
         # Register enter_text_and_click skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(enter_text_and_click)
+        # self.browser_nav_executor.register_for_execution()(enter_text_and_click)
 
         # Register get_dom_with_content_type skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
