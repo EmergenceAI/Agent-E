@@ -7,7 +7,6 @@ from playwright.async_api import async_playwright as playwright
 from playwright.async_api import BrowserContext
 from playwright.async_api import Page
 from playwright.async_api import Playwright
-
 from ae.core.ui_manager import UIManager
 from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
@@ -242,17 +241,16 @@ class PlaywrightManager:
 
 
     async def set_navigation_handler(self):
+        
         page:Page = await PlaywrightManager.get_current_page(self)
         page.on("domcontentloaded", self.ui_manager.handle_navigation) # type: ignore
         page.on("domcontentloaded", handle_navigation_for_mutation_observer) # type: ignore
         await page.expose_function("dom_mutation_change_detected", dom_mutation_change_detected) # type: ignore
 
-
     async def set_overlay_state_handler(self):
         logger.debug("Setting overlay state handler")
         context = await self.get_browser_context()
         await context.expose_function('overlay_state_changed', self.overlay_state_handler) # type: ignore
-
 
     async def overlay_state_handler(self, is_collapsed: bool):
         page = await self.get_current_page()
@@ -278,7 +276,6 @@ class PlaywrightManager:
         self.ui_manager.new_system_message(safe_message)
         try:
             js_code = f"addSystemMessage({safe_message}, false);"
-
             page = await self.get_current_page()
             await page.evaluate(js_code)
             logger.debug("User notification completed")
@@ -332,7 +329,6 @@ class PlaywrightManager:
 
         safe_message = escape_js_message(message)
         js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true);"
-        print(">>> nofiy user about to exec JS code:", js_code)
         await page.evaluate(js_code)
 
         await self.user_response_event.wait()

@@ -1,0 +1,812 @@
+[
+    {
+        "sites": null,
+        "task_id": 15,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.allrecipes.com/",
+        "geolocation": null,
+        "intent_template": "Choose a dessert recipe on Allrecipes with a prep time of less than 30 minutes, has chocolate as an ingredient, and has a user rating of 4 stars or higher. Provide the name of the recipe, ingredients list, and step-by-step instructions.",
+        "instantiation_dict": {},
+        "intent": "Choose a dessert recipe on Allrecipes with a prep time of less than 30 minutes, has chocolate as an ingredient, and has a user rating of 4 stars or higher. Provide the name of the recipe, ingredients list, and step-by-step instructions.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "'Ultimate Chocolate Dessert', 4.7-star, prep time 15 mins",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Allrecipes--15",
+        "task_index": 0
+    },
+    {
+        "sites": null,
+        "task_id": 29,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.allrecipes.com/",
+        "geolocation": null,
+        "intent_template": "Search for a Mediterranean-style grilled fish recipe on Allrecipes that includes ingredients like olives, has at least a 4-star rating, and more than 25 reviews. Detail the ingredients, cooking method, and total time required for preparation and cooking.",
+        "instantiation_dict": {},
+        "intent": "Search for a Mediterranean-style grilled fish recipe on Allrecipes that includes ingredients like olives, has at least a 4-star rating, and more than 25 reviews. Detail the ingredients, cooking method, and total time required for preparation and cooking.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "'Branzino Mediterranean', 36 reviews, <Ingredients> include olive oil, <cooking method>, Prep Time: 15 mins, Cook Time: 25 mins, Total Time: 40 mins",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Allrecipes--29",
+        "task_index": 1
+    },
+    {
+        "sites": null,
+        "task_id": 72,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.amazon.com/",
+        "geolocation": null,
+        "intent_template": "Look for a USB-C hub on Amazon compatible with MacBook Pro, featuring at least 4 ports, including HDMI and SD card reader. The price should be under $50. Select the one after sorting by Best Sellers.",
+        "instantiation_dict": {},
+        "intent": "Look for a USB-C hub on Amazon compatible with MacBook Pro, featuring at least 4 ports, including HDMI and SD card reader. The price should be under $50. Select the one after sorting by Best Sellers.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Hiearcool USB C Hub, USB C Multi-Port Adapter for MacBook Pro, 7IN1, include 4K HDMI USB3.0 and SD/TF Card Reader, $24.99",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Amazon--27",
+        "task_index": 2
+    },
+    {
+        "sites": null,
+        "task_id": 85,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.amazon.com/",
+        "geolocation": null,
+        "intent_template": "Locate a women's yoga mat in purple, with a thickness of at least 5mm, rated 4+ stars, and priced under $30 on Amazon. Check how many colors are available in total, and what is the return and delivery policy.",
+        "instantiation_dict": {},
+        "intent": "Locate a women's yoga mat in purple, with a thickness of at least 5mm, rated 4+ stars, and priced under $30 on Amazon. Check how many colors are available in total, and what is the return and delivery policy.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "ProsourceFit Extra Thick Yoga Pilates Exercise Mat, 1/2\", 4.6 stars, $21.99, 7 colors, FREE delivery Friday, March 1 on orders shipped by Amazon over $35",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Amazon--40",
+        "task_index": 3
+    },
+    {
+        "sites": null,
+        "task_id": 97,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.apple.com/",
+        "geolocation": null,
+        "intent_template": "Get information about the latest iPad model released by Apple, including its release date, base storage capacity, and starting price available on Apple's official website.",
+        "instantiation_dict": {},
+        "intent": "Get information about the latest iPad model released by Apple, including its release date, base storage capacity, and starting price available on Apple's official website.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "sixth-generation iPad Pro 11\u2011inch, iPad Pro 12.9\u2011inch; release date: October 26, 2022; base storage capacity 128 GB, starting price $799",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Apple--11",
+        "task_index": 4
+    },
+    {
+        "sites": null,
+        "task_id": 100,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.apple.com/",
+        "geolocation": null,
+        "intent_template": "Identify the upgrade options available for the cheapest base model of the MacBook Pro 14-inch with M3 chip, and calculate the total price difference from the base model to the maximum upgrade (no Pre-Installed Software) offered by Apple.",
+        "instantiation_dict": {},
+        "intent": "Identify the upgrade options available for the cheapest base model of the MacBook Pro 14-inch with M3 chip, and calculate the total price difference from the base model to the maximum upgrade (no Pre-Installed Software) offered by Apple.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Base model:$1599, difference: $1020",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Apple--14",
+        "task_index": 5
+    },
+    {
+        "sites": null,
+        "task_id": 168,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://arxiv.org/",
+        "geolocation": null,
+        "intent_template": "Search the title 'GPT-4 Technical Report' and access this paper through HTML format. Read the paper on this page and tell me what is 'one of the main goals of developing such models' mentioned in the Introduction.",
+        "instantiation_dict": {},
+        "intent": "Search the title 'GPT-4 Technical Report' and access this paper through HTML format. Read the paper on this page and tell me what is 'one of the main goals of developing such models' mentioned in the Introduction.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "One of the main goals of developing such models is to improve their ability to understand and generate natural language text, particularly in more complex and nuanced scenarios.",
+                    "type": "golden"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "ArXiv--39",
+        "task_index": 6
+    },
+    {
+        "sites": null,
+        "task_id": 169,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://arxiv.org/",
+        "geolocation": null,
+        "intent_template": "How many articles are there on each of the three most recent announce days in the Solar and Stellar Astrophysics section of ArXiv. Choose one at random and answer its title and when the first version was uploaded?",
+        "instantiation_dict": {},
+        "intent": "How many articles are there on each of the three most recent announce days in the Solar and Stellar Astrophysics section of ArXiv. Choose one at random and answer its title and when the first version was uploaded?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "astro-ph.SR paper, latest 3 days",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "ArXiv--40",
+        "task_index": 7
+    },
+    {
+        "sites": null,
+        "task_id": 186,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.bbc.com/news/",
+        "geolocation": null,
+        "intent_template": "Find a news article on BBC News about the impact of the recent tech industry layoffs on the global economy. Summarize the key points and the name of the author, and provide the date of publication.",
+        "instantiation_dict": {},
+        "intent": "Find a news article on BBC News about the impact of the recent tech industry layoffs on the global economy. Summarize the key points and the name of the author, and provide the date of publication.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "<title>, <author>, <summary> (impact of the recent tech industry layoffs on the global economy)",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "BBC News--14",
+        "task_index": 8
+    },
+    {
+        "sites": null,
+        "task_id": 213,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.bbc.com/news/",
+        "geolocation": null,
+        "intent_template": "Find Golf in BBC News, check the Leaderboard at this point in Women's Majors and count which country has the most players in the top 20? Which player has the best score amongst the Australian players and in what place.",
+        "instantiation_dict": {},
+        "intent": "Find Golf in BBC News, check the Leaderboard at this point in Women's Majors and count which country has the most players in the top 20? Which player has the best score amongst the Australian players and in what place.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Sport - Golf - Leaderboard - Women's Majors, most in top20: American, best in Australian: Grace Kim in 36",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "BBC News--41",
+        "task_index": 9
+    },
+    {
+        "sites": null,
+        "task_id": 230,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.booking.com/",
+        "geolocation": null,
+        "intent_template": "Look for a hotel in Paris with a user rating of 9 or higher and available for a 5-night stay starting January 15, 2024. The hotel should also offer free Wi-Fi and breakfast included in the price. Provide the name, location, and price per night.",
+        "instantiation_dict": {},
+        "intent": "Look for a hotel in Paris with a user rating of 9 or higher and available for a 5-night stay starting January 15, 2024. The hotel should also offer free Wi-Fi and breakfast included in the price. Provide the name, location, and price per night.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Zoku Paris; 48 Avenue de la Porte de Clichy, 17th arr., Paris; US$210 per night",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Booking--16",
+        "task_index": 10
+    },
+    {
+        "sites": null,
+        "task_id": 232,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.booking.com/",
+        "geolocation": null,
+        "intent_template": "Search a hotel in London with a user rating of 8 or higher for a stay between February 14th, 2024, and February 21st, 2024, suitable for a couple. Provide the name and a short description of the hotel.",
+        "instantiation_dict": {},
+        "intent": "Search a hotel in London with a user rating of 8 or higher for a stay between February 14th, 2024, and February 21st, 2024, suitable for a couple. Provide the name and a short description of the hotel.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Cromwell Serviced Apartments; Cromwell Serviced Apartments is an apartment featuring rooms with free Wifi and air conditioning in the center of London",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Booking--18",
+        "task_index": 11
+    },
+    {
+        "sites": null,
+        "task_id": 262,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://dictionary.cambridge.org/",
+        "geolocation": null,
+        "intent_template": "Look for the British English pronunciation of the word \"innovate\" and write down the International Phonetic Alphabet (IPA) notation, then find one example sentence provided in the Cambridge Dictionary that uses this word.",
+        "instantiation_dict": {},
+        "intent": "Look for the British English pronunciation of the word \"innovate\" and write down the International Phonetic Alphabet (IPA) notation, then find one example sentence provided in the Cambridge Dictionary that uses this word.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "UK: /\u02c8\u026an.\u0259.ve\u026at/; Above all, this proposal aims to correct the allocative inefficiencies of the existing patent system, while preserving the dynamic incentives to innovate.",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Cambridge Dictionary--4",
+        "task_index": 12
+    },
+    {
+        "sites": null,
+        "task_id": 281,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://dictionary.cambridge.org/",
+        "geolocation": null,
+        "intent_template": "Find the US English pronunciation of the word \"meticulous\" using the Cambridge Dictionary and note the International Phonetic Alphabet (IPA) notation, then find one example sentence provided in the dictionary using this word.",
+        "instantiation_dict": {},
+        "intent": "Find the US English pronunciation of the word \"meticulous\" using the Cambridge Dictionary and note the International Phonetic Alphabet (IPA) notation, then find one example sentence provided in the dictionary using this word.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "US: /m\u0259\u02c8t\u026ak.j\u0259.l\u0259s/; Many hours of meticulous preparation have gone into writing the book.",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Cambridge Dictionary--23",
+        "task_index": 13
+    },
+    {
+        "sites": null,
+        "task_id": 325,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.coursera.org/",
+        "geolocation": null,
+        "intent_template": "Locate an online course on Coursera related to 'Sustainability' that belongs to Physical Science and Engineering subject. The course should include a module on Measuring Sustainability. Note the course duration and the offering institution.",
+        "instantiation_dict": {},
+        "intent": "Locate an online course on Coursera related to 'Sustainability' that belongs to Physical Science and Engineering subject. The course should include a module on Measuring Sustainability. Note the course duration and the offering institution.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Introduction to Sustainability; University of Illinois at Urbana-Champaign; Instructors: Dr. Jonathan Tomkin; duration: Approx. 25 hours to complete, 3 weeks at 8 hours a week",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Coursera--24",
+        "task_index": 14
+    },
+    {
+        "sites": null,
+        "task_id": 327,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.coursera.org/",
+        "geolocation": null,
+        "intent_template": "Identify a Specialization on Coursera that offers an overview of 'Renewable Energy'. The Specialization should be beginner-level and include a course on Renewable Energy Futures. Note the instructor's name and the number of weeks required to complete the course if I spend 5 hours a week.",
+        "instantiation_dict": {},
+        "intent": "Identify a Specialization on Coursera that offers an overview of 'Renewable Energy'. The Specialization should be beginner-level and include a course on Renewable Energy Futures. Note the instructor's name and the number of weeks required to complete the course if I spend 5 hours a week.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Renewable Energy Specialization; Instructors: Stephen R. Lawrence, Paul Komor; 2 months",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Coursera--26",
+        "task_index": 15
+    },
+    {
+        "sites": null,
+        "task_id": 373,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.espn.com/",
+        "geolocation": null,
+        "intent_template": "Check out the NHL Standings 2023-24 on ESPN to see which teams are at the top and which are at the bottom in Eastern and Western Conference. What about the situation in Division.",
+        "instantiation_dict": {},
+        "intent": "Check out the NHL Standings 2023-24 on ESPN to see which teams are at the top and which are at the bottom in Eastern and Western Conference. What about the situation in Division.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "NHL Standings 2023-24, top - bottom, Eastern Conference: New York Rangers - Columbus Blue Jackets; Western Conference: Vancouver Canucks - Chicago Blackhawks; Division: ATLANTIC, Boston Bruins - Montreal Canadiens; METROPOLITAN: New York Rangers - Columbus Blue Jackets; CENTRAL: Dallas Stars - Chicago Blackhawks; PACIFIC: Vancouver Canucks - San Jose Sharks",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "ESPN--30",
+        "task_index": 16
+    },
+    {
+        "sites": null,
+        "task_id": 381,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.espn.com/",
+        "geolocation": null,
+        "intent_template": "Check Los Angeles Lakers Stats 2023-24, calculate Anthony Davis' games played (GP) percentage, tell me if there are other players with the same games played percentage as Anthony Davis.",
+        "instantiation_dict": {},
+        "intent": "Check Los Angeles Lakers Stats 2023-24, calculate Anthony Davis' games played (GP) percentage, tell me if there are other players with the same games played percentage as Anthony Davis.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "54/58 = 93.1%, no other players, https://www.espn.com/nba/team/stats/_/name/lal/los-angeles-lakers",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "ESPN--38",
+        "task_index": 17
+    },
+    {
+        "sites": null,
+        "task_id": 398,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://github.com/",
+        "geolocation": null,
+        "intent_template": "Find a newly created open-source project on GitHub related to 'climate change' that has been initiated in January 2023; check the main programming language used and the project's description.",
+        "instantiation_dict": {},
+        "intent": "Find a newly created open-source project on GitHub related to 'climate change' that has been initiated in January 2023; check the main programming language used and the project's description.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "TheAIDojo/AI-for-Climate-Change; Jupyter Notebook; Repository of notebooks and associated code that covers the fundamental concepts of deep learning and its application to climate science.",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "GitHub--11",
+        "task_index": 18
+    },
+    {
+        "sites": null,
+        "task_id": 402,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://github.com/",
+        "geolocation": null,
+        "intent_template": "Locate a repository on GitHub related to 'quantum computing' that has been updated within the last week and has at least 50 stars. Provide a brief description of the project.",
+        "instantiation_dict": {},
+        "intent": "Locate a repository on GitHub related to 'quantum computing' that has been updated within the last week and has at least 50 stars. Provide a brief description of the project.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "desireevl/awesome-quantum-computing",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "GitHub--15",
+        "task_index": 19
+    },
+    {
+        "sites": null,
+        "task_id": 462,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/travel/flights/",
+        "geolocation": null,
+        "intent_template": "Compare business class flight options from Lisbon to Singapore for a one-way trip on March 15, 2024, select one of the flights and see which websites offer its booking options. Which one is the cheapest.",
+        "instantiation_dict": {},
+        "intent": "Compare business class flight options from Lisbon to Singapore for a one-way trip on March 15, 2024, select one of the flights and see which websites offer its booking options. Which one is the cheapest.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Emirates, 8:45\u202fPM \u2013 9:15\u202fPM(+1), booking options: Emirates, Gotogate, Martigo, Expedia, kiss&fly, eDreams ... cheapest: Gotogate",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Flights--34",
+        "task_index": 20
+    },
+    {
+        "sites": null,
+        "task_id": 465,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/travel/flights/",
+        "geolocation": null,
+        "intent_template": "Locate a round-trip flight from Buenos Aires to Beijing, leaving on February 28, 2024, and returning on March 3, 2024, check out one of the options and tell me if the airline for my return flight is the same as my departure flight.",
+        "instantiation_dict": {},
+        "intent": "Locate a round-trip flight from Buenos Aires to Beijing, leaving on February 28, 2024, and returning on March 3, 2024, check out one of the options and tell me if the airline for my return flight is the same as my departure flight.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Lufthansa, 5:50\u202fPM \u2013 9:30\u202fAM(+2), return flight can be Lufthansa, 11:20\u202fAM \u2013 7:55\u202fAM(+1), the same as departure flight",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Flights--37",
+        "task_index": 21
+    },
+    {
+        "sites": null,
+        "task_id": 489,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/maps/",
+        "geolocation": null,
+        "intent_template": "I will arrive Pittsburgh Airport soon. Provide the name of the Hilton hotel closest to the airport. Then, tell me the the walking time to the nearest supermarket from the hotel.",
+        "instantiation_dict": {},
+        "intent": "I will arrive Pittsburgh Airport soon. Provide the name of the Hilton hotel closest to the airport. Then, tell me the the walking time to the nearest supermarket from the hotel.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "Hilton Garden Inn Pittsburgh Airport, walking time around 15min - 30min",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Map--19",
+        "task_index": 22
+    },
+    {
+        "sites": null,
+        "task_id": 503,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/maps/",
+        "geolocation": null,
+        "intent_template": "Check out Denver International Airport's information and tell me: 1) which level has the least proportion in reviews; 2) what are its Accessibility and Amenities.",
+        "instantiation_dict": {},
+        "intent": "Check out Denver International Airport's information and tell me: 1) which level has the least proportion in reviews; 2) what are its Accessibility and Amenities.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "star 2 has the least proportion; Accessibility: Assistive hearing loop; Wheelchair accessible entrance; Wheelchair accessible parking lot; Wheelchair accessible restroom; Wheelchair accessible seating; Amenities: Baggage storage; Wi-Fi; Free Wi-Fi",
+                    "type": "golden"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Map--33",
+        "task_index": 23
+    },
+    {
+        "sites": null,
+        "task_id": 519,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/",
+        "geolocation": null,
+        "intent_template": "Find the video on YouTube: 'Oscars 2023: Must-See Moments!'. Tell me who the first comment displayed under that video belongs to, and how many thumbs up and replies it has.",
+        "instantiation_dict": {},
+        "intent": "Find the video on YouTube: 'Oscars 2023: Must-See Moments!'. Tell me who the first comment displayed under that video belongs to, and how many thumbs up and replies it has.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "user: @melvinsmiley5295, 329 thumbs up and 2 replies (real-time)",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Search--8",
+        "task_index": 24
+    },
+    {
+        "sites": null,
+        "task_id": 544,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.google.com/",
+        "geolocation": null,
+        "intent_template": "Find and copy the SHA of the latest commit in the TensorFlow repository on GitHub, then find a textbox to paste and tell me what the SHA is.",
+        "instantiation_dict": {},
+        "intent": "Find and copy the SHA of the latest commit in the TensorFlow repository on GitHub, then find a textbox to paste and tell me what the SHA is.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "<SHA> of latest Tensorflow",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Google Search--33",
+        "task_index": 25
+    },
+    {
+        "sites": null,
+        "task_id": 560,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://huggingface.co/",
+        "geolocation": null,
+        "intent_template": "Find the model sentence-transformers/all-MiniLM-L6-v2 and use the Inference API on the webpage to get the similarity of the following two sentences: 'Tomorrow is Sunday', 'Eat a burger on Sunday'.",
+        "instantiation_dict": {},
+        "intent": "Find the model sentence-transformers/all-MiniLM-L6-v2 and use the Inference API on the webpage to get the similarity of the following two sentences: 'Tomorrow is Sunday', 'Eat a burger on Sunday'.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "0.550",
+                    "type": "golden"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Huggingface--6",
+        "task_index": 26
+    },
+    {
+        "sites": null,
+        "task_id": 571,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://huggingface.co/",
+        "geolocation": null,
+        "intent_template": "Find the most recently updated open-source project related to natural language processing on the Huggingface platform. Provide the project's name, creator, and a brief description of its functionality.",
+        "instantiation_dict": {},
+        "intent": "Find the most recently updated open-source project related to natural language processing on the Huggingface platform. Provide the project's name, creator, and a brief description of its functionality.",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "<model>; <creator>; <description> (recent, NLP)",
+                    "type": "possible"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Huggingface--17",
+        "task_index": 27
+    },
+    {
+        "sites": null,
+        "task_id": 604,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.wolframalpha.com/",
+        "geolocation": null,
+        "intent_template": "Give the final angle and final length after 6s of a Spring pendulum with spring equilibrium length=0.12m, initial length=0.24m, initial angle=80deg, mass=1kg, spring constant=120 N/m .",
+        "instantiation_dict": {},
+        "intent": "Give the final angle and final length after 6s of a Spring pendulum with spring equilibrium length=0.12m, initial length=0.24m, initial angle=80deg, mass=1kg, spring constant=120 N/m .",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "-73.26\u00b0 from vertical; 0.252 m",
+                    "type": "golden"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Wolfram Alpha--7",
+        "task_index": 28
+    },
+    {
+        "sites": null,
+        "task_id": 640,
+        "require_login": false,
+        "storage_state": null,
+        "start_url": "https://www.wolframalpha.com/",
+        "geolocation": null,
+        "intent_template": "A polyominoes of order 6 means you have 6 identical squares to combine different shapes (2-sided). How many combinations are there? Looking at all the shapes in the result, how many of them have only 2 rows in total?",
+        "instantiation_dict": {},
+        "intent": "A polyominoes of order 6 means you have 6 identical squares to combine different shapes (2-sided). How many combinations are there? Looking at all the shapes in the result, how many of them have only 2 rows in total?",
+        "require_reset": false,
+        "eval": {
+            "eval_types": [
+                "manual"
+            ],
+            "reference_answers": {
+                "manual_check": {
+                    "answer": "35; 12",
+                    "type": "golden"
+                }
+            },
+            "reference_url": null,
+            "program_html": null
+        },
+        "task_alias": "Wolfram Alpha--43",
+        "task_index": 29
+    }
+]

@@ -2,7 +2,8 @@ import asyncio
 import inspect
 import traceback
 from typing import Annotated
-
+from ae.utils.dom_mutation_observer import subscribe # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe # type: ignore
 from playwright.async_api import ElementHandle
 from playwright.async_api import Page
 
@@ -13,7 +14,7 @@ from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
 
 
-async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
+async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action (e.g. [mmid='114']). When \"mmid\" attribute is present, use it for the query selector."],
                 wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
     """
     Executes a click action on the element matching the given query selector string within the currently open web page.
@@ -51,15 +52,10 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.take_screenshots(f"{function_name}_end", page)
-    await browser_manager.notify_user(result["summary_message"])
+    #await browser_manager.notify_user(result["summary_message"])
 
     if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
-    return result["detailed_message"]
-
-
-    result = await do_click(page, selector, wait_before_execution)
-    await browser_manager.notify_user(result["summary_message"])
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action to click {selector} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
@@ -122,11 +118,10 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
             return {"summary_message": f'Select menu option "{element_value}" selected', 
                     "detailed_message": f'Select menu option "{element_value}" selected. The select element\'s outer HTML is: {element_outer_html}.'}
         
-        await element.focus()
+
         #Playwright click seems to fail more often than not, disabling it for now and just going with JS click
         #await perform_playwright_click(element, selector)
-        await perform_javascript_click(page, selector)
-        msg = f"Element with selector: \"{selector}\" clicked."
+        msg=await perform_javascript_click(page, selector)
         return {"summary_message": msg, "detailed_message": f"{msg} The clicked element's outer HTML is: {element_outer_html}."}
     except Exception as e:
         logger.error(f"Unable to click element with selector: \"{selector}\". Error: {e}")
@@ -202,7 +197,12 @@ async def perform_javascript_click(page: Page, selector: str):
             if (element.tagName.toLowerCase() === "a") {
                 element.target = "_self";
             }
+            let ariaExpandedBeforeClick = element.getAttribute('aria-expanded');
             element.click();
+            let ariaExpandedAfterClick = element.getAttribute('aria-expanded');
+            if (ariaExpandedBeforeClick === 'false' && ariaExpandedAfterClick === 'true') {
+                return "Executed JavaScript Click on element with selector: "+selector +". Very important: As a consequence a menu has appeared where you may need to make further selction. Very important: Get all_fields DOM to complete the action.";
+            }
             return "Executed JavaScript Click on element with selector: "+selector;
         }
     }"""

@@ -99,6 +99,9 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
         if node['role'] == 'menuitem':
             return node.get('name')
 
+        if node.get('role') == 'dialog' and node.get('modal')==True:
+            node["important information"]= "This is a modal dialog. Please interact with this dialog and close it to be able to interact with the full page (e.g. by pressing the close button or selecting an option)."	
+
         if mmid:
             # Determine if we need to fetch 'innerText' based on the absence of 'children' in the accessibility node
             should_fetch_inner_text = 'children' not in node
@@ -122,7 +125,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     console.log(`Ignoring element with id: ${element.id}`, element);
                     return null;
                 }
-
                 //Ignore "option" because it would have been processed with the select element
                 if (tags_to_ignore.includes(element.tagName.toLowerCase()) || element.tagName.toLowerCase() === "option") return null;
 
@@ -169,11 +171,31 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     attributes_to_values['description'] = element.innerText;
                 }
 
+                let role = element.getAttribute('role');
+                if(role==='listbox' || element.tagName.toLowerCase()=== 'ul'){
+                    let children=element.children;
+                    let filtered_children = Array.from(children).filter(child => child.getAttribute('role') === 'option');
+                    console.log("Listbox or ul found: ", filtered_children);
+                    let attributes_to_include = ['mmid', 'role', 'aria-label','value'];
+                    attributes_to_values["additional_info"]=[]
+                    for (const child of children) {
+                        let children_attributes_to_values = {};
+                        
+                        for (let attr of child.attributes) {
+                            // If the attribute is not in the predefined list, add it to children_attributes_to_values
+                            if (attributes_to_include.includes(attr.name)) {
+                                children_attributes_to_values[attr.name] = attr.value;
+                            }
+                        }
+
+                        attributes_to_values["additional_info"].push(children_attributes_to_values);
+                    }
+                }
                 // Check if attributes_to_values contains more than just 'name', 'role', and 'mmid'
                 const keys = Object.keys(attributes_to_values);
                 const minimalKeys = ['tag', 'mmid'];
                 const hasMoreThanMinimalKeys = keys.length > minimalKeys.length || keys.some(key => !minimalKeys.includes(key));
-
+                
                 if (!hasMoreThanMinimalKeys) {
                     //If there were no attributes found, then try to get the backup attributes
                     for (const backupAttribute of input_params.backup_attributes) {
@@ -182,7 +204,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                             attributes_to_values[backupAttribute] = value;
                         }
                     }
-
+               
                     //if even the backup attributes are not found, then return null, which will cause this element to be skipped
                     if(Object.keys(attributes_to_values).length <= minimalKeys.length) {
                         if (element.tagName.toLowerCase() === 'button') {
@@ -414,8 +436,18 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
     
     if node.get('role') in ['separator', 'LineBreak']:
         return True
+    processed_name = "" 
+    if 'name' in node:
+        processed_name:str =node.get('name') # type: ignore
+        processed_name = processed_name.replace(',', '')
+        processed_name = processed_name.replace(':', '') 
+        processed_name = processed_name.replace('\n', '')
+        processed_name = processed_name.strip()
+        if len(processed_name) <3:
+            processed_name = ""
+
     #check if the node only have name and role, then delete that node
-    if len(node) == 2 and 'name' in node and 'role' in node:
+    if len(node) == 2 and 'name' in node and 'role' in node and not (node.get('role') == "text" and processed_name != ""):
         return True
     return False
 

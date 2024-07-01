@@ -14,6 +14,7 @@ from ae.config import PROJECT_TEST_ROOT
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
+from ae.utils.response_parser import parse_response
 from autogen.agentchat.chat import ChatResult  # type: ignore
 from playwright.async_api import Page
 from tabulate import tabulate
@@ -97,11 +98,19 @@ def save_individual_test_result(test_result: dict[str, str | int | float | None]
 
 def extract_last_response(messages: list[dict[str, Any]]) -> str:
     """Extract the last response message from chat history."""
-    # Iterate over the messages in reverse order
-    for message in reversed(messages):
-        if '##TERMINATE##' in message.get('content', ''):
-            return message['content'].replace("##TERMINATE##", "").strip()
-    return ""
+    try:
+        # Iterate over the messages in reverse order
+        for message in reversed(messages):
+            if message and 'content' in message:
+                content=message.get('content', "")
+                content_json = parse_response(content)
+                final_answer = content_json.get('final_response', None)
+                if final_answer:
+                    return final_answer
+        return ""
+    except:
+        logger.error("Error extracting last response from chat history.")
+        return ""
 
 
 def print_progress_bar(current: int, total: int, bar_length: int = 50) -> None:
@@ -321,9 +330,7 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
         browser_manager = browserManager.PlaywrightManager(headless=False)
         await browser_manager.async_initialize()
 
-    context = await browser_manager.get_browser_context()
-    page = await context.new_page() # type: ignore
-
+    page=await browser_manager.get_current_page()
     test_results = []
     max_task_index = len(test_configurations) if not max_task_index else max_task_index
     total_tests = max_task_index - min_task_index
