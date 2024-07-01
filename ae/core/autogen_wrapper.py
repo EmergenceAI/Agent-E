@@ -78,6 +78,12 @@ class AutogenWrapper:
         if os.getenv("AUTOGEN_MODEL_BASE_URL"):
             model_info["base_url"] = os.getenv("AUTOGEN_MODEL_BASE_URL") # type: ignore
 
+        if os.getenv("AUTOGEN_MODEL_API_TYPE"):
+            model_info["api_type"] = os.getenv("AUTOGEN_MODEL_API_TYPE") # type: ignore
+
+        if os.getenv("AUTOGEN_MODEL_API_VERSION"):
+            model_info["api_version"] = os.getenv("AUTOGEN_MODEL_API_VERSION") # type: ignore
+
         env_var: list[dict[str, str]] = [model_info]
         with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp:
             json.dump(env_var, temp)
