@@ -155,6 +155,39 @@ html_theme = 'sphinx_rtd_theme'
 7. Build the documentation, from `docs` directory, run: `sphinx-build -b html . _build`
 
 
+## Open-source models
+
+Using open-source models is possible through LiteLLM with Ollama. Ollama allows users to run language models locally on their machines, and LiteLLM translates OpenAI-format inputs to local models' endpoints. To use open-source models as Agent-E backbone, follow the steps below:
+
+1. Install LiteLLM
+    ```bash
+    pip install 'litellm[proxy]'
+    ```
+2. Install Ollama
+    * For Mac and Windows, download [Ollama](https://ollama.com/download).
+    * For Linux:
+        ```bash
+        curl -fsSL https://ollama.com/install.sh | sh
+        ```
+3. Pull Ollama models
+    Before you can use a model, you need to download it from the library. The list of available models is [here](https://ollama.com/library). Here, we use Mistral v0.3:
+    ```bash
+    ollama pull mistral:v0.3
+    ```
+4. Run LiteLLM
+    To run the downloaded model with LiteLLM as a proxy, run:
+    ```bash
+    litellm --model ollama_chat/mistral:v0.3
+    ```
+5. Configure model in Autogen
+    Configure the `.env` file as follows. Note that the model name and API keys are not needed since the local model is already running.
+    ```bash
+    AUTOGEN_MODEL_NAME=NotRequired
+    AUTOGEN_MODEL_API_KEY=NotRequired
+    AUTOGEN_MODEL_BASE_URL=http://0.0.0.0:400
+    ```
+
+
 ## TODO
 
 - Action verification - Responding from every skill with changes that took place in the DOM (Mutation Observers) so that the LLM can judge whether the skill did execute properly or not
