@@ -261,7 +261,8 @@ class PlaywrightManager:
             await self.ui_manager.update_overlay_chat_history(page)
 
     async def show_steps_state_handler(self, show_details: bool):
-        self.ui_manager.update_overlay_show_details(show_details)
+        page = await self.get_current_page()
+        await self.ui_manager.update_overlay_show_details(show_details, page)
 
     async def set_user_response_handler(self):
         context = await self.get_browser_context()
@@ -277,7 +278,9 @@ class PlaywrightManager:
             message_type (enum, optional): Values can be 'PLAN', 'QUESTION', 'ANSWER', 'INFO', 'STEP'. Defaults to 'STEP'.
             To Do: Convert to Enum.
         """
-
+        safe_message = escape_js_message(message)
+        self.ui_manager.new_system_message(safe_message, message_type)
+        
         if self.ui_manager.overlay_show_details == False:
             if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
                 return
@@ -305,8 +308,7 @@ class PlaywrightManager:
 
         if message_type == MessageType.ANSWER:
             message = "Response: " + message
-        safe_message = escape_js_message(message)
-        self.ui_manager.new_system_message(safe_message, message_type)
+       
         safe_message_type = escape_js_message(message_type.value)
         try:
             js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"

@@ -93,7 +93,7 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
-    def update_overlay_show_details(self, show_details: bool):
+    async def update_overlay_show_details(self, show_details: bool, page: Page):
         """
         Updates the state of the overlay to either show steps or not.
 
@@ -101,6 +101,8 @@ class UIManager:
             show_steps (bool): True to show steps, False to hide them.
         """
         self.overlay_show_details = show_details
+        await self.update_overlay_chat_history(page)
+    
 
     async def update_processing_state(self, state: str, page: Page):
         """
@@ -144,10 +146,15 @@ class UIManager:
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
                    #choose chich message types to be shown depending on UI setting
-                   if (safe_message_type == MessageType.STEP or safe_message_type==MessageType.ACTION) and self.overlay_show_details == False:
-                       continue
-                   js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
-                   await frame_or_page.evaluate(js_code)
+                    if self.overlay_show_details == False:
+                        if message["message_type"] not in (MessageType.PLAN.value, MessageType.QUESTION.value, MessageType.ANSWER.value, MessageType.INFO.value):
+                            continue
+                    else:
+                        if message["message_type"] not in (MessageType.PLAN.value,  MessageType.QUESTION.value , MessageType.ANSWER.value,  MessageType.INFO, MessageType.STEP.value):
+                            continue
+
+                    js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
+                    await frame_or_page.evaluate(js_code)
             logger.debug("Chat history updated in overlay, removing update lock flag")
         except Exception:
             traceback.print_exc()

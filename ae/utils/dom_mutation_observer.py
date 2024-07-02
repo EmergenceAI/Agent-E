@@ -4,8 +4,6 @@ from playwright.async_api import Page
 from typing import List, Callable
 from playwright.async_api import Page
 import asyncio
-import secrets
-
 
 # Create an event loop
 loop = asyncio.get_event_loop()
