@@ -535,7 +535,7 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
   inputContainer.id = "agente-input-container";
   let userInput = document.createElement("textarea");
   userInput.id = "agente-user-input";
-  userInput.placeholder = "What can i help you solve today?";
+  userInput.placeholder = "What can I help you solve today?";
   userInput.addEventListener('input', function(event) {
     let text = event.target.value;
     if (text.trim() == "") {
@@ -770,12 +770,7 @@ function disableOverlay() {
 function isDisabled() {
   let input_field= document.getElementById("agente-user-input");
   if(input_field){
-    if (input_field.placeholder === "Processing...") {
-      return true;
-    } 
-  else {
-    return false;
-  }
+    return input_field.placeholder === "Processing...";
   }
 }
 
@@ -783,7 +778,7 @@ function isDisabled() {
 function enableOverlay() {
     let input_field= document.getElementById("agente-user-input");
     if(input_field){
-      input_field.placeholder = "What can i help you solve today?";
+      input_field.placeholder = "What can I help you solve today?";
     }
 }
 
