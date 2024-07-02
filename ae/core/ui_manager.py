@@ -10,6 +10,7 @@ from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 from ae.utils.ui_messagetype import MessageType
 
+
 class UIManager:
     """
     Manages the UI overlay for this application. The application uses playwright for the browser driver.
@@ -26,7 +27,7 @@ class UIManager:
 
     overlay_processing_state: str = "init"  #init: initialised, processing: processing is ongoing, done: processing is done
     overlay_show_details:bool = True
-    
+
     conversation_history:list[dict[str, str]] = []
     __update_overlay_chat_history_running: bool = False
 
@@ -59,7 +60,7 @@ class UIManager:
                 await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}', {js_bool});")
             else:
                 await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}', {js_bool});")
-      
+
             #update chat history in the overlay
             await self.update_overlay_chat_history(frame)
 
@@ -102,7 +103,7 @@ class UIManager:
         """
         self.overlay_show_details = show_details
         await self.update_overlay_chat_history(page)
-    
+
 
     async def update_processing_state(self, state: str, page: Page):
         """
@@ -117,7 +118,7 @@ class UIManager:
             await page.evaluate(f"updateOverlayState('{self.overlay_processing_state}', {js_bool});")
         except Exception as e:
             logger.debug(f"JavaScript error: {e}")
-        
+
     async def update_overlay_chat_history(self, frame_or_page: Frame | Page):
         """
         Updates the chat history in the overlay. If the overlay is expanded and not currently being updated,
@@ -141,12 +142,12 @@ class UIManager:
             await frame_or_page.evaluate("clearOverlayMessages();")
             for message in self.conversation_history:
                 safe_message = escape_js_message(message["message"])
-                safe_message_type = escape_js_message(message.get("message_type", MessageType.STEP.value))  
+                safe_message_type = escape_js_message(message.get("message_type", MessageType.STEP.value))
                 if message["from"] == "user":
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
                    #choose chich message types to be shown depending on UI setting
-                    if self.overlay_show_details == False:
+                    if self.overlay_show_details == False:  # noqa: E712
                         if message["message_type"] not in (MessageType.PLAN.value, MessageType.QUESTION.value, MessageType.ANSWER.value, MessageType.INFO.value):
                             continue
                     else:
@@ -167,7 +168,7 @@ class UIManager:
         """
         self.conversation_history = []
         self.add_default_system_messages()
-    
+
     def get_conversation_history(self):
         """
         Returns the current conversation history.
@@ -196,7 +197,7 @@ class UIManager:
         Args:
             message (str): The message text to add.
         """
-       
+
         self.conversation_history.append({"from":"system", "message":message, "message_type":type.value})
         print(f"Adding system message: {message}")
 

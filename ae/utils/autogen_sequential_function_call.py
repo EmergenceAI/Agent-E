@@ -3,15 +3,8 @@ import asyncio
 import inspect
 from typing import Any
 
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Union
-
-from autogen import Agent
-from autogen import UserProxyAgent
-
+from autogen import Agent  # type: ignore
+from autogen import UserProxyAgent  # type: ignore
 
 
 class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):

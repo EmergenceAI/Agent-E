@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 # class syntax
 class MessageType(Enum):
     PLAN = "plan"
