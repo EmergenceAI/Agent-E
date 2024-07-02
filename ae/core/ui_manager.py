@@ -58,7 +58,6 @@ class UIManager:
             if self.overlay_is_collapsed:
                 await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}', {js_bool});")
             else:
-                print (f"Calling JS Code: showExpandedOverlay('{self.overlay_processing_state}', {js_bool};")
                 await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}', {js_bool});")
       
             #update chat history in the overlay

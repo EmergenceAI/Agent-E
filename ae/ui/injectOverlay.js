@@ -1,7 +1,5 @@
 let awaitingUserResponse = false; // flag to check if the agent is awaiting user response
-let speechInputOngoing = false;
-var messageTosend = "";
-let speechRecognition;
+
 // disabled and enabled styles as injected style element
 function injectOveralyStyles() {
   // Create a new style element
@@ -29,7 +27,7 @@ function injectOveralyStyles() {
     }
 
   .agente-pre-line {
-    white-space: pre-line;
+    white-space: pre-line; !important;
   }
 
   #agente-closebutton{
@@ -73,7 +71,8 @@ function injectOveralyStyles() {
   }
   
   .agente-init{
-    background: lightgray;
+    background: darkgray;
+    box-shadow: rgba(120, 120, 120, 0.3) 0px 0px 20px
   }
   
   .agente-done{
@@ -169,7 +168,8 @@ function injectOveralyStyles() {
 
   #agente-user-input:focus {
     outline: none !important;
-    border:1px solid transparent;
+    border:0px solid transparent !important;
+    box-shadow: none !important;
   }
 
   #agente-send-btn {
@@ -277,12 +277,9 @@ function injectOveralyStyles() {
   
 
   .agente-toggle {
-  all: unset;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 44px;
-  height: 24px;
   margin: 0;
   display: inline-block;
   position: relative;
@@ -331,22 +328,6 @@ function injectOveralyStyles() {
 let savedSelection = null;
 let show_details = true;
 
-if (!('webkitSpeechRecognition' in window)) {
-  console.log("Speech API not supported");
-}
-else {
-  speechRecognition = new webkitSpeechRecognition();  
-  speechRecognition.continuous = true;
-  speechRecognition.interimResults = true;
-  speechRecognition.lang = "en-US";
-
-  speechRecognition.onstart = function () {
-      speechInputOngoing=true;
-  }
-  speechRecognition.onend = function () {
-      speechInputOngoing = false;
-  }    
-}
 
 function showCollapsedOverlay(processing_state = "processing", steps) {
   show_details = steps;
@@ -488,72 +469,6 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
   newDiv.setAttribute("aria-hidden", "true");
   newDiv.setAttribute("tabindex", "0");
 
-  newDiv.addEventListener('keydown', function(event) {
-    let final_transcript = "";
-    let userInput = document.getElementById('agente-user-input');
-    if (event.key.toLowerCase() === 'm' && document.activeElement !== userInput && isDisabled() == false) {
-        if (speechInputOngoing == false) {
-                console.log("M Key down, activating speech recognition");
-                if (!speechRecognition.listening) {
-                    speechRecognition.start();
-                }
-                try {
-                    inChime.play()
-                } catch (error) {
-                }
-                messageTosend = "";
-                speechRecognition.onresult = function (event) {
-                    let interim_transcript = '';
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
-                        if (event.results[i].isFinal) {
-                            final_transcript += event.results[i][0].transcript;
-                            const elem = document.getElementById("agente-user-input");
-                            elem.innerHTML = final_transcript;
-                            messageTosend = final_transcript;
-
-                        } else {
-                            interim_transcript += event.results[i][0].transcript;
-                            const elem = document.getElementById("agente-user-input");
-                            elem.innerHTML = final_transcript+ " "+ interim_transcript;
-                            console.log("Interim : " + interim_transcript);
-                        }
-                    }
-                };
-            }
-    }
-});
-
-newDiv.addEventListener('keyup', function(event) {
-   
-    if (event.key.toLowerCase() === 'm' && document.activeElement !== userInput) {
-      if (speechInputOngoing) {
-        try {
-            outChime.play()
-        } catch (error) {
-
-        }
-        speechRecognition.stop();
-        console.log("Stopped speech recognition");
-        setTimeout(function () {
-          console.log("Inside settimeout");
-          let userInput = document.getElementById('agente-user-input');
-          let messageTosend = userInput.innerHTML;
-          userInput.innerHTML = "";
-          userInput.blur();
-          userInput.dispatchEvent(new FocusEvent('blur'));
-          console.log("Sending to server from M key up " + messageTosend);
-            if (messageTosend.trim()!="") {
-                addUserMessage(messageTosend);
-                disableOverlay();
-                window.process_task(messageTosend)
-                console.log("Sending to server from M key up " + messageTosend);
-                messageTosend = "";
-            }
-
-        }, 100);
-    }
-    }
-});
   let header = document.createElement("div");
   header.style.display = "flex";
   header.style.flexDirection = "row";
@@ -633,7 +548,6 @@ newDiv.addEventListener('keyup', function(event) {
       let sendBtn = document.getElementById('agente-send-btn');
       sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(button_enabled_svg)}')`;
     }
-    console.log('Text changed:', event.target.value);
   });
   let userinput_footer = document.createElement("div");
   userinput_footer.style.display = "flex";
@@ -654,9 +568,13 @@ newDiv.addEventListener('keyup', function(event) {
   toggleLabel.style.marginRight = "10px";  // Add some margin to the right of the label
   
   let toggleSwitch = document.createElement("input");
+
   toggleSwitch.type = "checkbox";
   toggleSwitch.className = "agente-toggle";
+  toggleSwitch.style.width = "44px";
+  toggleSwitch.style.height = "24px";
   toggleSwitch.style.margin = "0px";
+
   if (show_details){
     toggleSwitch.checked = true;
   }
@@ -734,7 +652,6 @@ newDiv.addEventListener('keyup', function(event) {
   userInput.addEventListener('focus', function() {
     if (window.getSelection().rangeCount > 0) {
         let selectedText = window.getSelection().toString();
-        console.log(selectedText);
         if (selectedText) {
           document.getElementById('agente-user-input').value = selectedText +  '\n';
           setTimeout(function() {
@@ -790,7 +707,7 @@ function addMessage(message, sender, message_type = "plan") {
   try {
     parsedMessage = JSON.parse(message);
   } catch (e) {
-    //console.log("Message is not in JSON format, using original message.");
+    console.log("Message is not in JSON format, using original message.");
   }
 
   // Customize based on the sender
