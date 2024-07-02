@@ -6,7 +6,8 @@ import autogen  # type: ignore
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
-from ae.core.skills.enter_text_and_click import enter_text_and_click
+
+# from ae.core.skills.enter_text_and_click import enter_text_and_click
 from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
 from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
@@ -35,7 +36,7 @@ class BrowserNavAgent:
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
-            
+
         self.agent = autogen.ConversableAgent(
             name="browser_navigation_agent",
             system_message=system_message,

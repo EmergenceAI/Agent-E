@@ -11,10 +11,11 @@ from playwright.async_api import Playwright
 from ae.core.ui_manager import UIManager
 from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
-from ae.utils.js_helper import escape_js_message
 from ae.utils.js_helper import beautify_plan_message
+from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
 from ae.utils.ui_messagetype import MessageType
+
 # Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
 os.environ["PW_TEST_SCREENSHOT_NO_FONTS_READY"] = "1"
 
@@ -253,7 +254,7 @@ class PlaywrightManager:
         context = await self.get_browser_context()
         await context.expose_function('overlay_state_changed', self.overlay_state_handler) # type: ignore
         await context.expose_function('show_steps_state_changed',self.show_steps_state_handler) # type: ignore
-    
+
     async def overlay_state_handler(self, is_collapsed: bool):
         page = await self.get_current_page()
         self.ui_manager.update_overlay_state(is_collapsed)
@@ -301,15 +302,15 @@ class PlaywrightManager:
 
         safe_message = escape_js_message(message)
         self.ui_manager.new_system_message(safe_message, message_type)
-        
-        if self.ui_manager.overlay_show_details == False:
+
+        if self.ui_manager.overlay_show_details == False:  # noqa: E712
             if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
                 return
 
-        if self.ui_manager.overlay_show_details == True:
+        if self.ui_manager.overlay_show_details == True:  # noqa: E712
             if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
                 return
-       
+
         safe_message_type = escape_js_message(message_type.value)
         try:
             js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
@@ -364,7 +365,7 @@ class PlaywrightManager:
         self.log_system_message(message, MessageType.QUESTION) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
 
         safe_message = escape_js_message(message)
-        
+
         js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true, message_type='question');"
         await page.evaluate(js_code)
 
