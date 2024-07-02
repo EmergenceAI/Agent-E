@@ -404,7 +404,7 @@ class PlaywrightManager:
         try:
             await page.wait_for_load_state(state=load_state, timeout=take_snapshot_timeout) # type: ignore
             await page.screenshot(path=screenshot_path, full_page=full_page, timeout=take_snapshot_timeout, caret="initial", scale="device")
-            logger.info(f"Screen shot saved to: {screenshot_path}")
+            logger.debug(f"Screen shot saved to: {screenshot_path}")
         except Exception as e:
             logger.error(f"Failed to take screenshot and save to \"{screenshot_path}\". Error: {e}")
 
