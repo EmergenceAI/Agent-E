@@ -82,7 +82,7 @@ async def get_filtered_text_content(page: Page) -> str:
     text_content = await page.evaluate("""
         () => {
             // Array of query selectors to filter out
-            const selectorsToFilter = ['#agentDriveAutoOverlay'];
+            const selectorsToFilter = ['#agente-overlay'];
 
             // Store the original visibility values to revert later
             const originalStyles = [];
