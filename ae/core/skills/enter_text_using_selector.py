@@ -13,6 +13,7 @@ from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.dom_mutation_observer import subscribe
 from ae.utils.dom_mutation_observer import unsubscribe
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 @dataclass
@@ -126,7 +127,7 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
-    #await browser_manager.notify_user(result["summary_message"])
+    await browser_manager.notify_user(result["summary_message"], message_type=MessageType.ACTION)
     if dom_changes_detected:
         return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action of entering text {text_to_enter} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
@@ -180,8 +181,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await asyncio.sleep(0.1)
             logger.debug(f"Focused element with selector {selector} to enter text")
             #add a 100ms delay
-
-            await page.keyboard.type(text_to_enter, delay=4)
+            await page.keyboard.type(text_to_enter, delay=1)
         else:
             await custom_fill_element(page, selector, text_to_enter)
         await elem.focus()

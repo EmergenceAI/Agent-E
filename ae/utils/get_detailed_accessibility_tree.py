@@ -310,7 +310,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                         }
                         """
                     #textbox just means a text input and that is expressed well enough with the rest of the attributes returned
-                    del node['role']
+                    #del node['role']
 
             #remove attributes that are not needed once processing of a node is complete
             for attribute_to_delete in attributes_to_delete:

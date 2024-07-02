@@ -3,6 +3,7 @@ from typing import Annotated
 
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def openurl(url: Annotated[str, "The URL to navigate to. Value must include the protocol (http:// or https://)."],
@@ -35,7 +36,7 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
 
     await browser_manager.take_screenshots(f"{function_name}_end", page)
 
-    await browser_manager.notify_user(f"Opened URL: {url}")
+    await browser_manager.notify_user(f"Opened URL: {url}", message_type=MessageType.ACTION)
         # Get the page title
     title = await page.title()
     url=page.url
