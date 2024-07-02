@@ -11,6 +11,7 @@ from ae.utils.dom_helper import get_element_outer_html
 from ae.utils.dom_mutation_observer import subscribe  # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe  # type: ignore
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action (e.g. [mmid='114']). When \"mmid\" attribute is present, use it for the query selector."],
@@ -51,7 +52,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.take_screenshots(f"{function_name}_end", page)
-    #await browser_manager.notify_user(result["summary_message"])
+    await browser_manager.notify_user(result["summary_message"], message_type=MessageType.ACTION)
 
     if dom_changes_detected:
         return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action to click {selector} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."

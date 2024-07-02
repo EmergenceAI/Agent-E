@@ -1,6 +1,8 @@
 import json
 from typing import Any
 
+from ae.utils.logger import logger
+
 
 def parse_response(message: str) -> dict[str, Any]:
     """
@@ -8,10 +10,6 @@ def parse_response(message: str) -> dict[str, Any]:
     """
     # Parse the response content
     json_response = {}
-    raw_messgae = message
-    message = message.replace("\n", "\\n") # type: ignore
-    # replace all \\n
-    message = message.replace("\\n", "")
     #if message starts with ``` and ends with ``` then remove them
     if message.startswith("```"):
         message = message[3:]
@@ -26,7 +24,9 @@ def parse_response(message: str) -> dict[str, Any]:
     except Exception as e:
         # If the response is not a valid JSON, try pass it using string matching.
         #This should seldom be triggered
-        print(f"Error parsing JSON response {raw_messgae}. Error; {e}. Attempting to parse using string matching.")
+        logger.warn(f"LLM response was not properly formed JSON. Will try to use it as is. LLM response: \"{message}\". Error: {e}")
+        message = message.replace("\\n", "\n")
+        message = message.replace("\n", "") # type: ignore
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")
             end = message.index("next_step")

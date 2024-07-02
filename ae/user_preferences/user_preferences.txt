@@ -1,0 +1,12 @@
+Personal Info:
+First Name: John
+Last Name: Doe
+Date of birth: 10/10/2010
+Occupation: Software Engineer
+Address: 49 Featherstone Street, LONDON, EC1Y 8SY, UNITED KINGDOM
+Email: myemail@gmail.com
+Phone Number: 123-456-7890
+Here are some of my preferences:
+Shopping Preferences: www.amazon.com
+Favorite news source: www.bbc.com
+Favorite flight booking site to use with every flight related query: https://www.google.com/travel/flights

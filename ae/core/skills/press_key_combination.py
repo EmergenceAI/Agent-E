@@ -8,6 +8,7 @@ from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_mutation_observer import subscribe  # type: ignore
 from ae.utils.dom_mutation_observer import unsubscribe  # type: ignore
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def press_key_combination(key_combination: Annotated[str, "The key to press, e.g., Enter, PageDown etc"]) -> str:
@@ -60,6 +61,8 @@ async def press_key_combination(key_combination: Annotated[str, "The key to pres
 
     if dom_changes_detected:
         return f"Key {key_combination} executed successfully.\n As a consequence of this action, new elements have appeared in view:{dom_changes_detected}. This means that the action is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
+
+    await browser_manager.notify_user(f"Key {key_combination} executed successfully", message_type=MessageType.ACTION)
     return f"Key {key_combination} executed successfully"
 
 
@@ -82,7 +85,7 @@ async def do_press_key_combination(browser_manager: PlaywrightManager, page: Pag
 
     logger.info(f"Executing press_key_combination with key combo: {key_combination}")
     try:
-        function_name = inspect.currentframe().f_code.co_name
+        function_name = inspect.currentframe().f_code.co_name # type: ignore
         await browser_manager.take_screenshots(f"{function_name}_start", page)
         # Split the key combination if it's a combination of keys
         keys = key_combination.split('+')
