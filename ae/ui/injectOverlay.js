@@ -890,8 +890,12 @@ function addMessage(message, sender, message_type = "plan") {
 }
 
 function addSystemMessage(message, is_awaiting_user_response = false, message_type = "plan") {
-  awaitingUserResponse = is_awaiting_user_response;
-  addMessage(message, "system", message_type);
+  // Function to actually add the message
+  function executeAddMessage() {
+    awaitingUserResponse = is_awaiting_user_response;
+    addMessage(message, "system", message_type);
+  }
+    requestAnimationFrame(executeAddMessage);
 }
 
 function addUserMessage(message) {
