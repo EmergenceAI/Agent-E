@@ -417,36 +417,36 @@ function updateOverlayState(processing_state, is_collapsed)
 {
   if (is_collapsed) {
     let borderdiv = document.getElementById("AgentEOverlayBorder");
-    if (processing_state=="init"){
+    if (processing_state === "init"){
       borderdiv.classList.add("agente-init");
       borderdiv.classList.remove("agente-processing");
       borderdiv.classList.remove("agente-done");
     }
-    else if (processing_state=="processing"){
+    else if (processing_state === "processing"){
       borderdiv.classList.remove("agente-init");
       borderdiv.classList.add("agente-processing");
       borderdiv.classList.remove("agente-done");
     }
-    else if (processing_state=="done"){
+    else if (processing_state === "done"){
       borderdiv.classList.remove("agente-init");
       borderdiv.classList.remove("agente-processing");
       borderdiv.classList.add("agente-done");
     }
   } else {
     let animation = document.getElementById("AgentEExpandedAnimation");
-    if (processing_state=="init"){
+    if (processing_state === "init"){
       animation.classList.remove("agente-processingLine");
       animation.classList.add("agente-initStateLine");
       animation.classList.remove("agente-doneStateLine");
       enableOverlay();
     }
-    else if (processing_state=="processing"){
+    else if (processing_state === "processing"){
       animation.classList.add("agente-processingLine");
       animation.classList.remove("agente-initStateLine");
       animation.classList.remove("agente-doneStateLine");
       disableOverlay();
     }
-    else if (processing_state=="done"){
+    else if (processing_state === "done"){
       animation.classList.remove("agente-processingLine");
       animation.classList.remove("agente-initStateLine");
       animation.classList.add("agente-doneStateLine");
