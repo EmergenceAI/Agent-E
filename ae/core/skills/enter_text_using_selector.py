@@ -181,7 +181,7 @@ async def do_entertext(page: Page, selector: str, text_to_enter: str, use_keyboa
             await asyncio.sleep(0.1)
             logger.debug(f"Focused element with selector {selector} to enter text")
             #add a 100ms delay
-            await page.keyboard.type(text_to_enter, delay=4)
+            await page.keyboard.type(text_to_enter, delay=1)
         else:
             await custom_fill_element(page, selector, text_to_enter)
         await elem.focus()

@@ -292,6 +292,7 @@ function injectOveralyStyles() {
     line-height: 1.7;
     border-radius: 10px;
     width:auto;
+    max-width: 90%;
 
   }
 
