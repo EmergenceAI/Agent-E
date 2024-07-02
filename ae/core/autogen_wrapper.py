@@ -246,7 +246,7 @@ class AutogenWrapper:
                         if final_response:
                             notify_planner_messages(final_response, message_type=MessageType.ANSWER)
                 except json.JSONDecodeError:
-                    logger.error("Error decoding JSON response {content}. Terminating..")
+                    logger.error("Error decoding JSON response:\n{content}.\nTerminating..")
                     should_terminate = True
 
              return should_terminate # type: ignore
