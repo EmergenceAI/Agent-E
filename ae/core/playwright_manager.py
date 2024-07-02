@@ -433,7 +433,7 @@ class PlaywrightManager:
         Update the processing state of the overlay.
 
         Args:
-            is_processing (str): "init", "processing", "done"  TODO: Convert to Enum
+            is_processing (str): "init", "processing", "done"
         """
         page = await self.get_current_page()
 
