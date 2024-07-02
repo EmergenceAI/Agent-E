@@ -95,8 +95,8 @@ Some basic information about the user: $basic_user_information""",
    Additionally, If task requires an answer, you will also provide a short and precise answer followed by ##TERMINATE TASK##.
    Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type. To answer a question about interactive elements, use all_fields DOM type.
    Do not provide any mmid values in your response.
-   Important: If you encounter an issues or is unsure how to proceed, simply ##TERMINATE TASK## the task and provide a detailed summary of the exact issue encountered.
-   Do you repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.""",
+   Important: If you encounter an issues or is unsure how to proceed, simply ##TERMINATE TASK## and provide a detailed summary of the exact issue encountered.
+   Do not repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.""",
 
 
    "VERFICATION_AGENT": """Given a conversation and a task, your task is to analyse the conversation and tell if the task is completed. If not, you need to tell what is not completed and suggest next steps to complete the task.""",
