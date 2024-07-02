@@ -93,6 +93,7 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
+
     async def update_overlay_show_details(self, show_details: bool, page: Page):
         """
         Updates the state of the overlay to either show steps or not.
@@ -160,7 +161,6 @@ class UIManager:
             traceback.print_exc()
         finally:
             self.__update_overlay_chat_history_running = False
-  
 
     def clear_conversation_history(self):
         """

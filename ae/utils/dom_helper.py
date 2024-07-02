@@ -1,6 +1,7 @@
 import asyncio
 
-from playwright.async_api import ElementHandle, Page
+from playwright.async_api import ElementHandle
+from playwright.async_api import Page
 
 from ae.utils.logger import logger
 
@@ -31,7 +32,7 @@ async def get_element_outer_html(element: ElementHandle, page: Page, element_tag
     """
     tag_name: str = element_tag_name if element_tag_name else await page.evaluate("element => element.tagName.toLowerCase()", element)
 
-    attributes_of_interest: list[str] = ['id', 'name', 'aria-label', 'placeholder', 'href', 'src', 'aria-autocomplete', 'role', 'type', 
+    attributes_of_interest: list[str] = ['id', 'name', 'aria-label', 'placeholder', 'href', 'src', 'aria-autocomplete', 'role', 'type',
                                          'data-testid', 'value', 'selected', 'aria-labelledby', 'aria-describedby', 'aria-haspopup']
     opening_tag: str = f'<{tag_name}'
 

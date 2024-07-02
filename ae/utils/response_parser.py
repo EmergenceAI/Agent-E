@@ -8,7 +8,6 @@ def parse_response(message: str) -> dict[str, Any]:
     """
     # Parse the response content
     json_response = {}
-
     #if message starts with ``` and ends with ``` then remove them
     if message.startswith("```"):
         message = message[3:]
@@ -19,14 +18,12 @@ def parse_response(message: str) -> dict[str, Any]:
 
     message = message.strip()
     try:
-        json_response = json.loads(message)
-    except:
-        # If the response is not a valid JSON, try pass it using string matching. 
+        json_response: dict[str, Any] = json.loads(message)
+    except Exception as e:
+        # If the response is not a valid JSON, try pass it using string matching.
         #This should seldom be triggered
-
         message = message.replace("\\n", "\n")
         message = message.replace("\n", "") # type: ignore
-
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")
             end = message.index("next_step")

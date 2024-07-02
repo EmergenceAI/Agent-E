@@ -99,7 +99,7 @@ class AutogenWrapper:
 
         def trigger_nested_chat(manager: autogen.ConversableAgent):
             content:str=manager.last_message()["content"] # type: ignore
-            content_json=parse_response(content)
+            content_json = parse_response(content) # type: ignore
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
@@ -130,9 +130,11 @@ class AutogenWrapper:
 
         def reflection_message(recipient, messages, sender, config): # type: ignore
             last_message=messages[-1]["content"] # type: ignore
-            content_json = parse_response(last_message)
+            content_json = parse_response(last_message) # type: ignore
             next_step = content_json.get('next_step', None)
-            if next_step is None: 
+
+            if next_step is None:
+                print ("Message to nested chat returned None")
                 return None
             else:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
@@ -144,7 +146,7 @@ class AutogenWrapper:
                 {
             "sender": self.agents_map["browser_nav_executor"],
             "recipient": self.agents_map["browser_nav_agent"],
-            "message":reflection_message,  
+            "message":reflection_message,
             "max_turns": self.number_of_rounds,
             "summary_method": my_custom_summary_method,
                 }
@@ -337,7 +339,6 @@ class AutogenWrapper:
         try:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
-            print(self.agents_map["browser_nav_executor"].function_map) # type: ignore
 
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
