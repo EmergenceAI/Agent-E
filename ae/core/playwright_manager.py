@@ -289,15 +289,14 @@ class PlaywrightManager:
         if message_type == MessageType.PLAN:
             message = beautify_plan_message(message)
             message = "Plan:\n" + message
-        if message_type == MessageType.STEP:
+        elif message_type == MessageType.STEP:
             if "confirm" in message.lower():
                 message = "Verify: " + message
             else:
                 message = "Next step: " + message
-        if message_type == MessageType.QUESTION:
+        elif message_type == MessageType.QUESTION:
             message = "Question: " + message
-
-        if message_type == MessageType.ANSWER:
+        elif message_type == MessageType.ANSWER:
             message = "Response: " + message
 
         safe_message = escape_js_message(message)
