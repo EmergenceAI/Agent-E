@@ -51,16 +51,16 @@ async def get_dom_with_content_type(
 
     extracted_data = None
     await wait_for_non_loading_dom_state(page, 2000) # wait for the DOM to be ready, non loading means external resources do not need to be loaded
-    # user_success_message = ""
+    user_success_message = ""
     if content_type == 'all_fields':
-        # user_success_message = "Fetched all the fields in the DOM"
+        user_success_message = "Fetched all the fields in the DOM"
         extracted_data = await do_get_accessibility_info(page, only_input_fields=False)
     elif content_type == 'input_fields':
         logger.debug('Fetching DOM for input_fields')
         extracted_data = await do_get_accessibility_info(page, only_input_fields=True)
         if extracted_data is None:
             return "Could not fetch input fields. Please consider trying with content_type all_fields."
-        # user_success_message = "Fetched only input fields in the DOM"
+        user_success_message = "Fetched only input fields in the DOM"
     elif content_type == 'text_only':
         # Extract text from the body or the highest-level element
         logger.debug('Fetching DOM for text_only')
@@ -68,7 +68,7 @@ async def get_dom_with_content_type(
         with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'text_only_dom.txt'), 'w',  encoding='utf-8') as f:
             f.write(text_content)
         extracted_data = text_content
-        # user_success_message = "Fetched the text content of the DOM"
+        user_success_message = "Fetched the text content of the DOM"
     else:
         raise ValueError(f"Unsupported content_type: {content_type}")
 
