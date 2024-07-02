@@ -418,17 +418,17 @@ function showCollapsedOverlay(processing_state = "processing", steps) {
   collapsed_agente.style.justifyContent = "center";
   let wrapper = document.createElement("div");
   wrapper.style.position = "relative";
-  wrapper.style.width = "6vh";
-  wrapper.style.height = "6vh";
+  wrapper.style.width = "100%";
+  wrapper.style.height = "100%";
   wrapper.style.justifyContent = "center";
   let logodiv= document.createElement("div");
-  logodiv.style.width = "5.4vh";
-  logodiv.style.height = "5.4vh";
-  logodiv.style.left = "0.3vh";
-  logodiv.style.top = "0.3vh";
+  logodiv.style.width = "90%";
+  logodiv.style.height = "90%";
+  logodiv.style.left = "5%";
+  logodiv.style.top = "5%";
   let borderdiv = document.createElement("div");
-  borderdiv.style.width = "6vh";
-  borderdiv.style.height = "6vh";
+  borderdiv.style.width = "100%";
+  borderdiv.style.height = "100%";
   borderdiv.style.borderRadius = "50%";
 
   let logo = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="7.5" width="11" height="11" rx="0.5" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 6 10)" stroke="#827C8C"/><rect x="-0.5" y="0.5" width="3" height="5" rx="0.5" transform="matrix(-1 0 0 1 20 10)" stroke="#827C8C"/><path d="M12 4V7.5" stroke="#827C8C" stroke-linecap="round"/><rect x="8.5" y="11.5" width="7" height="3" rx="1.5" stroke="#827C8C"/></svg>`;
