@@ -28,21 +28,11 @@ function injectOveralyStyles() {
         background-color: rgba(255, 255, 255, 0.6);
     }
 
-  .disabled {
-      opacity: 0.85;
-      pointer-events: none;
-  }
-
-  .pre-line {
+  .agente-pre-line {
     white-space: pre-line;
   }
 
-  .enabled {
-      opacity: 1;
-      pointer-events: auto;
-  }
-
-  #closebutton{
+  #agente-closebutton{
     width:30px;
     height:30px;
     min-width:30px;
@@ -54,42 +44,43 @@ function injectOveralyStyles() {
     transition: transform 0.2s ease; 
     border: None;
   }
-  #closebutton:hover{
+  #agente-closebutton:hover{
     transform: scale(1.1);
   }
 
-  #closebutton:active{
+  #agente-closebutton:active{
     transform: scale(0.8);
   }
 
-  @keyframes gradient-animation {
+  @keyframes agente-gradient-animation {
   0% {background-position: 100% 0%}
   100% {background-position: 15% 100%}
   }
 
-  @keyframes rotate {
+  @keyframes agente-rotate {
     100% {
       transform: rotate(1turn);
     }
   }
-  .processing{
+
+  .agente-processing{
   background: linear-gradient(90deg, 
                               rgba(255, 0, 255, 1) 0%,  /* Bright Magenta */
                               rgba(0, 191, 255, 1) 100%    /* Deep Sky Blue */
                               );
   background-size: 100% 200%;
-  animation: rotate 1s linear infinite;
+  animation: agente-rotate 1s linear infinite;
   }
   
-  .init{
+  .agente-init{
     background: lightgray;
   }
   
-  .done{
+  .agente-done{
   background: lightgreen;
   }
 
-  .processingLine {
+  .agente-processingLine {
     background: linear-gradient(45deg, 
                                 rgba(255, 0, 0, 1) 0%,    /* Red */
                                 rgba(255, 127, 0, 1) 25%,  /* Orange */
@@ -99,19 +90,18 @@ function injectOveralyStyles() {
                                 rgba(255, 0, 0, 1) 100%    /* Red */
                                 );
     background-size: 500% 100%;
-    animation: gradient-animation 3s linear infinite;
+    animation: agente-gradient-animation 3s linear infinite;
   }
 
-  .initStateLine{
+  .agente-initStateLine{
   background: lightgray;
   }
 
-  .doneStateLine{
+  .agente-doneStateLine{
   background: lightgreen;
   }
 
-
-  .collapsed{
+  .agente-collapsed{
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.1);
   background-repeat: no-repeat;
@@ -122,11 +112,10 @@ function injectOveralyStyles() {
   border-radius: 50%;
   right: 1.5vw;
   bottom: 1.5vw;
-
   box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 20px
   }
 
-  .chat-container {
+  .agente-chat-container {
     margin:1%,1%,1%,1%;
     width: 30vw;
     min-width: 350px;
@@ -140,33 +129,7 @@ function injectOveralyStyles() {
     box-sizing: border-box; 
   } 
   
-  .icon{
-    width: 25px;
-    border-radius: 50%;
-    height: 25px;
-  }
-
-.loader {
-    width: 24px;
-    height: 25px;
-    border: 5px solid #DDD;
-    border-bottom-color: transparent;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    }
-
-    @keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-    } 
-  
-  .chat-input{
+  .agente-chat-input{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -174,15 +137,15 @@ function injectOveralyStyles() {
     margin-top:1.5vh;
   }
 
-  .agent{
+  .agente-agent{
     justify-content: flex-start;
   }
   
-  .user{
+  .agente-user{
     justify-content: flex-end;
   }
 
-  #user-input {
+  #agente-user-input {
     flex: 1;
     padding: 3px 3px;
     border: transparent;
@@ -204,20 +167,21 @@ function injectOveralyStyles() {
     scrollbar-width: thin;
   }
 
-  #user-input:focus {
+  #agente-user-input:focus {
     outline: none !important;
     border:1px solid transparent;
   }
-  #send-btn {
+
+  #agente-send-btn {
     cursor: pointer;
     transition: transform 0.2s ease; 
   }
 
-  #send-btn:hover{
+  #agente-send-btn:hover{
   transform: scale(1.1);
   }
 
-  .highlight_overlay{
+  .agente-highlight_overlay{
     box-shadow: 1px 1px 1px 1px rgb(50 50 50 / 40%);
     border-radius: 16px;
     border: 1px solid #E1DEE2;
@@ -225,7 +189,8 @@ function injectOveralyStyles() {
     right:5px;
     background: #FBFAFA;
   }
-  #chat-box {
+
+  #agente-chat-box {
     overflow-y: auto;
     scrollbar-width: thin;
     height: 90%;
@@ -237,10 +202,10 @@ function injectOveralyStyles() {
     margin-top:10%;
   }
   
-  #agentDriveAutoOverlay {
+  #agente-overlay {
     position: fixed;
-    min-width: 30px;
-    min-height: 30px;
+    min-width: 50px;
+    min-height: 50px;
     margin-left: auto;
     margin-right: auto;
     z-index:20000000;
@@ -250,18 +215,7 @@ function injectOveralyStyles() {
     flex-direction: column;
   }
 
-  .agent1{
-    background: blueviolet;
-    border-radius: 50%;
-  }
-  
-  .agent2{
-    background: rgba(150, 255, 150, 1);
-    border-radius: 50%;
-  }
-
-
-  .input-container {
+  .agente-input-container {
     display: flex;
     flex-direction: column;
     margin: 1% 3%;
@@ -272,7 +226,7 @@ function injectOveralyStyles() {
     border-radius: 8px;
   }
   
-  .chat{
+  .agente-chat{
     width: 80%;
     color: black;
     overflow-wrap: break-word;
@@ -280,7 +234,7 @@ function injectOveralyStyles() {
 
   }
 
-  .agent1text{
+  .agente-systemMessage{
     text-align: left;
     justify-content: flex-start;
     font-family: 'Noto Sans SC';
@@ -293,10 +247,9 @@ function injectOveralyStyles() {
     border-radius: 10px;
     width:auto;
     max-width: 90%;
-
   }
 
-  .usertext{
+  .agente-usertext{
     text-align: right;
     justify-content: flex-end;
     align-items: flex-end;
@@ -312,29 +265,18 @@ function injectOveralyStyles() {
     color: black;
   }
   
-  .agentstep{
+  .agente-agentstep{
   color: #4B4B4B;
   }
-  .agentplan{
+  .agente-agentplan{
   color: #4B4B4B;
   }
-  .agentanswer{
+  .agente-agentanswer{
   color: black;
   }
   
-  @keyframes automation_blink {
-    0% { border-color: rgba(128, 0, 128, 1); }
-    50% { border-color: rgba(128, 0, 128, 1); }
-    100% { border-color: rgba(128, 0, 128, 0); }
-  }
-  
-  .ui_automation_pulsate {
-    border-width: 2px !important;
-    border-style: solid !important;
-    animation: automation_blink 5s linear 1 forwards !important;
-  }
 
-  .toggle {
+  .agente-toggle {
   all: unset;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -353,11 +295,11 @@ function injectOveralyStyles() {
   transition: background-color ease 0.3s;
   align-self: center;
 }
-.toggle:focus {
+.agente-toggle:focus {
   border: none; !important;
   outline: none; !important;
 }
-.toggle:before {
+.agente-toggle:before {
   content: "";
   display: block;
   position: absolute;
@@ -375,11 +317,11 @@ function injectOveralyStyles() {
   transition: all cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
 }
 
-.toggle:checked {
+.agente-toggle:checked {
   background-color: #786E96;
 }
 
-.toggle:checked:before {
+.agente-toggle:checked:before {
   left: 20px;
 }
 `;
@@ -411,8 +353,8 @@ function showCollapsedOverlay(processing_state = "processing", steps) {
   removeOverlay();
   window.overlay_state_changed(true);
   let collapsed_agente = document.createElement("div");
-  collapsed_agente.id = "agentDriveAutoOverlay";
-  collapsed_agente.classList.add("collapsed");
+  collapsed_agente.id = "agente-overlay";
+  collapsed_agente.classList.add("agente-collapsed");
   collapsed_agente.style.backgroundColor = "transparent";
   collapsed_agente.setAttribute("aria-hidden", "true");
   collapsed_agente.style.justifyContent = "center";
@@ -454,22 +396,22 @@ function showCollapsedOverlay(processing_state = "processing", steps) {
   
   updateOverlayState(processing_state, true);
   
-  let element = document.getElementById('agentDriveAutoOverlay');
-  document.getElementById('agentDriveAutoOverlay').addEventListener('mouseover', function () {
+  let element = document.getElementById('agente-overlay');
+  document.getElementById('agente-overlay').addEventListener('mouseover', function () {
     this.style.transform = 'scale(1.1)';
   });
 
-  document.getElementById('agentDriveAutoOverlay').addEventListener('mouseout', function () {
+  document.getElementById('agente-overlay').addEventListener('mouseout', function () {
     this.style.transform = 'scale(1)';
   });
-  document.getElementById('agentDriveAutoOverlay').addEventListener('click', function () {
-    let ui_state = document.getElementById("AgentEOverlayBorder").classList.contains("init") ? "init" : document.getElementById("AgentEOverlayBorder").classList.contains("processing") ? "processing" : "done";
+  document.getElementById('agente-overlay').addEventListener('click', function () {
+    let ui_state = document.getElementById("AgentEOverlayBorder").classList.contains("agente-init") ? "init" : document.getElementById("AgentEOverlayBorder").classList.contains("agente-processing") ? "processing" : "done";
     showExpandedOverlay(ui_state, show_details);
   });
 }
 
 function removeOverlay() {
-  let element = document.getElementById("agentDriveAutoOverlay");
+  let element = document.getElementById("agente-overlay");
   if (element) {
     element.parentNode.removeChild(element);
   }
@@ -477,7 +419,7 @@ function removeOverlay() {
 
 function clearOverlayMessages(keep_default=false) {
   try {
-    let chatBox = document.getElementById('chat-box');
+    let chatBox = document.getElementById('agente-chat-box');
     if (!chatBox) {
       return;
     }
@@ -495,38 +437,38 @@ function updateOverlayState(processing_state, is_collapsed)
   if (is_collapsed) {
     let borderdiv = document.getElementById("AgentEOverlayBorder");
     if (processing_state=="init"){
-      borderdiv.classList.add("init");
-      borderdiv.classList.remove("processing");
-      borderdiv.classList.remove("done");
+      borderdiv.classList.add("agente-init");
+      borderdiv.classList.remove("agente-processing");
+      borderdiv.classList.remove("agente-done");
     }
     else if (processing_state=="processing"){
-      borderdiv.classList.remove("init");
-      borderdiv.classList.add("processing");
-      borderdiv.classList.remove("done");
+      borderdiv.classList.remove("agente-init");
+      borderdiv.classList.add("agente-processing");
+      borderdiv.classList.remove("agente-done");
     }
     else if (processing_state=="done"){
-      borderdiv.classList.remove("init");
-      borderdiv.classList.remove("processing");
-      borderdiv.classList.add("done");
+      borderdiv.classList.remove("agente-init");
+      borderdiv.classList.remove("agente-processing");
+      borderdiv.classList.add("agente-done");
     }
   } else {
     let animation = document.getElementById("AgentEExpandedAnimation");
     if (processing_state=="init"){
-      animation.classList.remove("processingLine");
-      animation.classList.add("initStateLine");
-      animation.classList.remove("doneStateLine");
+      animation.classList.remove("agente-processingLine");
+      animation.classList.add("agente-initStateLine");
+      animation.classList.remove("agente-doneStateLine");
       enableOverlay();
     }
     else if (processing_state=="processing"){
-      animation.classList.add("processingLine");
-      animation.classList.remove("initStateLine");
-      animation.classList.remove("doneStateLine");
+      animation.classList.add("agente-processingLine");
+      animation.classList.remove("agente-initStateLine");
+      animation.classList.remove("agente-doneStateLine");
       disableOverlay();
     }
     else if (processing_state=="done"){
-      animation.classList.remove("processingLine");
-      animation.classList.remove("initStateLine");
-      animation.classList.add("doneStateLine");
+      animation.classList.remove("agente-processingLine");
+      animation.classList.remove("agente-initStateLine");
+      animation.classList.add("agente-doneStateLine");
       enableOverlay();
     }
   }
@@ -541,15 +483,14 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
   removeOverlay();
   window.overlay_state_changed(false);
   let newDiv = document.createElement("div");
-  newDiv.id = "agentDriveAutoOverlay";
-  newDiv.classList.add("highlight_overlay");
-  newDiv.classList.add("agentDriveAutoOverlay");
+  newDiv.id = "agente-overlay";
+  newDiv.classList.add("agente-highlight_overlay");
   newDiv.setAttribute("aria-hidden", "true");
   newDiv.setAttribute("tabindex", "0");
 
   newDiv.addEventListener('keydown', function(event) {
     let final_transcript = "";
-    let userInput = document.getElementById('user-input');
+    let userInput = document.getElementById('agente-user-input');
     if (event.key.toLowerCase() === 'm' && document.activeElement !== userInput && isDisabled() == false) {
         if (speechInputOngoing == false) {
                 console.log("M Key down, activating speech recognition");
@@ -566,13 +507,13 @@ function showExpandedOverlay(processing_state = "init", show_steps=true) {
                     for (let i = event.resultIndex; i < event.results.length; ++i) {
                         if (event.results[i].isFinal) {
                             final_transcript += event.results[i][0].transcript;
-                            const elem = document.getElementById("user-input");
+                            const elem = document.getElementById("agente-user-input");
                             elem.innerHTML = final_transcript;
                             messageTosend = final_transcript;
 
                         } else {
                             interim_transcript += event.results[i][0].transcript;
-                            const elem = document.getElementById("user-input");
+                            const elem = document.getElementById("agente-user-input");
                             elem.innerHTML = final_transcript+ " "+ interim_transcript;
                             console.log("Interim : " + interim_transcript);
                         }
@@ -595,7 +536,7 @@ newDiv.addEventListener('keyup', function(event) {
         console.log("Stopped speech recognition");
         setTimeout(function () {
           console.log("Inside settimeout");
-          let userInput = document.getElementById('user-input');
+          let userInput = document.getElementById('agente-user-input');
           let messageTosend = userInput.innerHTML;
           userInput.innerHTML = "";
           userInput.blur();
@@ -641,13 +582,13 @@ newDiv.addEventListener('keyup', function(event) {
 
 
   let closeButton = document.createElement("button");
-  closeButton.id = "closebutton";
+  closeButton.id = "agente-closebutton";
   closeButton.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(close_icon)}')`;
   closeButton.style.backgroundRepeat = "no-repeat";
   closeButton.style.backgroundSize = "contain";
   closeButton.style.backgroundPosition = "bottom";
   closeButton.onclick = function () {
-    let ui_state = document.getElementById("AgentEExpandedAnimation").classList.contains("initStateLine") ? "init" : document.getElementById("AgentEExpandedAnimation").classList.contains("processingLine") ? "processing" : "done";
+    let ui_state = document.getElementById("AgentEExpandedAnimation").classList.contains("agente-initStateLine") ? "init" : document.getElementById("AgentEExpandedAnimation").classList.contains("agente-processingLine") ? "processing" : "done";
     showCollapsedOverlay(ui_state, show_details);
   };
   closeButton.style.order = 3;
@@ -665,31 +606,31 @@ newDiv.addEventListener('keyup', function(event) {
 
   newDiv.appendChild(animation);
   let chatContainer = document.createElement("div");
-  chatContainer.className = "chat-container";
+  chatContainer.className = "agente-chat-container";
 
   let chatBox = document.createElement("div");
-  chatBox.id = "chat-box";
+  chatBox.id = "agente-chat-box";
 
   let chatInput = document.createElement("div");
-  chatInput.className = "chat-input";
+  chatInput.className = "agente-chat-input";
   chatBox.appendChild(chatInput);
 
   let inputContainer = document.createElement("div");
-  inputContainer.className = "input-container";
-  inputContainer.id = "input-container";
+  inputContainer.className = "agente-input-container";
+  inputContainer.id = "agente-input-container";
   let userInput = document.createElement("textarea");
-  userInput.id = "user-input";
+  userInput.id = "agente-user-input";
   userInput.placeholder = "What can i help you solve today?";
   userInput.addEventListener('input', function(event) {
     let text = event.target.value;
     if (text.trim() == "") {
       let button_disabled_svg =`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#EEEEEF"/><path d="M15 20H25" stroke="#AEA9B4" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="#AEA9B4" stroke-width="1.5"/></svg>`;  
-      let sendBtn = document.getElementById('send-btn');
+      let sendBtn = document.getElementById('agente-send-btn');
       sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(button_disabled_svg)}')`;
     }
     else{
       let button_enabled_svg= `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#252539"/><path d="M15 20H25" stroke="white" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="white" stroke-width="1.5"/></svg>`;
-      let sendBtn = document.getElementById('send-btn');
+      let sendBtn = document.getElementById('agente-send-btn');
       sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(button_enabled_svg)}')`;
     }
     console.log('Text changed:', event.target.value);
@@ -714,7 +655,7 @@ newDiv.addEventListener('keyup', function(event) {
   
   let toggleSwitch = document.createElement("input");
   toggleSwitch.type = "checkbox";
-  toggleSwitch.className = "toggle";
+  toggleSwitch.className = "agente-toggle";
   toggleSwitch.style.margin = "0px";
   if (show_details){
     toggleSwitch.checked = true;
@@ -735,7 +676,7 @@ newDiv.addEventListener('keyup', function(event) {
 
   let sendicon =`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="4" fill="#EEEEEF"/><path d="M15 20H25" stroke="#AEA9B4" stroke-width="1.5"/><path d="M20 15L25 20L20 25" stroke="#AEA9B4" stroke-width="1.5"/></svg>`;  
   let sendBtn = document.createElement("div");
-  sendBtn.id = "send-btn";
+  sendBtn.id = "agente-send-btn";
   sendBtn.style.backgroundImage = `url('data:image/svg+xml;utf8,${encodeURIComponent(sendicon)}')`;
   sendBtn.style.backgroundRepeat = "no-repeat";
   sendBtn.style.backgroundSize = "contain";
@@ -770,19 +711,19 @@ newDiv.addEventListener('keyup', function(event) {
 
   document.body.appendChild(newDiv);
   updateOverlayState(processing_state, false);
-  document.getElementById('send-btn').addEventListener('click', function () {
-    let task = document.getElementById('user-input').value
+  document.getElementById('agente-send-btn').addEventListener('click', function () {
+    let task = document.getElementById('agente-user-input').value
     let task_trimmed = task.trim();
     if (task_trimmed && !isDisabled() && task_trimmed.length > 0) {
       if (awaitingUserResponse) {
         addUserMessage(task);
-        document.getElementById('user-input').value = "";
+        document.getElementById('agente-user-input').value = "";
       } else {
         clearOverlayMessages();
         addUserMessage(task);
         disableOverlay();
         window.process_task(task)
-        document.getElementById('user-input').value = "";
+        document.getElementById('agente-user-input').value = "";
       }
     }
     else {
@@ -795,7 +736,7 @@ newDiv.addEventListener('keyup', function(event) {
         let selectedText = window.getSelection().toString();
         console.log(selectedText);
         if (selectedText) {
-          document.getElementById('user-input').value = selectedText +  '\n';
+          document.getElementById('agente-user-input').value = selectedText +  '\n';
           setTimeout(function() {
             userInput.selectionStart = userInput.selectionEnd = userInput.value.length;
             userInput.scrollTop = userInput.scrollHeight;
@@ -813,12 +754,12 @@ userInput.addEventListener('blur', function() {
     }
 });
 
-  document.getElementById('user-input').addEventListener('keydown', function (event) {
+  document.getElementById('agente-user-input').addEventListener('keydown', function (event) {
     // Check if the pressed key is the Enter key
     if (event.key === "Enter") {
       event.preventDefault();
 
-      let targetElement = document.getElementById('send-btn');
+      let targetElement = document.getElementById('agente-send-btn');
 
       // Create a new click event
       let clickEvent = new MouseEvent('click', {
@@ -835,14 +776,14 @@ userInput.addEventListener('blur', function() {
 
 
 function focusOnOverlayInput() {
-  document.getElementById('user-input').focus();
+  document.getElementById('agente-user-input').focus();
 }
 
 function addMessage(message, sender, message_type = "plan") {
   let newDiv = document.createElement("div");
-  newDiv.classList.add("chat-input");
+  newDiv.classList.add("agente-chat-input");
   let chatDiv = document.createElement("div");
-  chatDiv.classList.add("chat");
+  chatDiv.classList.add("agente-chat");
 
   let parsedMessage = message;
 
@@ -854,29 +795,29 @@ function addMessage(message, sender, message_type = "plan") {
 
   // Customize based on the sender
   if (sender === "system") {
-    newDiv.classList.add("agent");
-    chatDiv.classList.add("agent1text", "pre-line");
+    newDiv.classList.add("agente-agent");
+    chatDiv.classList.add("agente-systemMessage", "agente-pre-line");
       if (message_type === "step") {
-      chatDiv.classList.add("agentstep");
+      chatDiv.classList.add("agente-agentstep");
       }
       else if (message_type === "plan" || message_type === "question") {
-        chatDiv.classList.add("agentplan");
+        chatDiv.classList.add("agente-agentplan");
       }
 
       else if (message_type === "answer") {
-      chatDiv.classList.add("agentanswer");
+      chatDiv.classList.add("agente-agentanswer");
       }
       if ((message_type === "info" && message.includes("Task Completed")) || message_type==="question") {
       enableOverlay();
       }
     chatDiv.textContent = parsedMessage;
   } else if (sender === "user") {
-    newDiv.classList.add("user")
-    chatDiv.classList.add("usertext", "pre-line");
+    newDiv.classList.add("agente-user")
+    chatDiv.classList.add("agente-usertext", "agente-pre-line");
     chatDiv.textContent = parsedMessage;
   }
   newDiv.appendChild(chatDiv);
-  let chatBox = document.getElementById('chat-box');
+  let chatBox = document.getElementById('agente-chat-box');
   chatBox.appendChild(newDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
   newDiv.scrollIntoView({ behavior: 'instant' });
@@ -903,14 +844,14 @@ function addUserMessage(message) {
 }
 
 function disableOverlay() {
-  let input_field= document.getElementById("user-input");
+  let input_field= document.getElementById("agente-user-input");
   if(input_field){
     input_field.placeholder = "Processing...";
   }
 }
 
 function isDisabled() {
-  let input_field= document.getElementById("user-input");
+  let input_field= document.getElementById("agente-user-input");
   if(input_field){
     if (input_field.placeholder === "Processing...") {
       return true;
@@ -923,7 +864,7 @@ function isDisabled() {
 
 
 function enableOverlay() {
-    let input_field= document.getElementById("user-input");
+    let input_field= document.getElementById("agente-user-input");
     if(input_field){
       input_field.placeholder = "What can i help you solve today?";
     }

@@ -278,16 +278,6 @@ class PlaywrightManager:
             message_type (enum, optional): Values can be 'PLAN', 'QUESTION', 'ANSWER', 'INFO', 'STEP'. Defaults to 'STEP'.
             To Do: Convert to Enum.
         """
-        safe_message = escape_js_message(message)
-        self.ui_manager.new_system_message(safe_message, message_type)
-        
-        if self.ui_manager.overlay_show_details == False:
-            if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
-                return
-
-        if self.ui_manager.overlay_show_details == True:
-            if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
-                return
 
         if message.startswith(":"):
             message = message[1:]
@@ -308,6 +298,17 @@ class PlaywrightManager:
 
         if message_type == MessageType.ANSWER:
             message = "Response: " + message
+
+        safe_message = escape_js_message(message)
+        self.ui_manager.new_system_message(safe_message, message_type)
+        
+        if self.ui_manager.overlay_show_details == False:
+            if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
+                return
+
+        if self.ui_manager.overlay_show_details == True:
+            if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
+                return
        
         safe_message_type = escape_js_message(message_type.value)
         try:
