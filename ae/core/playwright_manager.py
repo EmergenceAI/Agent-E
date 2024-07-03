@@ -322,7 +322,7 @@ class PlaywrightManager:
         try:
             page: Page = await self.get_current_page()
             if add_highlight:
-                # Add the 'UI highlight' class to the element
+                # Add the 'agente-ui-automation-highlight' class to the element. This class is used to apply the fading border.
                 await page.eval_on_selector(selector, '''e => {
                             let originalBorderStyle = e.style.border;
                             e.classList.add('agente-ui-automation-highlight');
@@ -331,7 +331,7 @@ class PlaywrightManager:
                             });}''')
                 logger.debug(f"Applied pulsating border to element with selector {selector} to indicate text entry operation")
             else:
-                # Remove the 'pulsate' class from the element
+                # Remove the 'agente-ui-automation-highlight' class from the element.
                 await page.eval_on_selector(selector, "e => e.classList.remove('agente-ui-automation-highlight')")
                 logger.debug(f"Removed pulsating border from element with selector {selector} after text entry operation")
         except Exception:
