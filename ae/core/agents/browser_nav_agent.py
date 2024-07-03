@@ -43,7 +43,9 @@ class BrowserNavAgent:
             llm_config={
                 "config_list": config_list,
                 "cache_seed": None,
-                "temperature": 0.0
+                "temperature": 0.0,
+                "top_p": 0.001,
+                "seed":12345
             },
         )
         self.__register_skills()

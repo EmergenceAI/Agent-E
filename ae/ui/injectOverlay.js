@@ -61,6 +61,18 @@ function injectOveralyStyles() {
     }
   }
 
+  @keyframes automation_highlight_fadeout_animation {
+    0% { border-color: rgba(128, 0, 128, 1); }
+    50% { border-color: rgba(128, 0, 128, 1); }
+    100% { border-color: rgba(128, 0, 128, 0); }
+  }
+  
+  .agente-ui-automation-highlight {
+    border-width: 2px !important;
+    border-style: solid !important;
+    animation: automation_highlight_fadeout_animation 5s linear 1 forwards !important;
+  }
+
   .agente-processing{
   background: linear-gradient(90deg, 
                               rgba(255, 0, 255, 1) 0%,  /* Bright Magenta */
