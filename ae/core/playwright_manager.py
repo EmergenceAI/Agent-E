@@ -322,17 +322,17 @@ class PlaywrightManager:
         try:
             page: Page = await self.get_current_page()
             if add_highlight:
-                # Add the 'pulsate' class to the element
+                # Add the 'UI highlight' class to the element
                 await page.eval_on_selector(selector, '''e => {
                             let originalBorderStyle = e.style.border;
-                            e.classList.add('ui_automation_pulsate');
+                            e.classList.add('agente-ui-automation-highlight');
                             e.addEventListener('animationend', () => {
-                                e.classList.remove('ui_automation_pulsate')
+                                e.classList.remove('agente-ui-automation-highlight')
                             });}''')
                 logger.debug(f"Applied pulsating border to element with selector {selector} to indicate text entry operation")
             else:
                 # Remove the 'pulsate' class from the element
-                await page.eval_on_selector(selector, "e => e.classList.remove('ui_automation_pulsate')")
+                await page.eval_on_selector(selector, "e => e.classList.remove('agente-ui-automation-highlight')")
                 logger.debug(f"Removed pulsating border from element with selector {selector} after text entry operation")
         except Exception:
             # This is not significant enough to fail the operation
