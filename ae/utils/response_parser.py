@@ -26,7 +26,7 @@ def parse_response(message: str) -> dict[str, Any]:
         #This should seldom be triggered
         logger.warn(f"LLM response was not properly formed JSON. Will try to use it as is. LLM response: \"{message}\". Error: {e}")
         message = message.replace("\\n", "\n")
-        message = message.replace("\n", "") # type: ignore
+        message = message.replace("\n", " ") # type: ignore
         if ("plan" in message and "next_step" in message):
             start = message.index("plan") + len("plan")
             end = message.index("next_step")
