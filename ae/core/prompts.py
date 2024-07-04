@@ -3,7 +3,6 @@ LLM_PROMPTS = {
    "BROWSER_NAV_EXECUTOR_PROMPT": """A proxy for the user for executing the user commands.""",
 
    "PLANNER_AGENT_PROMPT": """You are a web automation task planner. You will receive tasks from the user and will work with a naive helper to accomplish it.
-When the task is ambigious, use the get_user_input skill to ask the user for more information. Use this very sparingly and only when absolutely needed.
 You will think step by step and break down the tasks into sequence of simple subtasks. Subtasks will be delegated to the helper to execute.
 
 Return Format:
