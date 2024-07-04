@@ -1,5 +1,4 @@
 
-import json
 import os
 import traceback
 
@@ -9,6 +8,7 @@ from playwright.async_api import Page
 from ae.config import PROJECT_SOURCE_ROOT
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 class UIManager:
@@ -24,6 +24,10 @@ class UIManager:
     """
 
     overlay_is_collapsed: bool = True
+
+    overlay_processing_state: str = "init"  #init: initialised, processing: processing is ongoing, done: processing is done
+    overlay_show_details:bool = True
+
     conversation_history:list[dict[str, str]] = []
     __update_overlay_chat_history_running: bool = False
 
@@ -51,10 +55,12 @@ class UIManager:
 
             # Inject the JavaScript code into the page
             await frame.evaluate(js_code)
+            js_bool = str(self.overlay_show_details).lower()
             if self.overlay_is_collapsed:
-                await frame.evaluate("showCollapsedOverlay();")
+                await frame.evaluate(f"showCollapsedOverlay('{self.overlay_processing_state}', {js_bool});")
             else:
-                await frame.evaluate("showExpandedOverlay();")
+                await frame.evaluate(f"showExpandedOverlay('{self.overlay_processing_state}', {js_bool});")
+
             #update chat history in the overlay
             await self.update_overlay_chat_history(frame)
 
@@ -87,6 +93,32 @@ class UIManager:
         self.overlay_is_collapsed = is_collapsed
 
 
+
+    async def update_overlay_show_details(self, show_details: bool, page: Page):
+        """
+        Updates the state of the overlay to either show steps or not.
+
+        Args:
+            show_steps (bool): True to show steps, False to hide them.
+        """
+        self.overlay_show_details = show_details
+        await self.update_overlay_chat_history(page)
+
+
+    async def update_processing_state(self, state: str, page: Page):
+        """
+        Updates the processing state of the overlay.
+
+        Args:
+            state (str): The processing state to update.
+        """
+        self.overlay_processing_state = state
+        try:
+            js_bool = str(self.overlay_is_collapsed).lower()
+            await page.evaluate(f"updateOverlayState('{self.overlay_processing_state}', {js_bool});")
+        except Exception as e:
+            logger.debug(f"JavaScript error: {e}")
+
     async def update_overlay_chat_history(self, frame_or_page: Frame | Page):
         """
         Updates the chat history in the overlay. If the overlay is expanded and not currently being updated,
@@ -110,16 +142,32 @@ class UIManager:
             await frame_or_page.evaluate("clearOverlayMessages();")
             for message in self.conversation_history:
                 safe_message = escape_js_message(message["message"])
+                safe_message_type = escape_js_message(message.get("message_type", MessageType.STEP.value))
                 if message["from"] == "user":
                     await frame_or_page.evaluate(f"addUserMessage({safe_message});")
                 else:
-                    await frame_or_page.evaluate(f"addSystemMessage({safe_message});")
+                   #choose chich message types to be shown depending on UI setting
+                    if self.overlay_show_details == False:  # noqa: E712
+                        if message["message_type"] not in (MessageType.PLAN.value, MessageType.QUESTION.value, MessageType.ANSWER.value, MessageType.INFO.value):
+                            continue
+                    else:
+                        if message["message_type"] not in (MessageType.PLAN.value,  MessageType.QUESTION.value , MessageType.ANSWER.value,  MessageType.INFO, MessageType.STEP.value):
+                            continue
+
+                    js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
+                    await frame_or_page.evaluate(js_code)
             logger.debug("Chat history updated in overlay, removing update lock flag")
         except Exception:
             traceback.print_exc()
         finally:
             self.__update_overlay_chat_history_running = False
 
+    def clear_conversation_history(self):
+        """
+        Clears the conversation history.
+        """
+        self.conversation_history = []
+        self.add_default_system_messages()
 
     def get_conversation_history(self):
         """
@@ -130,6 +178,7 @@ class UIManager:
         """
         return self.conversation_history
 
+
     def new_user_message(self, message: str):
         """
         Adds a new user message to the conversation history.
@@ -137,25 +186,26 @@ class UIManager:
         Args:
             message (str): The message text to add.
         """
+
         self.conversation_history.append({"from":"user", "message":message})
 
 
-    def new_system_message(self, message: str):
+    def new_system_message(self, message: str, type:MessageType=MessageType.STEP):
         """
         Adds a new system message to the conversation history.
 
         Args:
             message (str): The message text to add.
         """
-        self.conversation_history.append({"from":"system", "message":message})
 
+        self.conversation_history.append({"from":"system", "message":message, "message_type":type.value})
+        print(f"Adding system message: {message}")
 
     def add_default_system_messages(self):
         """
         Adds default system messages to the conversation history to greet the user or provide initial instructions.
         """
-        self.new_system_message(json.dumps("Agent-E at your service, what can I do for you?"))
-
+        pass
 
     async def command_completed(self, page: Page, command: str, elapsed_time: float|None = None):
         """

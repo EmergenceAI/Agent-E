@@ -156,3 +156,6 @@ ae/log_files/*
 ae/temp/*
 test/logs/*
 test/results/*
+Pipfile.lock
+requirements.txt
+Pipfile

@@ -11,8 +11,10 @@ from playwright.async_api import Playwright
 from ae.core.ui_manager import UIManager
 from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
+from ae.utils.js_helper import beautify_plan_message
 from ae.utils.js_helper import escape_js_message
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 # Enusres that playwright does not wait for font loading when taking screenshots. Reference: https://github.com/microsoft/playwright/issues/28995
 os.environ["PW_TEST_SCREENSHOT_NO_FONTS_READY"] = "1"
@@ -247,12 +249,11 @@ class PlaywrightManager:
         page.on("domcontentloaded", handle_navigation_for_mutation_observer) # type: ignore
         await page.expose_function("dom_mutation_change_detected", dom_mutation_change_detected) # type: ignore
 
-
     async def set_overlay_state_handler(self):
         logger.debug("Setting overlay state handler")
         context = await self.get_browser_context()
         await context.expose_function('overlay_state_changed', self.overlay_state_handler) # type: ignore
-
+        await context.expose_function('show_steps_state_changed',self.show_steps_state_handler) # type: ignore
 
     async def overlay_state_handler(self, is_collapsed: bool):
         page = await self.get_current_page()
@@ -260,46 +261,78 @@ class PlaywrightManager:
         if not is_collapsed:
             await self.ui_manager.update_overlay_chat_history(page)
 
+    async def show_steps_state_handler(self, show_details: bool):
+        page = await self.get_current_page()
+        await self.ui_manager.update_overlay_show_details(show_details, page)
 
     async def set_user_response_handler(self):
         context = await self.get_browser_context()
         await context.expose_function('user_response', self.receive_user_response) # type: ignore
 
 
-    async def notify_user(self, message: str):
+    async def notify_user(self, message: str, message_type: MessageType = MessageType.STEP):
         """
         Notify the user with a message.
 
         Args:
             message (str): The message to notify the user with.
+            message_type (enum, optional): Values can be 'PLAN', 'QUESTION', 'ANSWER', 'INFO', 'STEP'. Defaults to 'STEP'.
+            To Do: Convert to Enum.
         """
-        logger.debug(f"Notification: \"{message}\" being sent to the user.")
-        safe_message = escape_js_message(message)
-        self.ui_manager.new_system_message(safe_message)
-        try:
-            js_code = f"addSystemMessage({safe_message}, false);"
 
+        if message.startswith(":"):
+            message = message[1:]
+
+        if message.endswith(","):
+            message = message[:-1]
+
+        if message_type == MessageType.PLAN:
+            message = beautify_plan_message(message)
+            message = "Plan:\n" + message
+        elif message_type == MessageType.STEP:
+            if "confirm" in message.lower():
+                message = "Verify: " + message
+            else:
+                message = "Next step: " + message
+        elif message_type == MessageType.QUESTION:
+            message = "Question: " + message
+        elif message_type == MessageType.ANSWER:
+            message = "Response: " + message
+
+        safe_message = escape_js_message(message)
+        self.ui_manager.new_system_message(safe_message, message_type)
+
+        if self.ui_manager.overlay_show_details == False:  # noqa: E712
+            if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
+                return
+
+        if self.ui_manager.overlay_show_details == True:  # noqa: E712
+            if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
+                return
+
+        safe_message_type = escape_js_message(message_type.value)
+        try:
+            js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=false, message_type={safe_message_type});"
             page = await self.get_current_page()
             await page.evaluate(js_code)
-            logger.debug("User notification completed")
         except Exception as e:
-            logger.debug(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
+            logger.error(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
 
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:
             page: Page = await self.get_current_page()
             if add_highlight:
-                # Add the 'pulsate' class to the element
+                # Add the 'agente-ui-automation-highlight' class to the element. This class is used to apply the fading border.
                 await page.eval_on_selector(selector, '''e => {
                             let originalBorderStyle = e.style.border;
-                            e.classList.add('ui_automation_pulsate');
+                            e.classList.add('agente-ui-automation-highlight');
                             e.addEventListener('animationend', () => {
-                                e.classList.remove('ui_automation_pulsate')
+                                e.classList.remove('agente-ui-automation-highlight')
                             });}''')
                 logger.debug(f"Applied pulsating border to element with selector {selector} to indicate text entry operation")
             else:
-                # Remove the 'pulsate' class from the element
-                await page.eval_on_selector(selector, "e => e.classList.remove('ui_automation_pulsate')")
+                # Remove the 'agente-ui-automation-highlight' class from the element.
+                await page.eval_on_selector(selector, "e => e.classList.remove('agente-ui-automation-highlight')")
                 logger.debug(f"Removed pulsating border from element with selector {selector} after text entry operation")
         except Exception:
             # This is not significant enough to fail the operation
@@ -328,11 +361,11 @@ class PlaywrightManager:
         page = await self.get_current_page()
 
         await self.ui_manager.show_overlay(page)
-        self.log_system_message(message) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
+        self.log_system_message(message, MessageType.QUESTION) # add the message to history after the overlay is opened to avoid double adding it. add_system_message below will add it
 
         safe_message = escape_js_message(message)
-        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true);"
-        print(">>> nofiy user about to exec JS code:", js_code)
+
+        js_code = f"addSystemMessage({safe_message}, is_awaiting_user_response=true, message_type='question');"
         await page.evaluate(js_code)
 
         await self.user_response_event.wait()
@@ -371,7 +404,7 @@ class PlaywrightManager:
         try:
             await page.wait_for_load_state(state=load_state, timeout=take_snapshot_timeout) # type: ignore
             await page.screenshot(path=screenshot_path, full_page=full_page, timeout=take_snapshot_timeout, caret="initial", scale="device")
-            print(f"Screen shot saved to: {screenshot_path}")
+            logger.debug(f"Screen shot saved to: {screenshot_path}")
         except Exception as e:
             logger.error(f"Failed to take screenshot and save to \"{screenshot_path}\". Error: {e}")
 
@@ -386,15 +419,25 @@ class PlaywrightManager:
         self.ui_manager.new_user_message(message)
 
 
-    def log_system_message(self, message: str):
+    def log_system_message(self, message: str, type: MessageType = MessageType.STEP):
         """
         Log a system message.
 
         Args:
             message (str): The system message to log.
         """
-        self.ui_manager.new_system_message(message)
+        self.ui_manager.new_system_message(message, type)
 
+    async def update_processing_state(self, processing_state: str):
+        """
+        Update the processing state of the overlay.
+
+        Args:
+            is_processing (str): "init", "processing", "done"
+        """
+        page = await self.get_current_page()
+
+        await self.ui_manager.update_processing_state(processing_state, page)
 
     async def command_completed(self, command: str, elapsed_time: float | None = None):
         """

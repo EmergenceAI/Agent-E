@@ -7,6 +7,7 @@ from ae.core.skills.click_using_selector import do_click
 from ae.core.skills.enter_text_using_selector import do_entertext
 from ae.core.skills.press_key_combination import do_press_key_combination
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def enter_text_and_click(
@@ -46,12 +47,12 @@ async def enter_text_and_click(
 
     await browser_manager.highlight_element(text_selector, True)
 
-    function_name = inspect.currentframe().f_code.co_name
+    function_name = inspect.currentframe().f_code.co_name # type: ignore
     await browser_manager.take_screenshots(f"{function_name}_start", page)
 
     text_entry_result = await do_entertext(page, text_selector, text_to_enter, use_keyboard_fill=True)
 
-    await browser_manager.notify_user(text_entry_result["summary_message"])
+    #await browser_manager.notify_user(text_entry_result["summary_message"])
     if not text_entry_result["summary_message"].startswith("Success"):
         await browser_manager.take_screenshots(f"{function_name}_end", page)
         return(f"Failed to enter text '{text_to_enter}' into element with selector '{text_selector}'. Check that the selctor is valid.")
@@ -63,16 +64,16 @@ async def enter_text_and_click(
         do_press_key_combination_result = await do_press_key_combination(browser_manager, page, "Enter")
         if do_press_key_combination_result:
             result["detailed_message"] += f" Instead of click, pressed the Enter key successfully on element: \"{click_selector}\"."
-            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".")
+            await browser_manager.notify_user(f"Pressed the Enter key successfully on element: \"{click_selector}\".", message_type=MessageType.ACTION)
         else:
             result["detailed_message"] += f" Clicking the same element after entering text in it, is of no value. Tried pressing the Enter key on element \"{click_selector}\" instead of click and failed."
-            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".")
+            await browser_manager.notify_user("Failed to press the Enter key on element \"{click_selector}\".", message_type=MessageType.ACTION)
     else:
         await browser_manager.highlight_element(click_selector, True)
 
         do_click_result = await do_click(page, click_selector, wait_before_click_execution)
         result["detailed_message"] += f' {do_click_result["detailed_message"]}'
-        await browser_manager.notify_user(do_click_result["summary_message"])
+        #await browser_manager.notify_user(do_click_result["summary_message"])
 
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
 

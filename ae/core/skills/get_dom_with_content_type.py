@@ -10,6 +10,7 @@ from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import wait_for_non_loading_dom_state
 from ae.utils.get_detailed_accessibility_tree import do_get_accessibility_info
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
 async def get_dom_with_content_type(
@@ -73,7 +74,7 @@ async def get_dom_with_content_type(
 
     elapsed_time = time.time() - start_time
     logger.info(f"Get DOM Command executed in {elapsed_time} seconds")
-    await browser_manager.notify_user(user_success_message)
+    await browser_manager.notify_user(user_success_message, message_type=MessageType.ACTION)
     return extracted_data # type: ignore
 
 
@@ -81,7 +82,7 @@ async def get_filtered_text_content(page: Page) -> str:
     text_content = await page.evaluate("""
         () => {
             // Array of query selectors to filter out
-            const selectorsToFilter = ['#agentDriveAutoOverlay'];
+            const selectorsToFilter = ['#agente-overlay'];
 
             // Store the original visibility values to revert later
             const originalStyles = [];
@@ -101,6 +102,7 @@ async def get_filtered_text_content(page: Page) -> str:
             // Get all the alt text from images on the page
             let altTexts = Array.from(document.querySelectorAll('img')).map(img => img.alt);
             altTexts="Other Alt Texts in the page: " + altTexts.join(' ');
+
             // Revert the visibility changes
             originalStyles.forEach(entry => {
                 entry.element.style.visibility = entry.originalStyle;
@@ -110,3 +112,4 @@ async def get_filtered_text_content(page: Page) -> str:
         }
     """)
     return text_content
+

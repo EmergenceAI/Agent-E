@@ -15,6 +15,7 @@ async def get_user_input(questions: Annotated[List[str], "List of questions to a
     Returns:
     - Newline separated list of questions to ask the user
     """
+
     answers: dict[str, str] = {}
     browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
     if browser_manager.ui_manager:

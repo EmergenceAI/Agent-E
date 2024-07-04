@@ -8,12 +8,13 @@ from playwright.async_api import Page
 
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import get_element_outer_html
-from ae.utils.dom_mutation_observer import subscribe
-from ae.utils.dom_mutation_observer import unsubscribe
+from ae.utils.dom_mutation_observer import subscribe  # type: ignore
+from ae.utils.dom_mutation_observer import unsubscribe  # type: ignore
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
 
 
-async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action. When \"mmid\" attribute is present, use it for the query selector."],
+async def click(selector: Annotated[str, "The properly formed query selector string to identify the element for the click action (e.g. [mmid='114']). When \"mmid\" attribute is present, use it for the query selector."],
                 wait_before_execution: Annotated[float, "Optional wait time in seconds before executing the click event logic.", float] = 0.0) -> Annotated[str, "A message indicating success or failure of the click."]:
     """
     Executes a click action on the element matching the given query selector string within the currently open web page.
@@ -35,7 +36,7 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     if page is None: # type: ignore
         raise ValueError('No active page found. OpenURL command opens a new page.')
 
-    function_name = inspect.currentframe().f_code.co_name
+    function_name = inspect.currentframe().f_code.co_name # type: ignore
 
     await browser_manager.take_screenshots(f"{function_name}_start", page)
 
@@ -51,15 +52,10 @@ async def click(selector: Annotated[str, "The properly formed query selector str
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes
     unsubscribe(detect_dom_changes)
     await browser_manager.take_screenshots(f"{function_name}_end", page)
-    await browser_manager.notify_user(result["summary_message"])
+    await browser_manager.notify_user(result["summary_message"], message_type=MessageType.ACTION)
 
     if dom_changes_detected:
-        return f"{result['detailed_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. Get all_fields to interact with the elements."
-    return result["detailed_message"]
-
-
-    result = await do_click(page, selector, wait_before_execution)
-    await browser_manager.notify_user(result["summary_message"])
+        return f"Success: {result['summary_message']}.\n As a consequence of this action, new elements have appeared in view: {dom_changes_detected}. This means that the action to click {selector} is not yet executed and needs further interaction. Get all_fields DOM to complete the interaction."
     return result["detailed_message"]
 
 
@@ -109,7 +105,7 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
 
         element_tag_name = await element.evaluate("element => element.tagName.toLowerCase()")
         element_outer_html = await get_element_outer_html(element, page, element_tag_name)
-        
+
 
         if element_tag_name == "option":
             element_value = await element.get_attribute("value") # get the text that is in the value of the option
@@ -118,16 +114,15 @@ async def do_click(page: Page, selector: str, wait_before_execution: float) -> d
             await parent_element.select_option(value=element_value) # type: ignore
 
             logger.info(f'Select menu option "{element_value}" selected')
-            
-            return {"summary_message": f'Select menu option "{element_value}" selected', 
+
+            return {"summary_message": f'Select menu option "{element_value}" selected',
                     "detailed_message": f'Select menu option "{element_value}" selected. The select element\'s outer HTML is: {element_outer_html}.'}
-        
-        await element.focus()
+
+
         #Playwright click seems to fail more often than not, disabling it for now and just going with JS click
         #await perform_playwright_click(element, selector)
-        await perform_javascript_click(page, selector)
-        msg = f"Element with selector: \"{selector}\" clicked."
-        return {"summary_message": msg, "detailed_message": f"{msg} The clicked element's outer HTML is: {element_outer_html}."}
+        msg = await perform_javascript_click(page, selector)
+        return {"summary_message": msg, "detailed_message": f"{msg} The clicked element's outer HTML is: {element_outer_html}."} # type: ignore
     except Exception as e:
         logger.error(f"Unable to click element with selector: \"{selector}\". Error: {e}")
         traceback.print_exc()
@@ -202,7 +197,12 @@ async def perform_javascript_click(page: Page, selector: str):
             if (element.tagName.toLowerCase() === "a") {
                 element.target = "_self";
             }
+            let ariaExpandedBeforeClick = element.getAttribute('aria-expanded');
             element.click();
+            let ariaExpandedAfterClick = element.getAttribute('aria-expanded');
+            if (ariaExpandedBeforeClick === 'false' && ariaExpandedAfterClick === 'true') {
+                return "Executed JavaScript Click on element with selector: "+selector +". Very important: As a consequence a menu has appeared where you may need to make further selction. Very important: Get all_fields DOM to complete the action.";
+            }
             return "Executed JavaScript Click on element with selector: "+selector;
         }
     }"""

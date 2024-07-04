@@ -99,6 +99,9 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
         if node['role'] == 'menuitem':
             return node.get('name')
 
+        if node.get('role') == 'dialog' and node.get('modal') == True:  # noqa: E712
+            node["important information"] = "This is a modal dialog. Please interact with this dialog and close it to be able to interact with the full page (e.g. by pressing the close button or selecting an option)."
+
         if mmid:
             # Determine if we need to fetch 'innerText' based on the absence of 'children' in the accessibility node
             should_fetch_inner_text = 'children' not in node
@@ -122,7 +125,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     console.log(`Ignoring element with id: ${element.id}`, element);
                     return null;
                 }
-
                 //Ignore "option" because it would have been processed with the select element
                 if (tags_to_ignore.includes(element.tagName.toLowerCase()) || element.tagName.toLowerCase() === "option") return null;
 
@@ -133,7 +135,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                 // If the element is an input, include its type as well
                 if (element.tagName.toLowerCase() === 'input') {
                     attributes_to_values['tag_type'] = element.type; // This will capture 'checkbox', 'radio', etc.
-                } 
+                }
                 else if (element.tagName.toLowerCase() === 'select') {
                     attributes_to_values["mmid"] = element.getAttribute('mmid');
                     attributes_to_values["role"] = "combobox";
@@ -150,7 +152,6 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     }
                     return attributes_to_values;
                 }
-                
 
                 for (const attribute of attributes) {
                     let value = element.getAttribute(attribute);
@@ -169,6 +170,26 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     attributes_to_values['description'] = element.innerText;
                 }
 
+                let role = element.getAttribute('role');
+                if(role==='listbox' || element.tagName.toLowerCase()=== 'ul'){
+                    let children=element.children;
+                    let filtered_children = Array.from(children).filter(child => child.getAttribute('role') === 'option');
+                    console.log("Listbox or ul found: ", filtered_children);
+                    let attributes_to_include = ['mmid', 'role', 'aria-label','value'];
+                    attributes_to_values["additional_info"]=[]
+                    for (const child of children) {
+                        let children_attributes_to_values = {};
+
+                        for (let attr of child.attributes) {
+                            // If the attribute is not in the predefined list, add it to children_attributes_to_values
+                            if (attributes_to_include.includes(attr.name)) {
+                                children_attributes_to_values[attr.name] = attr.value;
+                            }
+                        }
+
+                        attributes_to_values["additional_info"].push(children_attributes_to_values);
+                    }
+                }
                 // Check if attributes_to_values contains more than just 'name', 'role', and 'mmid'
                 const keys = Object.keys(attributes_to_values);
                 const minimalKeys = ['tag', 'mmid'];
@@ -194,10 +215,10 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
                                 // Check if the button has no text and no attributes
                                 if (element.innerText.trim() === '') {
-                                    
+
                                     for (const child of children) {
                                         let children_attributes_to_values = {};
-                                        
+
                                         for (let attr of child.attributes) {
                                             // If the attribute is not in the predefined list, add it to children_attributes_to_values
                                             if (!attributes_to_exclude.includes(attr.name)) {
@@ -228,7 +249,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
             if 'keyshortcuts' in node:
                     del node['keyshortcuts'] #remove keyshortcuts since it is not needed
-            
+
             node["mmid"]=mmid
 
             # Update the node with fetched information
@@ -241,7 +262,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
                 if 'name' in node and 'description' in node and (node['name'] == node['description'] or node['name'] == node['description'].replace('\n', ' ') or node['description'].replace('\n', '') in node['name']):
                     del node['description'] #if the name is same as description, then remove the description to avoid duplication
-                
+
                 if 'name' in node and 'aria-label' in node and  node['aria-label'] in node['name']:
                     del node['aria-label'] #if the name is same as the aria-label, then remove the aria-label to avoid duplication
 
@@ -252,7 +273,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                     node.pop("children", None)
                     node.pop("role", None)
                     node.pop("description", None)
-                
+
                 #role and tag can have the same info. Get rid of role if it is the same as tag
                 if node.get('role') == node.get('tag'):
                     del node['role']
@@ -289,7 +310,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
                         }
                         """
                     #textbox just means a text input and that is expressed well enough with the rest of the attributes returned
-                    del node['role']
+                    #del node['role']
 
             #remove attributes that are not needed once processing of a node is complete
             for attribute_to_delete in attributes_to_delete:
@@ -411,11 +432,21 @@ def __should_prune_node(node: dict[str, Any], only_input_fields: bool):
 
     if node.get('role') == 'generic' and 'children' not in node and not ('name' in node and node.get('name')):  # The presence of 'children' is checked after potentially deleting it above
         return True
-    
+
     if node.get('role') in ['separator', 'LineBreak']:
         return True
+    processed_name = ""
+    if 'name' in node:
+        processed_name:str =node.get('name') # type: ignore
+        processed_name = processed_name.replace(',', '')
+        processed_name = processed_name.replace(':', '')
+        processed_name = processed_name.replace('\n', '')
+        processed_name = processed_name.strip()
+        if len(processed_name) <3:
+            processed_name = ""
+
     #check if the node only have name and role, then delete that node
-    if len(node) == 2 and 'name' in node and 'role' in node:
+    if len(node) == 2 and 'name' in node and 'role' in node and not (node.get('role') == "text" and processed_name != ""):
         return True
     return False
 

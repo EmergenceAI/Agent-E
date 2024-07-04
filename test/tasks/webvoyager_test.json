@@ -6810,9 +6810,9 @@
         "storage_state": null,
         "start_url": "https://www.booking.com/",
         "geolocation": null,
-        "intent_template": "Look up Vienna hotel options with availability for a 4-night stay from September 28 to October 4, 2024, with amenities that include a Parking, breakfast included, and a rating of 8+ on Booking.com.",
+        "intent_template": "Look up Vienna hotel options with availability for a 4-night stay from September 28 to October 2, 2024, with amenities that include a Parking, breakfast included, and a rating of 8+ on Booking.com.",
         "instantiation_dict": {},
-        "intent": "Look up Vienna hotel options with availability for a 4-night stay from September 28 to October 4, 2024, with amenities that include a Parking, breakfast included, and a rating of 8+ on Booking.com.",
+        "intent": "Look up Vienna hotel options with availability for a 4-night stay from September 28 to October 2, 2024, with amenities that include a Parking, breakfast included, and a rating of 8+ on Booking.com.",
         "require_reset": false,
         "eval": {
             "eval_types": [

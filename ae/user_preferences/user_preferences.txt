@@ -9,3 +9,4 @@ Phone Number: 123-456-7890
 Here are some of my preferences:
 Shopping Preferences: www.amazon.com
 Favorite news source: www.bbc.com
+Favorite flight booking site to use with every flight related query: https://www.google.com/travel/flights
