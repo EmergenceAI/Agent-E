@@ -20,6 +20,8 @@ from termcolor import colored
 
 import os
 from .validation_agent.validator import validate_task_vqa
+from ae.config import PROJECT_ROOT, PROJECT_TEST_ROOT
+TEST_LOGS = os.path.join(PROJECT_TEST_ROOT, 'logs')
 
 class Evaluator:
     """Base class for evaluation strategies.
@@ -423,8 +425,8 @@ class VQAEvaluator(Evaluator):
         score = -1.0
 
         # Get path to screenshots for the given task
-        test_folder = list_items_in_folder(f"{os. getcwd()}/test/logs/")[-1] # Get the most recent log folder, this may take look for the wrong folder TODO: fix to take correct folder
-        path_to_screenshots = f"{os. getcwd()}/test/logs/{test_folder}/logs_for_task_{task_id}/snapshots"
+        test_folder = list_items_in_folder(TEST_LOGS)[-1] # Get the most recent log folder
+        path_to_screenshots = f"{TEST_LOGS}/{test_folder}/logs_for_task_{task_id}/snapshots"
         screenshot_names = list_items_in_folder(path_to_screenshots) # type: ignore        
         
         # Load and compress screenshots
