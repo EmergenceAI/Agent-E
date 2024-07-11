@@ -1,9 +1,10 @@
 
-import inspect
-from typing import Any, Dict, List, Optional, Tuple, Union
-from autogen import Agent
-from autogen import UserProxyAgent
 import asyncio
+import inspect
+from typing import Any
+
+from autogen import Agent  # type: ignore
+from autogen import UserProxyAgent  # type: ignore
 
 
 class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
@@ -13,11 +14,11 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
 
 
     def sequential_generate_tool_calls_reply( # type: ignore
-        self, 
-        messages: Optional[List[Dict]] = None, # type: ignore
-        sender: Optional[Agent] = None,
-        config: Optional[Any] = None,
-    ) -> Tuple[bool, Union[Dict, None]]:
+        self,
+        messages: list[dict] | None = None, # type: ignore
+        sender: Agent | None = None,
+        config: Any | None = None,
+    ) -> tuple[bool, dict[str, Any] | None]:
         """Generate a reply using tool call."""
         if config is None:
             config = self
@@ -50,7 +51,7 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
                 if skip_flag:
                     content = "VERY IMPORTANT: This function could not be executed since previous function resulted in a Webpage change. You must get all_fields DOM and repeat the function if needed."
                 else:
-                    content = "" 
+                    content = ""
             else:
                 content = func_return.get("content", "") # type: ignore
 
@@ -59,7 +60,7 @@ class UserProxyAgent_SequentialFunctionExecution(UserProxyAgent):
 
             if ("as a consequence of this action" in content.lower()): # type: ignore
                 skip_flag = True
-                
+
             tool_call_id = tool_call.get("id", None) # type: ignore
             if tool_call_id is not None:
                 tool_call_response = { # type: ignore

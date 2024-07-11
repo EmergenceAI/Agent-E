@@ -1,13 +1,11 @@
-import asyncio
-from typing import Any
-import google.generativeai as genai # type: ignore
-from dotenv import load_dotenv
 import os
 import re
-import json
-from ae.utils.logger import logger
-from ae.core.prompts import LLM_PROMPTS
+from typing import Any
 
+import google.generativeai as genai  # type: ignore
+from dotenv import load_dotenv
+
+from ae.utils.logger import logger
 
 GCP_BLOCK_NONE_SAFETY_SETTINGS: list[dict[str, str]] = [
     {
@@ -35,8 +33,7 @@ llm_end_response_pattern = re.compile(r"```$")
 class GeminiLLMHelper:
     def __init__(self):
         load_dotenv()
-        genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-        
+        genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) # type: ignore
 
     def process_llm_response(self, response: str):
         if response:
@@ -44,16 +41,14 @@ class GeminiLLMHelper:
             response = llm_json_or_python_begin_response_pattern.sub("", response)
             response = llm_end_response_pattern.sub("", response)
         return response
-    
 
-    async def get_chat_completion_response_async(self, system_msg:str, user_msgs:list[str], model_name:str="gemini-1.5-pro-latest", temperature:float=0.1, 
+    async def get_chat_completion_response_async(self, system_msg:str, user_msgs:list[str], model_name:str="gemini-1.5-pro-latest", temperature:float=0.1,
                                                  max_tokens:int=256, top_p:int=1, top_k: int=1, safety_settings:list[dict[str, str]]=GCP_BLOCK_NONE_SAFETY_SETTINGS) -> str|None:
         formatted_msgs: list[dict[str, Any]] = [{"role": "user", "parts": [system_msg]}]
         user_msgs_parts: list[str] = []
         for user_msg in user_msgs:
             user_msgs_parts.append(user_msg)
-        
-        
+
         formatted_msgs.append({"role": "user", "parts": user_msgs_parts})
         response = None
         try:
@@ -74,6 +69,7 @@ class GeminiLLMHelper:
             return None
 
 # async def main():
+#     from ae.core.prompts import LLM_PROMPTS
 #     helper = GeminiLLMHelper()
 #     response = await helper.get_chat_completion_response_async(LLM_PROMPTS["SKILLS_HARVESTING_PROMPT"], ["What is the weather like today?", "And How are you?"], temperature=0, max_tokens=4000)
 #     print("*******\nResponse: ", response, "\n*******\n")

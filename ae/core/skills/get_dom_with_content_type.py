@@ -2,12 +2,16 @@ import os
 import time
 from typing import Annotated
 from typing import Any
+
 from playwright.async_api import Page
+
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.dom_helper import wait_for_non_loading_dom_state
 from ae.utils.get_detailed_accessibility_tree import do_get_accessibility_info
 from ae.utils.logger import logger
+from ae.utils.ui_messagetype import MessageType
+
 
 async def get_dom_with_content_type(
     content_type: Annotated[str, "The type of content to extract: 'text_only': Extracts the innerText of the highest element in the document and responds with text, or 'input_fields': Extracts the text input and button elements in the dom."]
@@ -70,7 +74,7 @@ async def get_dom_with_content_type(
 
     elapsed_time = time.time() - start_time
     logger.info(f"Get DOM Command executed in {elapsed_time} seconds")
-    #await browser_manager.notify_user(user_success_message)
+    await browser_manager.notify_user(user_success_message, message_type=MessageType.ACTION)
     return extracted_data # type: ignore
 
 
@@ -78,7 +82,7 @@ async def get_filtered_text_content(page: Page) -> str:
     text_content = await page.evaluate("""
         () => {
             // Array of query selectors to filter out
-            const selectorsToFilter = ['#agentDriveAutoOverlay'];
+            const selectorsToFilter = ['#agente-overlay'];
 
             // Store the original visibility values to revert later
             const originalStyles = [];

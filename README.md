@@ -11,7 +11,7 @@ This provides a natural language way to interacting with a web browser:
 - Manage and automate tasks on project management platforms (like JIRA) by filtering issues, easing the workflow for users.
 - Provide personal shopping assistance, suggesting products based on the user's needs, such as storage options for game cards.
 
-While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it. For more information see our [blog article](https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html).
+While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it. For more information see our [blog article](https://www.emergence.ai/blog/distilling-the-web-for-multi-agent-automation).
 
 
 ## Quick Start
@@ -30,7 +30,8 @@ While Agent-E is growing, it is already equipped to handle a versatile range of 
 - .env file in project root is needed with the following (sample `.env-example` is included for convience):
     - Follow the directions in the sample file
     - You will need to set `AUTOGEN_MODEL_NAME` (for example `gpt-4-turbo-preview`) and `AUTOGEN_MODEL_API_KEY`
-    - If you are using a model other than OpenAI, you need to set `AUTOGEN_MODEL_BASE_URL` for example `https://api.groq.com/openai/v1`
+    - If you are using a model other than OpenAI, you need to set `AUTOGEN_MODEL_BASE_URL` for example `https://api.groq.com/openai/v1` or `https://<REPLACE_AI_SERVICES>.openai.azure.com` on [Azure](https://azure.microsoft.com/).
+    - For [Azure](https://azure.microsoft.com/), you'll also need to configure `AUTOGEN_MODEL_API_TYPE=azure` and `AUTOGEN_MODEL_API_VERSION` (for example `2023-03-15-preview`) variables.
     - If you want to use local chrome browser over playwright browser, go to chrome://version/ in chrome, find the path to your profile and set `BROWSER_STORAGE_DIR` to the path value
 
 ### pip issues
@@ -155,6 +156,39 @@ html_theme = 'sphinx_rtd_theme'
 7. Build the documentation, from `docs` directory, run: `sphinx-build -b html . _build`
 
 
+## Open-source models
+
+Using open-source models is possible through LiteLLM with Ollama. Ollama allows users to run language models locally on their machines, and LiteLLM translates OpenAI-format inputs to local models' endpoints. To use open-source models as Agent-E backbone, follow the steps below:
+
+1. Install LiteLLM
+    ```bash
+    pip install 'litellm[proxy]'
+    ```
+2. Install Ollama
+    * For Mac and Windows, download [Ollama](https://ollama.com/download).
+    * For Linux:
+        ```bash
+        curl -fsSL https://ollama.com/install.sh | sh
+        ```
+3. Pull Ollama models
+    Before you can use a model, you need to download it from the library. The list of available models is [here](https://ollama.com/library). Here, we use Mistral v0.3:
+    ```bash
+    ollama pull mistral:v0.3
+    ```
+4. Run LiteLLM
+    To run the downloaded model with LiteLLM as a proxy, run:
+    ```bash
+    litellm --model ollama_chat/mistral:v0.3
+    ```
+5. Configure model in Autogen
+    Configure the `.env` file as follows. Note that the model name and API keys are not needed since the local model is already running.
+    ```bash
+    AUTOGEN_MODEL_NAME=NotRequired
+    AUTOGEN_MODEL_API_KEY=NotRequired
+    AUTOGEN_MODEL_BASE_URL=http://0.0.0.0:400
+    ```
+
+
 ## TODO
 
 - Action verification - Responding from every skill with changes that took place in the DOM (Mutation Observers) so that the LLM can judge whether the skill did execute properly or not
@@ -173,7 +207,7 @@ html_theme = 'sphinx_rtd_theme'
 
 ## Social:
 
-[Discord](https://discord.gg/czHhPDMk)
+[Discord](https://discord.gg/wgNfmFuqJF)
 
 ## Contributing
 

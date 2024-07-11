@@ -1,13 +1,15 @@
-from string import Template
-from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
-import autogen  # type: ignore
-from ae.core.memory.static_ltm import get_user_ltm
-from ae.core.skills.get_user_input import get_user_input
-from ae.core.prompts import LLM_PROMPTS
 from datetime import datetime
-from autogen import Agent  # type: ignore
-from autogen import ConversableAgent # type: ignore
-from autogen import OpenAIWrapper  # type: ignore
+from string import Template
+
+import autogen  # type: ignore
+from autogen import ConversableAgent  # type: ignore
+
+from ae.core.memory.static_ltm import get_user_ltm
+from ae.core.post_process_responses import final_reply_callback_planner_agent as print_message_as_planner  # type: ignore
+from ae.core.prompts import LLM_PROMPTS
+from ae.core.skills.get_user_input import get_user_input
+
+
 class PlannerAgent:
     def __init__(self, config_list, user_proxy_agent:ConversableAgent): # type: ignore
         """
@@ -21,7 +23,7 @@ class PlannerAgent:
 
         user_ltm = self.__get_ltm()
         system_message = LLM_PROMPTS["PLANNER_AGENT_PROMPT"]
-        print(f">>> Planner system_message: {system_message}")
+
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
@@ -32,7 +34,9 @@ class PlannerAgent:
             llm_config={
                 "config_list": config_list,
                 "cache_seed": None,
-                "temperature": 0.0
+                "temperature": 0.0,
+                "top_p": 0.001,
+                "seed":12345
             },
         )
 
