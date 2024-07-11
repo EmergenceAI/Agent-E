@@ -9,6 +9,7 @@ from PIL import Image
 from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize  # type: ignore
 from openai import OpenAI
+from pyparsing import str_type
 
 load_dotenv()
 client = OpenAI()
@@ -263,7 +264,15 @@ def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
     timestamp_str = current_time.strftime(format)
     return timestamp_str
 
-def list_items_in_folder(path):
+def list_items_in_folder(path:str_type)-> list[str] | None:
+    '''Returns all items inside a given file directory
+    
+    Parameters:
+        path (str): Path to a directory.
+    
+    Return:
+        list[str]: Name of all items found in the given directory.
+    '''
     try:
         items = os.listdir(path)
         items_with_mtime = [(item, os.path.getmtime(os.path.join(path, item))) for item in items]
@@ -271,13 +280,26 @@ def list_items_in_folder(path):
         sorted_items = [item for item, mtime in items_with_mtime]
         return sorted_items
     except FileNotFoundError:
-        return f"The path {path} does not exist."
+        print(f"The path {path} does not exist.")
+        return None
     except NotADirectoryError:
-        return f"The path {path} is not a directory."
+        print(f"The path {path} is not a directory.")
+        return None
     except PermissionError:
-        return f"Permission denied to access {path}."
+        print(f"Permission denied to access {path}.")
+        return None
 
 def compress_png(file_path, max_size_mb=20, reduce_factor=0.9):
+    ''' Compresses a png file
+    Parameters:
+        file_path (str): Path to a png file
+        max_size_mb (int): The maximum size allowed after compression
+        reduce_factor (int): Amount the png is reduced each iteration
+    
+    Return:
+        bool: True if the png was compressed successfully. False otherwise.
+    
+    '''
     try:
         file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
         while file_size_mb > max_size_mb:
