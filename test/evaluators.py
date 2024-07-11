@@ -436,9 +436,10 @@ class VQAEvaluator(Evaluator):
         #Calculate VQA Score
         score_dict = validate_task_vqa(state_seq, task) # type: ignore
         score = score_dict["pred_task_completed"]
+        reason = score_dict["pred_rationale"]
 
-        print(f"VQA score is {score}")
-        return {"score": score} 
+        print(f"VQA score is {score} becauase {reason}\n ")
+        return {"score": score, "reason": reason} 
     
 def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
     """Creates and configures a composite evaluator based on the evaluation types specified in the configuration file.
