@@ -1,26 +1,28 @@
 from datetime import datetime
 from string import Template
+import os
 
 import autogen  # type: ignore
+import agentops
 
 from ae.core.memory.static_ltm import get_user_ltm
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
-
-# from ae.core.skills.enter_text_and_click import enter_text_and_click
 from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
 from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
 from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
-
-#from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
 
+# Initialize AgentOps
+agentops.init(os.getenv("AGENTOPS_API_KEY"))
 
+@agentops.track_agent(name='BrowserNavAgent')
 class BrowserNavAgent:
-    def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
+    @agentops.record_function('init_browser_nav_agent')
+    def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent):
         """
         Initialize the BrowserNavAgent and store the AssistantAgent instance
         as an instance attribute for external access.
@@ -33,7 +35,7 @@ class BrowserNavAgent:
         user_ltm = self.__get_ltm()
         system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
         system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
-        if user_ltm: #add the user LTM to the system prompt if it exists
+        if user_ltm:
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
 
@@ -50,75 +52,51 @@ class BrowserNavAgent:
         )
         self.__register_skills()
 
-
+    @agentops.record_function('get_ltm')
     def __get_ltm(self):
         """
-        Get the the long term memory of the user.
+        Get the long term memory of the user.
         returns: str | None - The user LTM or None if not found.
         """
         return get_user_ltm()
 
-
+    @agentops.record_function('register_skills')
     def __register_skills(self):
         """
         Register all the skills that the agent can perform.
         """
+        skills = [
+            (openurl, LLM_PROMPTS["OPEN_URL_PROMPT"]),
+            (get_dom_with_content_type, LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"]),
+            (click_element, LLM_PROMPTS["CLICK_PROMPT"]),
+            (geturl, LLM_PROMPTS["GET_URL_PROMPT"]),
+            (bulk_enter_text, LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"]),
+            (entertext, LLM_PROMPTS["ENTER_TEXT_PROMPT"]),
+            (press_key_combination, LLM_PROMPTS["PRESS_KEY_COMBINATION_PROMPT"]),
+            (extract_text_from_pdf, LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"]),
+        ]
 
-        # Register openurl skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl)
-        # Register openurl skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(openurl)
+        for skill, prompt in skills:
+            self.__register_skill(skill, prompt)
 
-        # Register enter_text_and_click skill for LLM by assistant agent
-        # self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
-        # Register enter_text_and_click skill for execution by user_proxy_agent
-        # self.browser_nav_executor.register_for_execution()(enter_text_and_click)
+    @agentops.record_function('register_skill')
+    def __register_skill(self, skill, prompt):
+        """
+        Register a single skill for both the agent and the executor.
+        """
+        self.agent.register_for_llm(description=prompt)(skill)
+        self.browser_nav_executor.register_for_execution()(skill)
 
-        # Register get_dom_with_content_type skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
-        # Register get_dom_with_content_type skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(get_dom_with_content_type)
-
-        # Register click_element skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["CLICK_PROMPT"])(click_element)
-        # Register click_element skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(click_element)
-
-        # Register geturl skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_URL_PROMPT"])(geturl)
-        # Register geturl skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(geturl)
-
-        # Register bulk_enter_text skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"])(bulk_enter_text)
-        # Register bulk_enter_text skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(bulk_enter_text)
-
-        # Register entertext skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)
-        # Register entertext skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(entertext)
-
-        # Register entertext skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["PRESS_KEY_COMBINATION_PROMPT"])(press_key_combination)
-        # Register entertext skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(press_key_combination)
-
-        self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
-        self.browser_nav_executor.register_for_execution()(extract_text_from_pdf)
-
-        '''
-        # Register reply function for printing messages
-        self.browser_nav_executor.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_user_proxy,
-            config={"callback": None},
-        )
-        self.agent.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_browser_agent,
-            config={"callback": None},
-        )
-        '''
-        # print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
-        # print(">>> Registered skills for BrowserNavAgent and BrowserNavExecutorAgent")
+# Example usage
+if __name__ == "__main__":
+    # This is just a placeholder. You'd typically create this with actual config and executor.
+    config_list = [{}]
+    browser_nav_executor = autogen.UserProxyAgent(name="executor")
+    
+    browser_nav_agent = BrowserNavAgent(config_list, browser_nav_executor)
+    
+    # Simulate some actions
+    browser_nav_agent.agent.generate_reply("Open https://www.example.com")
+    
+    # End the AgentOps session
+    agentops.end_session('Success')
