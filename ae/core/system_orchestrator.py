@@ -50,13 +50,13 @@ class SystemOrchestrator:
 
 
     def __populate_orchestrator_info(self):
-            """
-            Populates the orchestrator information by retrieving the API key, gateway, and endpoint from environment variables.
-            """
-            self.orchestrator_api_key = os.getenv('ORCHESTRATOR_API_KEY')
-            self.orchestrator_gateway = os.getenv('ORCHESTRATOR_GATEWAY')
-            self.orchestrator_endpoint = f"{self.orchestrator_gateway}/api/orchestrate"
-            self.use_orchestrator = True
+        """
+        Populates the orchestrator information by retrieving the API key, gateway, and endpoint from environment variables.
+        """
+        self.orchestrator_api_key = os.getenv('ORCHESTRATOR_API_KEY')
+        self.orchestrator_gateway = os.getenv('ORCHESTRATOR_GATEWAY')
+        self.orchestrator_endpoint = f"{self.orchestrator_gateway}/api/orchestrate"
+        self.use_orchestrator = True
 
 
     def __parse_user_and_browser_agent_names(self):
