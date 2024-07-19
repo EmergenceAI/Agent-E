@@ -219,15 +219,16 @@ Please visit our [contributing guidelines](CONTRIBUTING.md) for more details on 
 
 ## Citation
 
-If you use this work, please cite our blog:
+If you use this work, please cite our article:
 
 ```
-@misc{emergence2024distilling,
-  title={Distilling the web for multi-agent automation},
-  author={Emergence},
-  howpublished={\url{https://blog.emergence.ai/2024/03/28/distilling-the-web-agent.html}},
-  journal={Emergence Journal Blog},
-  year={2024},
-  month={Mar}
+@misc{abuelsaad2024agenteautonomouswebnavigation,
+      title={Agent-E: From Autonomous Web Navigation to Foundational Design Principles in Agentic Systems}, 
+      author={Tamer Abuelsaad and Deepak Akkil and Prasenjit Dey and Ashish Jagmohan and Aditya Vempaty and Ravi Kokku},
+      year={2024},
+      eprint={2407.13032},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2407.13032}, 
 }
 ```
