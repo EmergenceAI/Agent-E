@@ -31,7 +31,7 @@ While Agent-E is growing, it is already equipped to handle a versatile range of 
 - If you do not have Google Chrome locally (and don't want to install it), install playwright drivers: `playwright install`
 - .env file in project root is needed with the following (sample `.env-example` is included for convience):
     - Follow the directions in the sample file
-    - You will need to set `AUTOGEN_MODEL_NAME` (We recommend using `gpt-4-turbo-preview` for optimal performance) and `AUTOGEN_MODEL_API_KEY`. 
+    - You will need to set `AUTOGEN_MODEL_NAME` (We recommend using `gpt-4-turbo` for optimal performance) and `AUTOGEN_MODEL_API_KEY`. 
     - If you are using a model other than OpenAI, you need to set `AUTOGEN_MODEL_BASE_URL` for example `https://api.groq.com/openai/v1` or `https://<REPLACE_AI_SERVICES>.openai.azure.com` on [Azure](https://azure.microsoft.com/).
     - For [Azure](https://azure.microsoft.com/), you'll also need to configure `AUTOGEN_MODEL_API_TYPE=azure` and `AUTOGEN_MODEL_API_VERSION` (for example `2023-03-15-preview`) variables.
     - If you want to use local chrome browser over playwright browser, go to chrome://version/ in chrome, find the path to your profile and set `BROWSER_STORAGE_DIR` to the path value
