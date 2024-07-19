@@ -31,7 +31,7 @@ While Agent-E is growing, it is already equipped to handle a versatile range of 
 - If you do not have Google Chrome locally (and don't want to install it), install playwright drivers: `playwright install`
 - .env file in project root is needed with the following (sample `.env-example` is included for convience):
     - Follow the directions in the sample file
-    - You will need to set `AUTOGEN_MODEL_NAME` (for example `gpt-4-turbo-preview`) and `AUTOGEN_MODEL_API_KEY`. For best results, `gpt-4-turbo-preview` is recommended. Although Agent-E may operate with local LLMs, these configurations have not undergone extensive testing.
+    - You will need to set `AUTOGEN_MODEL_NAME` (We recommend using `gpt-4-turbo-preview` for optimal performance) and `AUTOGEN_MODEL_API_KEY`. 
     - If you are using a model other than OpenAI, you need to set `AUTOGEN_MODEL_BASE_URL` for example `https://api.groq.com/openai/v1` or `https://<REPLACE_AI_SERVICES>.openai.azure.com` on [Azure](https://azure.microsoft.com/).
     - For [Azure](https://azure.microsoft.com/), you'll also need to configure `AUTOGEN_MODEL_API_TYPE=azure` and `AUTOGEN_MODEL_API_VERSION` (for example `2023-03-15-preview`) variables.
     - If you want to use local chrome browser over playwright browser, go to chrome://version/ in chrome, find the path to your profile and set `BROWSER_STORAGE_DIR` to the path value
@@ -53,7 +53,7 @@ To personalize this agent, there is a need for Long Term Memory (LTM) that track
 
 ### Run the code:
 `python -m ae.main` (if you are on a Mac, `python -u -m ae.main` See blocking IO issues above)
-Once the program is running,  you should see an icon on the browser. The icon expands to chat-like interface where you can enter natural language requests. For example, `open youtube`, `search youtube for funny cat videos`, `find Nothing Phone 2 on Amazon and sort the results by best seller`, etc. 
+Once the program is running,  you should see an icon on the browser. The icon expands to chat-like interface where you can enter natural language requests. For example, `open youtube`, `search youtube for funny cat videos`, `find Nothing Phone 2 on Amazon and sort the results by best seller`, etc.
 
 
 ## Demos
@@ -61,7 +61,7 @@ Once the program is running,  you should see an icon on the browser. The icon ex
 | Video | Command | Description |
 |-----------|-------------|-------------|
 | [![Oppenheimer Video](docs/images/play-video-on-youtube-thumbnail.png)](https://www.youtube.com/embed/v4BgYiDHNZs) | There is an Oppenheimer video on youtube by Veritasium, can you find it and play it? | <ul> <li>Navigates to www.youtube.com </li> <li>Searches for Oppenheimer Veritasium using the searchbar </li> <li> Plays the correct video </li></ul>|
-| [![Example 2: Use information to fill forms](docs/images/form-filling-thumbnail.png)](https://www.youtube.com/embed/uyE7tfKkB0E) | Can you do this task? Wait for me to review before submitting. | Takes the highlighted text from the email as part of the instruction. <ul> <li>Navigates to the form URL </li> <li>Identifies elements in the form to fill </li> <li> Fills the form using information from memory defined in user preferences.txt </li> <li>Waits for user to review before submitting the form </li> | 
+| [![Example 2: Use information to fill forms](docs/images/form-filling-thumbnail.png)](https://www.youtube.com/embed/uyE7tfKkB0E) | Can you do this task? Wait for me to review before submitting. | Takes the highlighted text from the email as part of the instruction. <ul> <li>Navigates to the form URL </li> <li>Identifies elements in the form to fill </li> <li> Fills the form using information from memory defined in user preferences.txt </li> <li>Waits for user to review before submitting the form </li> |
 | [![Example 3: Find and add specific product to amazon cart](docs/images/amazon-add-to-cart-thumbnail.png)](https://www.youtube.com/embed/CiKZwU_F6TQ) | Find Finish dishwasher detergent tablets on amazon, sort by best seller and add the first one to my cart | <ul> <li> Navigates to www.amazon.com </li> <li>Searches for Finish dishwasher detergent tablets using amazon search feature </li> <li> Sorts the search results by best seller </li> <li>Selects the first product to navigate to the the product page of the first product. </li> <li> Adds the product to cart </li></ul> (_Note: sometimes add to cart part does not execute, but a simple `add first one to my shopping cart` works_) |
 | [![Example 4: Compare flight prices on Google Flights](docs/images/compare-flights-thumbnail.png)](https://www.youtube.com/embed/qJDtnMx0pTmQ) | Compare business class flight options from Lisbon to Singapore for a one-way trip on September 15, 2024 on Google Flights? | <ul><li>  </li> <li> Sets Journey type to one-way. </li> <li> Sets number of passengers to one. </li> <li> Sets departure date to 15 September </li> <li> Sets date to September 15 2024 </li> <li> Sets ticket type to business class </li> <li> Executes search </li> <li> Sets departure date to 15 September </li> Extracts flight information</ul>|
 
@@ -189,7 +189,7 @@ Using open-source models is possible through LiteLLM with Ollama. Ollama allows 
     AUTOGEN_MODEL_API_KEY=NotRequired
     AUTOGEN_MODEL_BASE_URL=http://0.0.0.0:400
     ```
-
+Please note that while it is possible to use local Large Language Models (LLMs) with Agent-E, such setups have not been thoroughly tested. 
 
 ## TODO
 
@@ -223,12 +223,12 @@ If you use this work, please cite our article:
 
 ```
 @misc{abuelsaad2024agenteautonomouswebnavigation,
-      title={Agent-E: From Autonomous Web Navigation to Foundational Design Principles in Agentic Systems}, 
+      title={Agent-E: From Autonomous Web Navigation to Foundational Design Principles in Agentic Systems},
       author={Tamer Abuelsaad and Deepak Akkil and Prasenjit Dey and Ashish Jagmohan and Aditya Vempaty and Ravi Kokku},
       year={2024},
       eprint={2407.13032},
       archivePrefix={arXiv},
       primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2407.13032}, 
+      url={https://arxiv.org/abs/2407.13032},
 }
 ```
