@@ -222,7 +222,7 @@ Please visit our [contributing guidelines](CONTRIBUTING.md) for more details on 
 If you use this work, please cite our article:
 
 ```
-@misc{abuelsaad2024agenteautonomouswebnavigation,
+@misc{abuelsaad2024-agente,
       title={Agent-E: From Autonomous Web Navigation to Foundational Design Principles in Agentic Systems},
       author={Tamer Abuelsaad and Deepak Akkil and Prasenjit Dey and Ashish Jagmohan and Aditya Vempaty and Ravi Kokku},
       year={2024},
