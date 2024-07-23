@@ -7,5 +7,6 @@ class MessageType(Enum):
     STEP = "step"
     ACTION ="action"
     ANSWER = "answer"
-    QUESTION= "question"
+    QUESTION = "question"
     INFO = "info"
+    FINAL = "final"
