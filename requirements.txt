@@ -8,6 +8,8 @@ anyio==4.3.0
     #   anthropic
     #   httpx
     #   openai
+    #   starlette
+    #   watchfiles
 cachetools==5.3.3
     # via google-auth
 certifi==2024.2.2
@@ -22,7 +24,10 @@ charset-normalizer==3.3.2
     #   pdfminer-six
     #   requests
 click==8.1.7
-    # via nltk
+    # via
+    #   nltk
+    #   typer
+    #   uvicorn
 cryptography==42.0.8
     # via pdfminer-six
 diskcache==5.6.3
@@ -31,8 +36,15 @@ distro==1.9.0
     # via
     #   anthropic
     #   openai
+dnspython==2.6.1
+    # via email-validator
 docker==7.0.0
     # via pyautogen
+email-validator==2.2.0
+    # via fastapi
+fastapi==0.111.1
+fastapi-cli==0.0.4
+    # via fastapi
 filelock==3.13.3
     # via huggingface-hub
 flaml==2.1.1
@@ -71,26 +83,40 @@ grpcio==1.63.0
 grpcio-status==1.62.2
     # via google-api-core
 h11==0.14.0
-    # via httpcore
+    # via
+    #   httpcore
+    #   uvicorn
 httpcore==1.0.4
     # via httpx
 httplib2==0.22.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
+httptools==0.6.1
+    # via uvicorn
 httpx==0.27.0
     # via
     #   anthropic
+    #   fastapi
     #   openai
 huggingface-hub==0.22.2
     # via tokenizers
 idna==3.6
     # via
     #   anyio
+    #   email-validator
     #   httpx
     #   requests
+jinja2==3.1.4
+    # via fastapi
 joblib==1.3.2
     # via nltk
+markdown-it-py==3.0.0
+    # via rich
+markupsafe==2.1.5
+    # via jinja2
+mdurl==0.1.2
+    # via markdown-it-py
 nest-asyncio==1.6.0
 nltk==3.8.1
 numpy==1.26.4
@@ -133,6 +159,7 @@ pycparser==2.22
 pydantic==2.6.2
     # via
     #   anthropic
+    #   fastapi
     #   google-generativeai
     #   openai
     #   pyautogen
@@ -140,14 +167,22 @@ pydantic-core==2.16.3
     # via pydantic
 pyee==11.1.0
     # via playwright
+pygments==2.18.0
+    # via rich
 pyparsing==3.1.2
     # via httplib2
 pypdfium2==4.30.0
     # via pdfplumber
 python-dotenv==1.0.0
-    # via pyautogen
+    # via
+    #   pyautogen
+    #   uvicorn
+python-multipart==0.0.9
+    # via fastapi
 pyyaml==6.0.1
-    # via huggingface-hub
+    # via
+    #   huggingface-hub
+    #   uvicorn
 regex==2023.12.25
     # via
     #   nltk
@@ -158,14 +193,20 @@ requests==2.31.0
     #   google-api-core
     #   huggingface-hub
     #   tiktoken
+rich==13.7.1
+    # via typer
 rsa==4.9
     # via google-auth
+shellingham==1.5.4
+    # via typer
 sniffio==1.3.1
     # via
     #   anthropic
     #   anyio
     #   httpx
     #   openai
+starlette==0.37.2
+    # via fastapi
 tabulate==0.9.0
 termcolor==2.4.0
     # via pyautogen
@@ -179,18 +220,30 @@ tqdm==4.66.2
     #   huggingface-hub
     #   nltk
     #   openai
+typer==0.12.3
+    # via fastapi-cli
 typing-extensions==4.10.0
     # via
     #   anthropic
+    #   fastapi
     #   google-generativeai
     #   huggingface-hub
     #   openai
     #   pydantic
     #   pydantic-core
     #   pyee
+    #   typer
 uritemplate==4.1.1
     # via google-api-python-client
 urllib3==2.2.1
     # via
     #   docker
     #   requests
+uvicorn==0.30.3
+    # via fastapi
+uvloop==0.19.0
+    # via uvicorn
+watchfiles==0.22.0
+    # via uvicorn
+websockets==12.0
+    # via uvicorn
