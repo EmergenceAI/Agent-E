@@ -8,6 +8,7 @@ from playwright.async_api import BrowserContext
 from playwright.async_api import Page
 from playwright.async_api import Playwright
 
+from ae.core.notification_manager import NotificationManager
 from ae.core.ui_manager import UIManager
 from ae.utils.dom_mutation_observer import dom_mutation_change_detected
 from ae.utils.dom_mutation_observer import handle_navigation_for_mutation_observer
@@ -62,6 +63,7 @@ class PlaywrightManager:
         self.browser_type = browser_type
         self.isheadless = headless
         self.__initialized = True
+        self.notification_manager = NotificationManager()
         self.user_response_event = asyncio.Event()
         if gui_input_mode:
             self.ui_manager: UIManager = UIManager()
@@ -317,6 +319,8 @@ class PlaywrightManager:
             await page.evaluate(js_code)
         except Exception as e:
             logger.error(f"Failed to notify user with message \"{message}\". However, most likey this will work itself out after the page loads: {e}")
+
+        self.notification_manager.notify(message, message_type.value)
 
     async def highlight_element(self, selector: str, add_highlight: bool):
         try:

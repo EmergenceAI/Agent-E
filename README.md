@@ -55,6 +55,19 @@ To personalize this agent, there is a need for Long Term Memory (LTM) that track
 `python -m ae.main` (if you are on a Mac, `python -u -m ae.main` See blocking IO issues above)
 Once the program is running,  you should see an icon on the browser. The icon expands to chat-like interface where you can enter natural language requests. For example, `open youtube`, `search youtube for funny cat videos`, `find Nothing Phone 2 on Amazon and sort the results by best seller`, etc.
 
+### Launch via web endpoint
+There is a FastAPI wrapper for Agent-E. It allows the user to send commands via HTTP and receive streaming results.
+- Run `uvicorn ae.server.api_routes:app  --reload --loop asyncio`
+- Send POST requests to: `http://127.0.0.1:8000/execute_task`
+- Sample cURL:
+```
+curl --location 'http://127.0.0.1:8000/execute_task' \
+--header 'Content-Type: application/json' \
+--data '{
+    "command": "go to espn, look for soccer news, report the names of the most recent soccer champs"
+}'
+```
+
 
 ## Demos
 
