@@ -10,3 +10,4 @@ class MessageType(Enum):
     QUESTION = "question"
     INFO = "info"
     FINAL = "final"
+    DONE = "transaction_done"

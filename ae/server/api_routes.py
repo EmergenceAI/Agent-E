@@ -64,7 +64,7 @@ async def startup_event():
 
 @app.post("/execute_task", description="Execute a given command related to web navigation and return the result.")
 async def execute_task(request: Request, query_model: CommandQueryModel):
-    notification_queue = Queue()
+    notification_queue = Queue() # type: ignore
     register_notification_listener(notification_queue)
     return StreamingResponse(run_task(query_model.command, browser_manager, notification_queue), media_type='text/event-stream')
 
@@ -87,7 +87,7 @@ def run_task(command: str, playwright_manager: browserManager.PlaywrightManager,
 
         while not task.done() or not notification_queue.empty():
             try:
-                notification = notification_queue.get_nowait()
+                notification = notification_queue.get_nowait() # type: ignore
                 yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
             except Empty:
                 await asyncio.sleep(0.1)
@@ -110,23 +110,18 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
     ag = await AutogenWrapper.create()
-    command_exec_result = await ag.process_command(command, current_url)
-
-    # TODO: See how to extract the actual final answer from here
-    final_answer = "Final answer"
+    command_exec_result = await ag.process_command(command, current_url) # type: ignore
 
     # Notify about the completion of the command
-    await playwright_manager.notify_user("Command completed", MessageType.INFO)
-
-    await playwright_manager.notify_user(final_answer, MessageType.FINAL)
+    await playwright_manager.notify_user("DONE", MessageType.DONE)
 
 
-def register_notification_listener(notification_queue: Queue):
+def register_notification_listener(notification_queue: Queue): # type: ignore
     """
     Register the event generator as a listener in the NotificationManager.
     """
     def listener(notification: dict[str, str]) -> None:
-        notification_queue.put(notification)
+        notification_queue.put(notification) # type: ignore
 
     browser_manager.notification_manager.register_listener(listener)
 
