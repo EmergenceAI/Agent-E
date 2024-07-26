@@ -1,13 +1,20 @@
 import asyncio
 from typing import Any
+import os
 
 import autogen  # type: ignore
+import agentops
 
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from ae.utils.ui_messagetype import MessageType
 
+# Initialize AgentOps
+agentops.init(os.getenv("AGENTOPS_API_KEY"))
 
+last_agent_response = ""
+
+@agentops.record_function('final_reply_callback_user_proxy')
 def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, messages: list[dict[str, Any]], sender: autogen.Agent, config: dict[str, Any]):
     """
     Callback function that is called each time the user proxy agent receives a message.
@@ -36,8 +43,25 @@ def final_reply_callback_user_proxy(recipient: autogen.ConversableAgent, message
 
     return False, None
 
-def final_reply_callback_planner_agent(message:str, message_type:MessageType = MessageType.STEP): # type: ignore
-        browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(browser_manager.notify_user(message, message_type=message_type))
-        return False, None  # required to ensure the agent communication flow continues
+@agentops.record_function('final_reply_callback_planner_agent')
+def final_reply_callback_planner_agent(message: str, message_type: MessageType = MessageType.STEP):
+    browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(browser_manager.notify_user(message, message_type=message_type))
+    return False, None  # required to ensure the agent communication flow continues
+
+# Example usage (you may want to remove or modify this based on your needs)
+async def main():
+    # Simulate a message for testing
+    test_message = "Test message with ##TERMINATE##"
+    result = final_reply_callback_user_proxy(None, [{"content": test_message}], None, {})
+    print(f"User proxy result: {result}")
+
+    # Simulate a planner agent message
+    await final_reply_callback_planner_agent("Test planner message", MessageType.STEP)
+
+    # End the AgentOps session
+    agentops.end_session('Success')
+
+if __name__ == "__main__":
+    asyncio.run(main())

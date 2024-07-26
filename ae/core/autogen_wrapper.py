@@ -10,8 +10,8 @@ from typing import Any
 import autogen  # type: ignore
 import nest_asyncio  # type: ignore
 import openai
+import agentops  # Add this import
 
-#from autogen import Cache
 from dotenv import load_dotenv
 
 from ae.config import SOURCE_LOG_FOLDER_PATH
@@ -48,7 +48,11 @@ class AutogenWrapper:
         self.config_list: list[dict[str, str]] | None = None
         self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
 
+        # Initialize AgentOps
+        agentops.init(os.getenv("AGENTOPS_API_KEY"))
+
     @classmethod
+    @agentops.record_function('create_autogen_wrapper')
     async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
@@ -162,7 +166,6 @@ class AutogenWrapper:
 
         return self
 
-
     def get_chat_logs_dir(self) -> str|None:
         """
         Get the directory for saving chat logs.
@@ -183,14 +186,14 @@ class AutogenWrapper:
         """
         self.chat_logs_dir = chat_logs_dir
 
-
+    @agentops.record_function('save_chat_log')
     def __save_chat_log(self, chat_log: list[dict[str, Any]]):
         chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
         # Save the chat log to a file
         with open(chat_logs_file, "w") as file:
             json.dump(chat_log, file, indent=4)
 
-
+    @agentops.record_function('initialize_agents')
     async def __initialize_agents(self, agents_needed: list[str]):
         """
         Instantiate all agents with their appropriate prompts/skills.
@@ -223,7 +226,7 @@ class AutogenWrapper:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
         return agents_map
 
-
+    @agentops.record_function('create_user_delegate_agent')
     async def __create_user_delegate_agent(self) -> autogen.ConversableAgent:
         """
         Create a ConversableAgent instance.
@@ -267,6 +270,7 @@ class AutogenWrapper:
         )
         return task_delegate_agent
 
+    @agentops.record_function('create_browser_nav_executor_agent')
     def __create_browser_nav_executor_agent(self):
         """
         Create a UserProxyAgent instance for executing browser control.
@@ -297,6 +301,7 @@ class AutogenWrapper:
         print(">>> Created browser_nav_executor_agent:", browser_nav_executor_agent)
         return browser_nav_executor_agent
 
+    @agentops.record_function('create_browser_nav_agent')
     def __create_browser_nav_agent(self, user_proxy_agent: UserProxyAgent_SequentialFunctionExecution) -> autogen.ConversableAgent:
         """
         Create a BrowserNavAgent instance.
@@ -312,6 +317,7 @@ class AutogenWrapper:
         #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2))
         return browser_nav_agent.agent
 
+    @agentops.record_function('create_planner_agent')
     def __create_planner_agent(self, assistant_agent: autogen.ConversableAgent):
         """
         Create a Planner Agent instance. This is mainly used for exploration at this point
@@ -323,6 +329,7 @@ class AutogenWrapper:
         planner_agent = PlannerAgent(self.config_list, assistant_agent) # type: ignore
         return planner_agent.agent
 
+    @agentops.record_function('process_command')
     async def process_command(self, command: str, current_url: str | None = None) -> autogen.ChatResult | None:
         """
         Process a command by sending it to one or more agents.
@@ -341,15 +348,13 @@ class AutogenWrapper:
 
         prompt = Template(LLM_PROMPTS["COMMAND_EXECUTION_PROMPT"]).substitute(command=command, current_url_prompt_segment=current_url_prompt_segment)
         logger.info(f"Prompt for command: {prompt}")
-        #with Cache.disk() as cache:
         try:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
 
-            result=await self.agents_map["user"].a_initiate_chat( # type: ignore
+            result = await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
                 max_turns=self.number_of_rounds,
-                #clear_history=True,
                 message=prompt,
                 silent=False,
                 cache=None,
@@ -362,4 +367,16 @@ class AutogenWrapper:
         except openai.BadRequestError as bre:
             logger.error(f"Unable to process command: \"{command}\". {bre}")
             traceback.print_exc()
+        finally:
+            agentops.end_session('Success')  # Or 'Fail' based on the outcome
 
+    # Additional methods or code that might be part of the AutogenWrapper class can be added here
+
+# Example usage of the AutogenWrapper class
+async def main():
+    wrapper = await AutogenWrapper.create()
+    result = await wrapper.process_command("Your command here")
+    print(result)
+
+if __name__ == "__main__":
+    asyncio.run(main())
