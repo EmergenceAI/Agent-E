@@ -40,32 +40,35 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, max_chat_round: int = 1000):
+    def __init__(self, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
         self.number_of_rounds = max_chat_round
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
 
         self.config_list: list[dict[str, str]] | None = None
         self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
+        self.save_chat_logs_to_files = save_chat_logs_to_files
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, max_chat_round: int = 1000):
+    async def create(cls, agents_needed: list[str] | None = None, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
 
         Args:
             agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
+            save_chat_logs_to_files (bool, optional): Whether to save chat logs to files. Defaults to True.
             max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
 
         Returns:
             AutogenWrapper: An instance of AutogenWrapper.
 
         """
-        print(f">>> Creating AutogenWrapper with {agents_needed} and {max_chat_round} rounds.")
+        print(f">>> Creating AutogenWrapper with {agents_needed} and {max_chat_round} rounds. Save chat logs to files: {save_chat_logs_to_files}")
         if agents_needed is None:
             agents_needed = ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
         # Create an instance of cls
-        self = cls(max_chat_round)
+        self = cls(save_chat_logs_to_files=save_chat_logs_to_files, max_chat_round=max_chat_round)
+
         load_dotenv()
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
 
@@ -185,10 +188,13 @@ class AutogenWrapper:
 
 
     def __save_chat_log(self, chat_log: list[dict[str, Any]]):
-        chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
-        # Save the chat log to a file
-        with open(chat_logs_file, "w") as file:
-            json.dump(chat_log, file, indent=4)
+        if not self.save_chat_logs_to_files:
+            logger.info("Nested chat logs", extra={"nested_chat_log": chat_log})
+        else:
+            chat_logs_file = os.path.join(self.get_chat_logs_dir() or "", f"nested_chat_log_{str(time_ns())}.json")
+            # Save the chat log to a file
+            with open(chat_logs_file, "w") as file:
+                json.dump(chat_log, file, indent=4)
 
 
     async def __initialize_agents(self, agents_needed: list[str]):

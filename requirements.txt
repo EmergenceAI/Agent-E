@@ -177,6 +177,7 @@ python-dotenv==1.0.0
     # via
     #   pyautogen
     #   uvicorn
+python-json-logger==2.0.7
 python-multipart==0.0.9
     # via fastapi
 pyyaml==6.0.1
