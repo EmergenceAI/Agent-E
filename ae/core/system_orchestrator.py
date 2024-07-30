@@ -3,10 +3,13 @@ import json
 import os
 import time
 
+from dotenv import load_dotenv
+
 import ae.core.playwright_manager as browserManager
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.utils.cli_helper import async_input  # type: ignore
+from ae.utils.formatting_helper import str_to_bool
 from ae.utils.http_helper import make_post_request
 from ae.utils.logger import logger
 
@@ -33,11 +36,15 @@ class SystemOrchestrator:
             agent_scenario (str, optional): The agent scenario to use for command processing. Defaults to "user_proxy,browser_nav_agent".
             input_mode (str, optional): The input mode of the system. Defaults to "GUI_ONLY".
         """
+        load_dotenv()
+
         self.agent_scenario = agent_scenario
         self.input_mode = input_mode
         self.browser_manager = None
         self.autogen_wrapper = None
         self.is_running = False
+
+        self.save_chat_logs_to_files = str_to_bool(os.getenv('SAVE_CHAT_LOGS_TO_FILE', True))
 
         if os.getenv('ORCHESTRATOR_API_KEY', None) is not None and os.getenv('ORCHESTRATOR_GATEWAY', None) is not None:
             self.__populate_orchestrator_info()
@@ -74,7 +81,7 @@ class SystemOrchestrator:
         """
         Initializes the components required for the system's operation, including the Autogen wrapper and the Playwright manager.
         """
-        self.autogen_wrapper = await AutogenWrapper.create(agents_needed=self.agent_names)
+        self.autogen_wrapper = await AutogenWrapper.create(agents_needed=self.agent_names, save_chat_logs_to_files=self.save_chat_logs_to_files)
 
         self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
         await self.browser_manager.async_initialize()
@@ -179,9 +186,12 @@ class SystemOrchestrator:
         """
         messages = self.autogen_wrapper.agents_map[self.browser_agent_name].chat_messages # type: ignore
         messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
-        with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'chat_messages.json'), 'w', encoding='utf-8') as f:
-            json.dump(messages_str_keys, f, ensure_ascii=False, indent=4)
-        logger.debug("Chat messages saved")
+        if self.save_chat_logs_to_files:
+            with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'chat_messages.json'), 'w', encoding='utf-8') as f:
+                json.dump(messages_str_keys, f, ensure_ascii=False, indent=4)
+            logger.debug("Chat messages saved")
+        else:
+            logger.info("Planner chat log: ", extra={"planner_chat_log": messages_str_keys}) # type: ignore
 
     async def wait_for_exit(self):
         """
