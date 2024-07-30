@@ -4,10 +4,12 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from PIL import Image
 
 from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize  # type: ignore
 from openai import OpenAI
+from pyparsing import str_type
 
 load_dotenv()
 client = OpenAI()
@@ -261,3 +263,57 @@ def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
     # Format the timestamp as a human-readable string
     timestamp_str = current_time.strftime(format)
     return timestamp_str
+
+def list_items_in_folder(path:str_type)-> list[str] | None:
+    '''Returns all items inside a given file directory
+    
+    Parameters:
+        path (str): Path to a directory.
+    
+    Return:
+        list[str]: Name of all items found in the given directory.
+    '''
+    try:
+        items = os.listdir(path)
+        items_with_mtime = [(item, os.path.getmtime(os.path.join(path, item))) for item in items]
+        items_with_mtime.sort(key=lambda x: x[1])
+        sorted_items = [item for item, mtime in items_with_mtime]
+        return sorted_items
+    except FileNotFoundError:
+        print(f"The path {path} does not exist.")
+        return None
+    except NotADirectoryError:
+        print(f"The path {path} is not a directory.")
+        return None
+    except PermissionError:
+        print(f"Permission denied to access {path}.")
+        return None
+
+def compress_png(file_path, max_size_mb=20, reduce_factor=0.9):
+    ''' Compresses a png file
+    Parameters:
+        file_path (str): Path to a png file
+        max_size_mb (int): The maximum size allowed after compression
+        reduce_factor (int): Amount the png is reduced each iteration
+    
+    Return:
+        bool: True if the png was compressed successfully. False otherwise.
+    
+    '''
+    try:
+        file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+        while file_size_mb > max_size_mb:
+            print(f"Compressing {file_path} (Initial Size: {file_size_mb:.2f} MB)")
+            with Image.open(file_path) as img:
+                width, height = img.size
+                new_width = int(width * reduce_factor)
+                new_height = int(height * reduce_factor)
+                img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                img.save(file_path, optimize=True)
+                file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+                print(f"Resized to: {new_width}x{new_height}, Size: {file_size_mb:.2f} MB")
+        print(f"Final Size of {file_path}: {file_size_mb:.2f} MB")
+        return file_size_mb <= max_size_mb
+    except Exception as e:
+        print(f"Error compressing {file_path}: {e}")
+        return False
