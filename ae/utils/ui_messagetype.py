@@ -1,7 +1,6 @@
 from enum import Enum
 
 
-# class syntax
 class MessageType(Enum):
     PLAN = "plan"
     STEP = "step"
@@ -11,3 +10,4 @@ class MessageType(Enum):
     INFO = "info"
     FINAL = "final"
     DONE = "transaction_done"
+    ERROR = "error"
