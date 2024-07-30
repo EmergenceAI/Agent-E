@@ -68,6 +68,12 @@ curl --location 'http://127.0.0.1:8000/execute_task' \
 }'
 ```
 
+### Additional environment variables
+Agent-E has a few more env variables that can be added to `.env` or whichever environment you are using.
+
+`SAVE_CHAT_LOGS_TO_FILE`: true | false (Default: `true`) Indicates whether to save chat logs, for planner and nested chat, into files or log them to stdout
+`LOG_MESSAGES_FORMAT`: json | text (Default: `text`) Whether to using structured logging or text logging. If text is used, json objects will not be output. This will mainly be used for chat logs, so if `SAVE_CHAT_LOGS_TO_FILE` is set to `true`, then setting this to `text` will be fine.
+
 
 ## Demos
 
