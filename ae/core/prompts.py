@@ -26,7 +26,6 @@ Guidelines:
 5. Very Important: Add verification as part of the plan, after each step and specifically before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completion (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Do not assume the helper has performed the task correctly.
 6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task. You will strive to meet all the requirements of the task.
 7. If one plan fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you are absolutely convinced that the task is impossible to accomplish.
-8. If the task involves research about a company. Some of the dimensions to consider are: company overview, founding team and background, products, latest news, history, financials, news, customer reviews, employee reviews and competitors. You will strive to gather as much information as possible about the company. For each dimension, you will use the most optimal source website.
 
 Complexities of web navigation:
 1. Many forms have mandatory fields that need to be filled up before they can be submitted. Ask the helper for what fields look mandatory.

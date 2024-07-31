@@ -41,9 +41,9 @@ class PlannerAgent:
         )
 
         # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+        #self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
         # Register get_user_input skill for execution by user_proxy_agent
-        user_proxy_agent.register_for_execution()(get_user_input)
+        #user_proxy_agent.register_for_execution()(get_user_input)
 
         self.agent.register_reply( # type: ignore
             [autogen.AssistantAgent, None],
