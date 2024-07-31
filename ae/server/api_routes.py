@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import os
+import uuid
 from queue import Empty
 from queue import Queue
 
@@ -26,6 +27,8 @@ IS_DEBUG = False
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8080))
 WORKERS = 1
+
+CONTAINER_ID = os.getenv("CONTAINER_ID", str(uuid.uuid4()))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -121,6 +124,7 @@ def register_notification_listener(notification_queue: Queue): # type: ignore
     Register the event generator as a listener in the NotificationManager.
     """
     def listener(notification: dict[str, str]) -> None:
+        notification['container_id'] = CONTAINER_ID # Include the container ID (or UUID) in the notification
         notification_queue.put(notification) # type: ignore
 
     browser_manager.notification_manager.register_listener(listener)
