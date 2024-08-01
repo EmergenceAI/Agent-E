@@ -67,14 +67,15 @@ async def startup_event():
 async def execute_task(request: Request, query_model: CommandQueryModel):
     notification_queue = Queue()  # type: ignore
     register_notification_listener(notification_queue)
-    return StreamingResponse(run_task(query_model.command, browser_manager, notification_queue), media_type="text/event-stream")
+    return StreamingResponse(run_task(request, query_model.command, browser_manager, notification_queue), media_type="text/event-stream")
 
 
-def run_task(command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue):  # type: ignore
+def run_task(request: Request, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue):  # type: ignore
     """
     Run the task to process the command and generate events.
 
     Args:
+        request (Request): The request object to detect client disconnect.
         command (str): The command to execute.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
         notification_queue (Queue): The queue to hold notifications for this request.
@@ -84,20 +85,31 @@ def run_task(command: str, playwright_manager: browserManager.PlaywrightManager,
     """
 
     async def event_generator():
-        # Start the process command task
         task = asyncio.create_task(process_command(command, playwright_manager))
 
-        while not task.done() or not notification_queue.empty():
-            try:
-                notification = notification_queue.get_nowait()  # type: ignore
-                yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
-            except Empty:
-                await asyncio.sleep(0.1)
+        try:
+            while not task.done() or not notification_queue.empty():
+                if await request.is_disconnected():
+                    logger.info("Client disconnected. Cancelling the task.")
+                    task.cancel()
+                    break
+                try:
+                    notification = notification_queue.get_nowait()  # type: ignore
+                    yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
+                except Empty:
+                    await asyncio.sleep(0.1)
+                except asyncio.CancelledError:
+                    logger.info("Task was cancelled due to client disconnection.")
+                except Exception as e:
+                    logger.error(f"An error occurred: {e}")
 
-        # Ensure the task is awaited to propagate any exceptions
-        await task
+            await task
+        except asyncio.CancelledError:
+            logger.info("Task was cancelled due to client disconnection.")
+            await task
 
     return event_generator()
+
 
 
 async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager):
