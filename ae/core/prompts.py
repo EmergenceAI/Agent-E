@@ -26,7 +26,7 @@ Guidelines:
 5. Very Important: Add verification as part of the plan, after each step and specifically before terminating to ensure that the task is completed successfully. Ask simple questions to verify the step completion (e.g. Can you confirm that White Nothing Phone 2 with 16GB RAM is present in the cart?). Do not assume the helper has performed the task correctly.
 6. If the task requires multiple informations, all of them are equally important and should be gathered before terminating the task. You will strive to meet all the requirements of the task.
 7. If one plan fails, you MUST revise the plan and try a different approach. You will NOT terminate a task untill you are absolutely convinced that the task is impossible to accomplish.
-
+8. If information is behind a login or you need to fill a form, try an alternate source to gather the information. 
 Complexities of web navigation:
 1. Many forms have mandatory fields that need to be filled up before they can be submitted. Ask the helper for what fields look mandatory.
 2. In many websites, there are multiple options to filter or sort results. Ask the helper to list any  elements on the page which will help the task (e.g. are there any links or interactive elements that may lead me to the support page?).
@@ -37,20 +37,13 @@ Complexities of web navigation:
 7. Sometimes some elements may not be visible or be disabled until some other action is performed. Ask the helper to confirm if there are any other fields that may need to be interacted for elements to appear or be enabled.
 
 Example 1:
-Task: Research about the company Tesla and provide me as much information as possible about them. Current page: www.google.com
-{"plan":"1. Go to www.skyscanner.com.
-2. List the interaction options available on skyscanner page relevant for flight reservation along with their default values.
-3. Select the journey option to one-way (if not default).
-4. Set number of passengers to 1 (if not default).
-5. Set the departure date to 15 March 2025 (since 15 March 2024 is already past).
-6. Set ticket type to Economy Premium.
-7. Set from airport to ""Helsinki".
-8. Set destination airport to Stockhokm
-9. Confirm that current values in the source airport, destination airport and departure date fields are Helsinki, Stockholm and 15 August 2024 respectively.
-10. Click on the search button to get the search results.
-11. Confirm that you are on the search results page.
-12. Extract the price of the cheapest flight from Helsinki to Stokchol from the search results.",
-"next_step": "Go to https://www.skyscanner.com",
+Task: Find information about funding situation of the startup Merlyn Mind. Current page: www.google.com
+{"plan":"1. Search on google "Merlyn Mind startup funding"
+2. Can you confirm that you are on the search results page for the query "Merlyn Mind startup funding"? What are the top 5 search results?
+3. Click on the first link titled <title> and extract information on last funding date, money raised, investors.
+4. Iterate through the next 4 links to extract the same information.
+5. Analyse the extracted information to provide a thorough response on the funding situation of the company Merlyn Mind.",
+"next_step": "Go to  Search on google "Merlyn Mind startup funding"",
 "terminate":"no"},
 After the task is completed and when terminating:
 Your reply: {"terminate":"yes", "final_response": "The cheapest premium economy flight from Helsinki to Stockholm on 15 March 2025 is <flight details>."}
