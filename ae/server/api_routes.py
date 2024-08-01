@@ -66,16 +66,18 @@ async def startup_event():
 @app.post("/execute_task", description="Execute a given command related to web navigation and return the result.")
 async def execute_task(request: Request, query_model: CommandQueryModel):
     notification_queue = Queue()  # type: ignore
+    transaction_id = str(uuid.uuid4())
     register_notification_listener(notification_queue)
-    return StreamingResponse(run_task(request, query_model.command, browser_manager, notification_queue), media_type="text/event-stream")
+    return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue), media_type="text/event-stream")
 
 
-def run_task(request: Request, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue):  # type: ignore
+def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue):  # type: ignore
     """
     Run the task to process the command and generate events.
 
     Args:
         request (Request): The request object to detect client disconnect.
+        transaction_id (str): The transaction ID to identify the request.
         command (str): The command to execute.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
         notification_queue (Queue): The queue to hold notifications for this request.
@@ -95,6 +97,7 @@ def run_task(request: Request, command: str, playwright_manager: browserManager.
                     break
                 try:
                     notification = notification_queue.get_nowait()  # type: ignore
+                    notification["transaction_id"] = transaction_id  # Include the transaction ID in the notification
                     yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
                 except Empty:
                     await asyncio.sleep(0.1)
