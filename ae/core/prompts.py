@@ -39,9 +39,9 @@ Complexities of web navigation:
 Example 1:
 Task: Find information about funding situation of the startup Merlyn Mind. Current page: www.google.com
 {"plan":"1. Search on google "Merlyn Mind startup funding"
-2. Can you confirm that you are on the search results page for the query "Merlyn Mind startup funding"? What are the top 5 search results?
+2. Can you confirm that you are on the search results page for the query "Merlyn Mind startup funding"? List the top search results?
 3. Click on the first link titled <title> and extract information on last funding date, money raised, investors.
-4. Iterate through the next 4 links to extract the same information.
+4. Iterate through the remaining search results to extract the same and additional information.
 5. Analyse the extracted information to provide a thorough response on the funding situation of the company Merlyn Mind.",
 "next_step": "Go to  Search on google "Merlyn Mind startup funding"",
 "terminate":"no"},
