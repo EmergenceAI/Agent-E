@@ -60,6 +60,7 @@ async def startup_event():
 
     if container_id.strip() == "":
         container_id = str(uuid.uuid4())
+        os.environ["CONTAINER_ID"] = container_id
     await browser_manager.async_initialize()
 
 
