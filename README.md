@@ -24,7 +24,7 @@ While Agent-E is growing, it is already equipped to handle a versatile range of 
     - Windows: `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
     - Alternatively you can use pip  `pip install uv`
 - Create `uv venv --python 3.11` (`3.10+` should work)
-- Activate the virtual enviroment: `source .venv/bin/activate` (Windows: `.venv\Scripts\activate`)
+- Activate the virtual environment: `source .venv/bin/activate` (Windows: `.venv\Scripts\activate`)
 - Generate the requirements.txt from toml file: `uv pip compile pyproject.toml -o requirements.txt`
 - Install the generated requirements file: `uv pip install -r requirements.txt`
 - To install extras/dev dependancies: `uv pip install -r pyproject.toml --extra dev`
