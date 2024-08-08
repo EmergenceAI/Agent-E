@@ -124,6 +124,7 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
         command (str): The command to process.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
     """
+    await playwright_manager.go_to_homepage() # Go to the homepage before processing the command
     current_url = await playwright_manager.get_current_url()
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
