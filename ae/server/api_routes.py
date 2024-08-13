@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import os
+import uuid
 from queue import Empty
 from queue import Queue
 
@@ -27,75 +28,97 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8080))
 WORKERS = 1
 
+container_id = os.getenv("CONTAINER_ID", "")
+
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("uvicorn")
 
 
 class CommandQueryModel(BaseModel):
-    command: str = Field(..., description="The command related to web navigation to execute.") # Required field with description
+    command: str = Field(..., description="The command related to web navigation to execute.")  # Required field with description
+    clientid: str | None = Field(None, description="Client identifier, optional")
+    request_originator: str | None = Field(None, description="Optional id of the request originator")
 
 
 def get_app() -> FastAPI:
-    '''Starts the Application'''
-    fast_app = FastAPI(
-        title=APP_NAME,
-        version=APP_VERSION,
-        debug=IS_DEBUG)
+    """Starts the Application"""
+    fast_app = FastAPI(title=APP_NAME, version=APP_VERSION, debug=IS_DEBUG)
 
-    fast_app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"])
+    fast_app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
     return fast_app
 
+
 app = get_app()
 
-@app.on_event("startup") # type: ignore
+
+@app.on_event("startup")  # type: ignore
 async def startup_event():
     """
     Startup event handler to initialize browser manager asynchronously.
     """
+    global container_id
+
+    if container_id.strip() == "":
+        container_id = str(uuid.uuid4())
+        os.environ["CONTAINER_ID"] = container_id
     await browser_manager.async_initialize()
 
 
 @app.post("/execute_task", description="Execute a given command related to web navigation and return the result.")
 async def execute_task(request: Request, query_model: CommandQueryModel):
-    notification_queue = Queue() # type: ignore
+    notification_queue = Queue()  # type: ignore
+    transaction_id = str(uuid.uuid4()) if query_model.clientid is None else query_model.clientid
     register_notification_listener(notification_queue)
-    return StreamingResponse(run_task(query_model.command, browser_manager, notification_queue), media_type='text/event-stream')
+    return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue, query_model.request_originator), media_type="text/event-stream")
 
 
-def run_task(command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue):
+def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue, request_originator: str|None = None):  # type: ignore
     """
     Run the task to process the command and generate events.
 
     Args:
+        request (Request): The request object to detect client disconnect.
+        transaction_id (str): The transaction ID to identify the request.
         command (str): The command to execute.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
         notification_queue (Queue): The queue to hold notifications for this request.
+        request_originator (str|None): The originator of the request.
 
     Yields:
         str: JSON-encoded string representing a notification.
     """
+
     async def event_generator():
-        # Start the process command task
         task = asyncio.create_task(process_command(command, playwright_manager))
+        task_detail = f"transaction_id={transaction_id}, request_originator={request_originator}, command={command}"
 
-        while not task.done() or not notification_queue.empty():
-            try:
-                notification = notification_queue.get_nowait() # type: ignore
-                yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
-            except Empty:
-                await asyncio.sleep(0.1)
+        try:
+            while not task.done() or not notification_queue.empty():
+                if await request.is_disconnected():
+                    logger.info(f"Client disconnected. Cancelling the task: {task_detail}")
+                    task.cancel()
+                    break
+                try:
+                    notification = notification_queue.get_nowait()  # type: ignore
+                    notification["transaction_id"] = transaction_id  # Include the transaction ID in the notification
+                    notification["request_originator"] = request_originator  # Include the request originator in the notification
+                    yield f"data: {json.dumps(notification)}\n\n"  # Using 'data: ' to follow the SSE format
+                except Empty:
+                    await asyncio.sleep(0.1)
+                except asyncio.CancelledError:
+                    logger.info(f"Task was cancelled due to client disconnection. {task_detail}")
+                except Exception as e:
+                    logger.error(f"An error occurred while processing task: {task_detail}. Error: {e}")
 
-        # Ensure the task is awaited to propagate any exceptions
-        await task
+            await task
+        except asyncio.CancelledError:
+            logger.info(f"Task was cancelled due to client disconnection. {task_detail}")
+            await task
 
     return event_generator()
+
 
 
 async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager):
@@ -106,29 +129,29 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
         command (str): The command to process.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
     """
+    await playwright_manager.go_to_homepage() # Go to the homepage before processing the command
     current_url = await playwright_manager.get_current_url()
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
     ag = await AutogenWrapper.create()
-    command_exec_result = await ag.process_command(command, current_url) # type: ignore
+    command_exec_result = await ag.process_command(command, current_url)  # type: ignore
 
     # Notify about the completion of the command
     await playwright_manager.notify_user("DONE", MessageType.DONE)
 
 
-def register_notification_listener(notification_queue: Queue): # type: ignore
+def register_notification_listener(notification_queue: Queue):  # type: ignore
     """
     Register the event generator as a listener in the NotificationManager.
     """
+
     def listener(notification: dict[str, str]) -> None:
-        notification_queue.put(notification) # type: ignore
+        notification["container_id"] = container_id  # Include the container ID (or UUID) in the notification
+        notification_queue.put(notification)  # type: ignore
 
     browser_manager.notification_manager.register_listener(listener)
 
+
 if __name__ == "__main__":
-    logger.info('**********Application Started**********')
-    uvicorn.run(
-        "main:app",
-        host=HOST,
-        port=PORT,
-        workers=WORKERS, reload=IS_DEBUG, log_level="info")
+    logger.info("**********Application Started**********")
+    uvicorn.run("main:app", host=HOST, port=PORT, workers=WORKERS, reload=IS_DEBUG, log_level="info")
