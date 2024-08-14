@@ -1,5 +1,6 @@
 from datetime import datetime
 from string import Template
+from typing import Any
 
 import autogen  # type: ignore
 from autogen import ConversableAgent  # type: ignore
@@ -11,18 +12,19 @@ from ae.core.skills.get_user_input import get_user_input
 
 
 class PlannerAgent:
-    def __init__(self, config_list, user_proxy_agent:ConversableAgent): # type: ignore
+    def __init__(self, model_config_list, llm_config_params: dict[str, Any], system_prompt: str|None, user_proxy_agent:ConversableAgent): # type: ignore
         """
         Initialize the PlannerAgent and store the AssistantAgent instance
         as an instance attribute for external access.
 
         Parameters:
-        - config_list: A list of configuration parameters required for AssistantAgent.
+        - model_config_list: A list of configuration parameters required for AssistantAgent.
+        - llm_config_params: A dictionary of configuration parameters for the LLM.
+        - system_prompt: The system prompt to be used for this agent or the default will be used if not provided.
         - user_proxy_agent: An instance of the UserProxyAgent class.
         """
-
         user_ltm = self.__get_ltm()
-        system_message = LLM_PROMPTS["PLANNER_AGENT_PROMPT"]
+        system_message = LLM_PROMPTS["PLANNER_AGENT_PROMPT"] if not system_prompt else system_prompt
 
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
@@ -32,11 +34,8 @@ class PlannerAgent:
             name="planner_agent",
             system_message=system_message,
             llm_config={
-                "config_list": config_list,
-                "cache_seed": None,
-                "temperature": 0.0,
-                "top_p": 0.001,
-                "seed":12345
+                "config_list": model_config_list,
+                **llm_config_params #unpack all the name value pairs in llm_config_params as is
             },
         )
 
