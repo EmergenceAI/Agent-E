@@ -37,9 +37,12 @@ class BrowserNavAgent:
         user_ltm = self.__get_ltm()
 
         system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
-        if system_prompt:
-            system_message = system_prompt
-            logger.info("Using custom system prompt for BrowserNavAgent")
+        if system_prompt and len(system_prompt) > 0:
+            if isinstance(system_prompt, list):
+                system_message = "\n".join(system_prompt)
+            else:
+                system_message = system_prompt
+            logger.info(f"Using custom system prompt for BrowserNavAgent: {system_message}")
 
         system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
         if user_ltm: #add the user LTM to the system prompt if it exists
