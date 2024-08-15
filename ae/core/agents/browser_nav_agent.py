@@ -18,6 +18,7 @@ from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
+from ae.utils.logger import logger
 
 
 class BrowserNavAgent:
@@ -34,12 +35,17 @@ class BrowserNavAgent:
         """
         self.browser_nav_executor = browser_nav_executor
         user_ltm = self.__get_ltm()
-        system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"] if not system_prompt else system_prompt
+
+        system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
+        if system_prompt:
+            system_message = system_prompt
+            logger.info("Using custom system prompt for BrowserNavAgent")
+
         system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
-
+        logger.info(f"Browser nav agent using model: {model_config_list[0]['model']}")
         self.agent = autogen.ConversableAgent(
             name="browser_navigation_agent",
             system_message=system_message,
