@@ -1,5 +1,6 @@
 from datetime import datetime
 from string import Template
+from typing import Any
 
 import autogen  # type: ignore
 
@@ -17,35 +18,43 @@ from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
+from ae.utils.logger import logger
 
 
 class BrowserNavAgent:
-    def __init__(self, config_list, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
+    def __init__(self, model_config_list, llm_config_params: dict[str, Any], system_prompt: str|None, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
         """
         Initialize the BrowserNavAgent and store the AssistantAgent instance
         as an instance attribute for external access.
 
         Parameters:
-        - config_list: A list of configuration parameters required for AssistantAgent.
+        - model_config_list: A list of configuration parameters required for AssistantAgent.
+        - llm_config_params: A dictionary of configuration parameters for the LLM.
+        - system_prompt: The system prompt to be used for this agent or the default will be used if not provided.
         - user_proxy_agent: An instance of the UserProxyAgent class.
         """
         self.browser_nav_executor = browser_nav_executor
         user_ltm = self.__get_ltm()
+
         system_message = LLM_PROMPTS["BROWSER_AGENT_PROMPT"]
+        if system_prompt and len(system_prompt) > 0:
+            if isinstance(system_prompt, list):
+                system_message = "\n".join(system_prompt)
+            else:
+                system_message = system_prompt
+            logger.info(f"Using custom system prompt for BrowserNavAgent: {system_message}")
+
         system_message = system_message + "\n" + f"Today's date is {datetime.now().strftime('%d %B %Y')}"
         if user_ltm: #add the user LTM to the system prompt if it exists
             user_ltm = "\n" + user_ltm
             system_message = Template(system_message).substitute(basic_user_information=user_ltm)
-
+        logger.info(f"Browser nav agent using model: {model_config_list[0]['model']}")
         self.agent = autogen.ConversableAgent(
             name="browser_navigation_agent",
             system_message=system_message,
             llm_config={
-                "config_list": config_list,
-                "cache_seed": None,
-                "temperature": 0.0,
-                "top_p": 0.001,
-                "seed":12345
+                "config_list": model_config_list,
+                **llm_config_params #unpack all the name value pairs in llm_config_params as is
             },
         )
         self.__register_skills()
