@@ -159,7 +159,6 @@ class URLEvaluator(Evaluator):
         pred = clean_url(page.url)
         ref_urls = task_config["eval"]["reference_url"].split(" |OR| ")
         ref_urls = [clean_url(url) for url in ref_urls]
-        print(ref_urls)
         matching_rule = task_config["eval"].get("url_note", "GOLD in PRED")
         if matching_rule == "GOLD in PRED":
             for ref_url in ref_urls:
