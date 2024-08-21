@@ -305,10 +305,10 @@
         "geolocation": null,
         "intent_template": "search {{site}} for {{item}}",
         "instantiation_dict": {
-            "site": "the web",
+            "site": "on google",
             "item": "the library of Alexandria"
         },
-        "intent": "search the web for the library of Alexandria",
+        "intent": "search on google for the library of Alexandria",
         "require_reset": false,
         "eval": {
             "eval_types": [
