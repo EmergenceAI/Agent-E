@@ -15,7 +15,6 @@ import openai
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent
-from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.post_process_responses import final_reply_callback_planner_agent as notify_planner_messages  # type: ignore
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.get_url import geturl
@@ -54,7 +53,8 @@ class AutogenWrapper:
         self.save_chat_logs_to_files = save_chat_logs_to_files
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
+    async def create(cls, planner_agent_config: dict[str, Any], browser_nav_agent_config: dict[str, Any], agents_needed: list[str] | None = None,
+                     save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
 
@@ -75,12 +75,8 @@ class AutogenWrapper:
 
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
 
-        # Load the configuration using AgentsLLMConfig
-        llm_config = AgentsLLMConfig()
-
-        # Retrieve planner agent and browser nav agent configurations
-        self.planner_agent_config = llm_config.get_planner_agent_config()
-        self.browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
+        self.planner_agent_config = planner_agent_config
+        self.browser_nav_agent_config = browser_nav_agent_config
 
         self.planner_agent_model_config = self.convert_model_config_to_autogen_format(self.planner_agent_config["model_config_params"])
         self.browser_nav_agent_model_config = self.convert_model_config_to_autogen_format(self.browser_nav_agent_config["model_config_params"])

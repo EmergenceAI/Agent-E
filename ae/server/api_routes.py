@@ -15,6 +15,7 @@ from pydantic import BaseModel
 from pydantic import Field
 
 import ae.core.playwright_manager as browserManager
+from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.utils.ui_messagetype import MessageType
 
@@ -133,7 +134,14 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     current_url = await playwright_manager.get_current_url()
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
-    ag = await AutogenWrapper.create()
+    # Load the configuration using AgentsLLMConfig
+    llm_config = AgentsLLMConfig()
+
+    # Retrieve planner agent and browser nav agent configurations
+    planner_agent_config = llm_config.get_planner_agent_config()
+    browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
+
+    ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config)
     command_exec_result = await ag.process_command(command, current_url)  # type: ignore
 
     # Notify about the completion of the command

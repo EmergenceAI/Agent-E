@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 import ae.core.playwright_manager as browserManager
 from ae.config import SOURCE_LOG_FOLDER_PATH
+from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.utils.cli_helper import async_input  # type: ignore
 from ae.utils.formatting_helper import str_to_bool
@@ -81,7 +82,15 @@ class SystemOrchestrator:
         """
         Initializes the components required for the system's operation, including the Autogen wrapper and the Playwright manager.
         """
-        self.autogen_wrapper = await AutogenWrapper.create(agents_needed=self.agent_names, save_chat_logs_to_files=self.save_chat_logs_to_files)
+        # Load the configuration using AgentsLLMConfig
+        llm_config = AgentsLLMConfig()
+
+        # Retrieve planner agent and browser nav agent configurations
+        self.planner_agent_config = llm_config.get_planner_agent_config()
+        self.browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
+
+        self.autogen_wrapper = await AutogenWrapper.create(self.planner_agent_config, self.browser_nav_agent_config, agents_needed=self.agent_names,
+                                                           save_chat_logs_to_files=self.save_chat_logs_to_files)
 
         self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
         await self.browser_manager.async_initialize()
