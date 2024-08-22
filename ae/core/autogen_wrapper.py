@@ -59,6 +59,19 @@ class AutogenWrapper:
         Create an instance of AutogenWrapper.
 
         Args:
+            planner_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the planner agent. For example:
+                {
+                    "model_name": "gpt-4o",
+                    "model_api_key": "",
+                    "model_base_url": null,
+                    "system_prompt": ["optional prompt unless you want to use the built in"],
+                    "llm_config_params": { #all name value pairs here will go to the llm config of autogen verbatim
+                        "cache_seed": null,
+                        "temperature": 0.001,
+                        "top_p": 0.001
+                    }
+                }
+            browser_nav_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the browser navigation agent. Same format as planner_agent_config.
             agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
             save_chat_logs_to_files (bool, optional): Whether to save chat logs to files. Defaults to True.
             max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
