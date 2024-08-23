@@ -12,8 +12,6 @@ import nest_asyncio  # type: ignore
 import openai
 
 #from autogen import Cache
-from dotenv import load_dotenv
-
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
 from ae.core.agents.high_level_planner_agent import PlannerAgent
@@ -45,16 +43,35 @@ class AutogenWrapper:
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
 
-        self.config_list: list[dict[str, str]] | None = None
+        self.planner_agent_model_config : list[dict[str, str]] | None = None
+        self.browser_nav_agent_model_config : list[dict[str, str]] | None = None
+
+        self.planner_agent_config: dict[str, Any] | None = None
+        self.browser_nav_agent_config: dict[str, Any] | None = None
+
         self.chat_logs_dir: str = SOURCE_LOG_FOLDER_PATH
         self.save_chat_logs_to_files = save_chat_logs_to_files
 
     @classmethod
-    async def create(cls, agents_needed: list[str] | None = None, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
+    async def create(cls, planner_agent_config: dict[str, Any], browser_nav_agent_config: dict[str, Any], agents_needed: list[str] | None = None,
+                     save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
         """
         Create an instance of AutogenWrapper.
 
         Args:
+            planner_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the planner agent. For example:
+                {
+                    "model_name": "gpt-4o",
+                    "model_api_key": "",
+                    "model_base_url": null,
+                    "system_prompt": ["optional prompt unless you want to use the built in"],
+                    "llm_config_params": { #all name value pairs here will go to the llm config of autogen verbatim
+                        "cache_seed": null,
+                        "temperature": 0.001,
+                        "top_p": 0.001
+                    }
+                }
+            browser_nav_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the browser navigation agent. Same format as planner_agent_config.
             agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
             save_chat_logs_to_files (bool, optional): Whether to save chat logs to files. Defaults to True.
             max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
@@ -69,41 +86,14 @@ class AutogenWrapper:
         # Create an instance of cls
         self = cls(save_chat_logs_to_files=save_chat_logs_to_files, max_chat_round=max_chat_round)
 
-        load_dotenv()
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
 
-        autogen_model_name = os.getenv("AUTOGEN_MODEL_NAME")
-        if not autogen_model_name:
-            autogen_model_name = "gpt-4-turbo"
-            logger.warning(f"Cannot find AUTOGEN_MODEL_NAME in the environment variables, setting it to default {autogen_model_name}.")
+        self.planner_agent_config = planner_agent_config
+        self.browser_nav_agent_config = browser_nav_agent_config
 
-        autogen_model_api_key = os.getenv("AUTOGEN_MODEL_API_KEY")
-        if autogen_model_api_key is None:
-            logger.warning("Cannot find AUTOGEN_MODEL_API_KEY in the environment variables.")
-            if not os.getenv('OPENAI_API_KEY'):
-                logger.error("Cannot find OPENAI_API_KEY in the environment variables.")
-                raise ValueError("You need to set either AUTOGEN_MODEL_API_KEY or OPENAI_API_KEY in the .env file.")
-            else:
-                autogen_model_api_key = os.environ['OPENAI_API_KEY']
-        else:
-            logger.info(f"Using model {autogen_model_name} for AutoGen from the environment variables.")
-        model_info = {'model': autogen_model_name, 'api_key': autogen_model_api_key}
+        self.planner_agent_model_config = self.convert_model_config_to_autogen_format(self.planner_agent_config["model_config_params"])
+        self.browser_nav_agent_model_config = self.convert_model_config_to_autogen_format(self.browser_nav_agent_config["model_config_params"])
 
-        if os.getenv("AUTOGEN_MODEL_BASE_URL"):
-            model_info["base_url"] = os.getenv("AUTOGEN_MODEL_BASE_URL") # type: ignore
-
-        if os.getenv("AUTOGEN_MODEL_API_TYPE"):
-            model_info["api_type"] = os.getenv("AUTOGEN_MODEL_API_TYPE") # type: ignore
-
-        if os.getenv("AUTOGEN_MODEL_API_VERSION"):
-            model_info["api_version"] = os.getenv("AUTOGEN_MODEL_API_VERSION") # type: ignore
-
-        env_var: list[dict[str, str]] = [model_info]
-        with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp:
-            json.dump(env_var, temp)
-            temp_file_path = temp.name
-
-        self.config_list = autogen.config_list_from_json(env_or_file=temp_file_path, filter_dict={"model": {autogen_model_name}}) # type: ignore
         self.agents_map = await self.__initialize_agents(agents_needed)
 
         def trigger_nested_chat(manager: autogen.ConversableAgent):
@@ -165,6 +155,14 @@ class AutogenWrapper:
 
         return self
 
+
+    def convert_model_config_to_autogen_format(self, model_config: dict[str, str]) -> list[dict[str, Any]]:
+        env_var: list[dict[str, str]] = [model_config]
+        with tempfile.NamedTemporaryFile(delete=False, mode='w') as temp:
+            json.dump(env_var, temp)
+            temp_file_path = temp.name
+
+        return autogen.config_list_from_json(env_or_file=temp_file_path)
 
     def get_chat_logs_dir(self) -> str|None:
         """
@@ -314,7 +312,8 @@ class AutogenWrapper:
             autogen.AssistantAgent: An instance of BrowserNavAgent.
 
         """
-        browser_nav_agent = BrowserNavAgent(self.config_list, user_proxy_agent) # type: ignore
+        browser_nav_agent = BrowserNavAgent(self.browser_nav_agent_model_config, self.browser_nav_agent_config["llm_config_params"], # type: ignore
+                                            self.browser_nav_agent_config["other_settings"].get("system_prompt", None), user_proxy_agent) # type: ignore
         #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2))
         return browser_nav_agent.agent
 
@@ -326,7 +325,8 @@ class AutogenWrapper:
             autogen.AssistantAgent: An instance of PlannerAgent.
 
         """
-        planner_agent = PlannerAgent(self.config_list, assistant_agent) # type: ignore
+        planner_agent = PlannerAgent(self.planner_agent_model_config, self.planner_agent_config["llm_config_params"], # type: ignore
+                                     self.planner_agent_config["other_settings"].get("system_prompt", None), assistant_agent) # type: ignore
         return planner_agent.agent
 
     async def process_command(self, command: str, current_url: str | None = None) -> autogen.ChatResult | None:

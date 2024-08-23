@@ -305,10 +305,10 @@
         "geolocation": null,
         "intent_template": "search {{site}} for {{item}}",
         "instantiation_dict": {
-            "site": "the web",
+            "site": "on google",
             "item": "the library of Alexandria"
         },
-        "intent": "search the web for the library of Alexandria",
+        "intent": "search on google for the library of Alexandria",
         "require_reset": false,
         "eval": {
             "eval_types": [
@@ -748,6 +748,8 @@
                         "battery life",
                         "too small",
                         "size",
+                        "slow",
+                        "usability",
                         "performance",
                         "functionality",
                         "speaker quality",
@@ -789,6 +791,8 @@
                         "slow",
                         "sluggish",
                         "gps",
+                        "performance",
+                        "durability",
                         "misrepresentation",
                         "not as advertised"
                     ],
@@ -915,7 +919,7 @@
                 "url_match"
             ],
             "reference_answers": null,
-            "reference_url": "https://www.bbc.com/search?q=china",
+            "reference_url": "https://www.bbc.com/search?q=china |OR| https://www.bbc.com/news/world/asia/china",
             "program_html": null
         }
     }

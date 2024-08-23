@@ -1,6 +1,8 @@
 import inspect
 from typing import Annotated
 
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
+
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
 from ae.utils.ui_messagetype import MessageType
@@ -29,8 +31,10 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
         await browser_manager.take_screenshots(f"{function_name}_start", page)
         url = ensure_protocol(url)
         await page.goto(url, timeout=timeout*1000) # type: ignore
+    except PlaywrightTimeoutError as pte:
+        logger.warn(f"Initial navigation to {url} failed: {pte}. Will try to continue anyway.") # happens more often than not, but does not seem to be a problem
     except Exception as e:
-        logger.warn(f"Initial navigation to {url} failed: {e}. Will try to continue anyway.") # happens more often than not, but does not seem to be a problem
+        logger.error(f"An error occurred while opening the URL: {url}. Error: {e}")
         import traceback
         traceback.print_exc()
 
