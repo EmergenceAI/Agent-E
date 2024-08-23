@@ -114,10 +114,10 @@ Agent-E relies on several environment variables for its configuration. You need 
 ## Running the Code
 
 Once you have set up the environment and installed all the dependencies, you can run Agent-E using the following command:
-
 ```bash
 python -m ae.main
 ```
+
 ### For macOS Users
 If you encounter `BlockingIOError` (Errno 35) when running the program on macOS, execute the following command to avoid the issue:
 ```bash
