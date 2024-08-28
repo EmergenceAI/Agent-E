@@ -110,6 +110,10 @@ Agent-E relies on several environment variables for its configuration. You need 
 
 - **`LOG_MESSAGES_FORMAT`**  
   Set to `json` or `text` (Default: `text`). Specifies the format for logging messages.
+
+- **`ADDITIONAL_SKILL_DIRS`** *(optional)*
+  A comma-separated list of directories or `.py` files where additional skills can be loaded from. This is used to dynamically load skills from specified directories or files.
+  Example: `ADDITIONAL_SKILL_DIRS="./private_skills,./extra_skills/my_custom_skill.py"` would be added to the `.env` file (or equivalent)
   
 ## Running the Code
 
