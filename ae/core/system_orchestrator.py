@@ -45,6 +45,8 @@ class SystemOrchestrator:
         self.autogen_wrapper = None
         self.is_running = False
 
+        self.use_planner = str_to_bool(os.getenv('USE_PLANNER', True))
+
         self.save_chat_logs_to_files = str_to_bool(os.getenv('SAVE_CHAT_LOGS_TO_FILE', True))
 
         if os.getenv('ORCHESTRATOR_API_KEY', None) is not None and os.getenv('ORCHESTRATOR_GATEWAY', None) is not None:
@@ -90,7 +92,7 @@ class SystemOrchestrator:
         self.browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
 
         self.autogen_wrapper = await AutogenWrapper.create(self.planner_agent_config, self.browser_nav_agent_config, agents_needed=self.agent_names,
-                                                           save_chat_logs_to_files=self.save_chat_logs_to_files, use_planner=False)
+                                                           save_chat_logs_to_files=self.save_chat_logs_to_files, use_planner=self.use_planner)
 
         self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
         await self.browser_manager.async_initialize()
