@@ -114,6 +114,9 @@ Agent-E relies on several environment variables for its configuration. You need 
 - **`ADDITIONAL_SKILL_DIRS`** *(optional)*
   A comma-separated list of directories or `.py` files where additional skills can be loaded from. This is used to dynamically load skills from specified directories or files.
   Example: `ADDITIONAL_SKILL_DIRS="./private_skills,./extra_skills/my_custom_skill.py"` would be added to the `.env` file (or equivalent)
+
+- ** `USE_PLANNER`** *(optional)*
+Set to `true` or `false` (Default: `true`). Indicates whether to use the hierachical planner or not. If you are not using the hierarchical planner, it is recommended that you embelish the system prompt for the browser navigation agent because it normally gets a lift from the hierachical planner.
   
 ## Running the Code
 
