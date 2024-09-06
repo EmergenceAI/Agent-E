@@ -38,8 +38,17 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
+    def __init__(self, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000, use_planner: bool = True):
+        """
+        Args:
+            save_chat_logs_to_files (bool): Save chat logs to files or not.
+            max_chat_round (int): Maximum number of chat rounds.
+            use_planner (bool): Determines if the planner agent and nested chat will be initialized. 
+                                If False, only user proxy and browser navigation agents are initialized.
+        """
         self.number_of_rounds = max_chat_round
+        self.use_planner = use_planner  # This new parameter controls whether to use planner and nested chat
+
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
 
@@ -53,8 +62,8 @@ class AutogenWrapper:
         self.save_chat_logs_to_files = save_chat_logs_to_files
 
     @classmethod
-    async def create(cls, planner_agent_config: dict[str, Any], browser_nav_agent_config: dict[str, Any], agents_needed: list[str] | None = None,
-                     save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
+    async def create(cls, planner_agent_config: dict[str, Any] | None, browser_nav_agent_config: dict[str, Any], agents_needed: list[str] | None = None,
+                     save_chat_logs_to_files: bool = True, max_chat_round: int = 1000, use_planner: bool = True):
         """
         Create an instance of AutogenWrapper.
 
@@ -74,24 +83,28 @@ class AutogenWrapper:
             browser_nav_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the browser navigation agent. Same format as planner_agent_config.
             agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
             save_chat_logs_to_files (bool, optional): Whether to save chat logs to files. Defaults to True.
-            max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
+            max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 1000.
+            use_planner (bool, optional): Whether to use planner and nested chat agents. Defaults to True.
 
         Returns:
             AutogenWrapper: An instance of AutogenWrapper.
 
         """
-        print(f">>> Creating AutogenWrapper with {agents_needed} and {max_chat_round} rounds. Save chat logs to files: {save_chat_logs_to_files}")
         if agents_needed is None:
-            agents_needed = ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
+            agents_needed = ["user", "browser_nav_executor", "browser_nav_agent"]
+            if use_planner:
+                agents_needed.extend(["planner_agent"])
         # Create an instance of cls
-        self = cls(save_chat_logs_to_files=save_chat_logs_to_files, max_chat_round=max_chat_round)
+        self = cls(save_chat_logs_to_files=save_chat_logs_to_files, max_chat_round=max_chat_round, use_planner=use_planner)
 
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
 
         self.planner_agent_config = planner_agent_config
         self.browser_nav_agent_config = browser_nav_agent_config
 
-        self.planner_agent_model_config = self.convert_model_config_to_autogen_format(self.planner_agent_config["model_config_params"])
+        if self.planner_agent_config:
+            self.planner_agent_model_config = self.convert_model_config_to_autogen_format(self.planner_agent_config["model_config_params"])
+
         self.browser_nav_agent_model_config = self.convert_model_config_to_autogen_format(self.browser_nav_agent_config["model_config_params"])
 
         self.agents_map = await self.__initialize_agents(agents_needed)
@@ -139,19 +152,20 @@ class AutogenWrapper:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
                 return next_step # type: ignore
 
-        # print(f">>> Registering nested chat. Available agents: {self.agents_map}")
-        self.agents_map["user"].register_nested_chats( # type: ignore
-            [
-                {
-            "sender": self.agents_map["browser_nav_executor"],
-            "recipient": self.agents_map["browser_nav_agent"],
-            "message":reflection_message,
-            "max_turns": self.number_of_rounds,
-            "summary_method": my_custom_summary_method,
-                }
-            ],
-            trigger=trigger_nested_chat, # type: ignore
-        )
+        if self.use_planner:
+            # print(f">>> Registering nested chat. Available agents: {self.agents_map}")
+            self.agents_map["user"].register_nested_chats( # type: ignore
+                [
+                    {
+                "sender": self.agents_map["browser_nav_executor"],
+                "recipient": self.agents_map["browser_nav_agent"],
+                "message":reflection_message,
+                "max_turns": self.number_of_rounds,
+                "summary_method": my_custom_summary_method,
+                    }
+                ],
+                trigger=trigger_nested_chat, # type: ignore
+            )
 
         return self
 
@@ -221,8 +235,11 @@ class AutogenWrapper:
                 browser_nav_agent: autogen.ConversableAgent = self.__create_browser_nav_agent(agents_map["browser_nav_executor"] )
                 agents_map["browser_nav_agent"] = browser_nav_agent
             elif agent_needed == "planner_agent":
-                planner_agent = self.__create_planner_agent(user_delegate_agent)
-                agents_map["planner_agent"] = planner_agent
+                if self.use_planner:
+                    planner_agent = self.__create_planner_agent(user_delegate_agent)
+                    agents_map["planner_agent"] = planner_agent
+                else:
+                    logger.info("Planner agent is not used, skipping..")
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
         return agents_map
@@ -314,7 +331,7 @@ class AutogenWrapper:
         """
         browser_nav_agent = BrowserNavAgent(self.browser_nav_agent_model_config, self.browser_nav_agent_config["llm_config_params"], # type: ignore
                                             self.browser_nav_agent_config["other_settings"].get("system_prompt", None), user_proxy_agent) # type: ignore
-        #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2))
+        #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2)) # type: ignore
         return browser_nav_agent.agent
 
     def __create_planner_agent(self, assistant_agent: autogen.ConversableAgent):
@@ -352,14 +369,26 @@ class AutogenWrapper:
             if self.agents_map is None:
                 raise ValueError("Agents map is not initialized.")
 
-            result=await self.agents_map["user"].a_initiate_chat( # type: ignore
-                self.agents_map["planner_agent"], # self.manager # type: ignore
-                max_turns=self.number_of_rounds,
-                #clear_history=True,
-                message=prompt,
-                silent=False,
-                cache=None,
-            )
+
+            # If planner is used, invoke planner and nested chat
+            if self.use_planner:
+                result = await self.agents_map["user"].a_initiate_chat( # type: ignore
+                    self.agents_map["planner_agent"],
+                    max_turns=self.number_of_rounds,
+                    message=prompt,
+                    silent=False,
+                    cache=None,
+                )
+            else:
+                # If no planner, directly use browser_nav_executor
+                result = await self.agents_map["browser_nav_executor"].a_initiate_chat( # type: ignore
+                    self.agents_map["browser_nav_agent"],
+                    max_turns=self.number_of_rounds,
+                    message=prompt,
+                    silent=False,
+                    cache=None,
+                )
+
             # reset usage summary for all agents after each command
             for agent in self.agents_map.values():
                 if hasattr(agent, "client") and agent.client is not None:

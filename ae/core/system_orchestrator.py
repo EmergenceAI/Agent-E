@@ -90,7 +90,7 @@ class SystemOrchestrator:
         self.browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
 
         self.autogen_wrapper = await AutogenWrapper.create(self.planner_agent_config, self.browser_nav_agent_config, agents_needed=self.agent_names,
-                                                           save_chat_logs_to_files=self.save_chat_logs_to_files)
+                                                           save_chat_logs_to_files=self.save_chat_logs_to_files, use_planner=False)
 
         self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
         await self.browser_manager.async_initialize()
