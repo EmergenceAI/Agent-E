@@ -129,7 +129,12 @@ class BrowserNavAgent:
         specified by an environment variable.
         """
         # Get additional skill directories or files from environment variable
-        additional_skill_paths: list[str] = os.getenv('ADDITIONAL_SKILL_DIRS', "").split(',')
+        additional_skill_dirs: str = os.getenv('ADDITIONAL_SKILL_DIRS', "")
+        if len(additional_skill_dirs) == 0:
+            logger.debug("No additional skill directories or files specified.")
+            return
+
+        additional_skill_paths: list[str] = additional_skill_dirs.split(',')
 
         for skill_path in additional_skill_paths:
             skill_path = skill_path.strip()  # Strip whitespace
@@ -148,7 +153,6 @@ class BrowserNavAgent:
                 directory_path = os.path.dirname(skill_path).replace('/', '.')
                 module_path = f"{directory_path}.{module_name}"
                 importlib.import_module(module_path)
-
             else:
                 logger.warning(f"Invalid skill path specified: {skill_path}")
 
