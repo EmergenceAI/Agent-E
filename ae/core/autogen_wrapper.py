@@ -238,8 +238,9 @@ class AutogenWrapper:
                 if self.use_planner:
                     planner_agent = self.__create_planner_agent(user_delegate_agent)
                     agents_map["planner_agent"] = planner_agent
+                    logger.debug("Planner agent will be used.")
                 else:
-                    logger.info("Planner agent is not used, skipping..")
+                    logger.debug("Planner agent is not used, skipping..")
             else:
                 raise ValueError(f"Unknown agent type: {agent_needed}")
         return agents_map
