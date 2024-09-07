@@ -137,9 +137,13 @@ Agent-E provides a FastAPI wrapper, allowing you to send commands via HTTP and r
 
 #### To launch the FastAPI server:
 
-1. Run the following command:
+1. On Linux/macOS, run the following command:
    ```bash
    uvicorn ae.server.api_routes:app --reload --loop asyncio
+   ```
+2. On Windows, run the same command but without ```--reload``` (Python still has different async implementations across OSes, removing --reload helping finding a workaround, see this [answer on  StackOverflow](https://stackoverflow.com/a/78795990)):
+   ```cmd
+   uvicorn ae.server.api_routes:app --loop asyncio
    ```
 
 2. Send POST requests to execute tasks. For example, to execute a task using cURL:
