@@ -25,11 +25,18 @@ async def openurl(url: Annotated[str, "The URL to navigate to. Value must includ
     browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
     await browser_manager.get_browser_context()
     page = await browser_manager.get_current_page()
-    # Navigate to the URL with a short timeout to ensure the initial load starts
-    function_name = inspect.currentframe().f_code.co_name # type: ignore
     try:
-        await browser_manager.take_screenshots(f"{function_name}_start", page)
         url = ensure_protocol(url)
+        if page.url == url:
+            logger.info(f"Current page URL is the same as the new URL: {url}. No need to refresh.")
+            title = await page.title()
+            return f"Page already loaded: {url}, Title: {title}" # type: ignore
+
+        # Navigate to the URL with a short timeout to ensure the initial load starts
+        function_name = inspect.currentframe().f_code.co_name # type: ignore
+        
+        await browser_manager.take_screenshots(f"{function_name}_start", page)
+
         await page.goto(url, timeout=timeout*1000) # type: ignore
     except PlaywrightTimeoutError as pte:
         logger.warn(f"Initial navigation to {url} failed: {pte}. Will try to continue anyway.") # happens more often than not, but does not seem to be a problem
