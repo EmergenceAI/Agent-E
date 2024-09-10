@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from string import Template
 from typing import Any
@@ -24,6 +25,8 @@ class PlannerAgent:
         - system_prompt: The system prompt to be used for this agent or the default will be used if not provided.
         - user_proxy_agent: An instance of the UserProxyAgent class.
         """
+        enable_user_input = os.getenv("PLANNER_USER_INPUT_SKILL_ENABLED", "false").lower() == "true"
+
         user_ltm = self.__get_ltm()
         system_message = LLM_PROMPTS["PLANNER_AGENT_PROMPT"]
 
@@ -50,10 +53,13 @@ class PlannerAgent:
             },
         )
 
-        # Register get_user_input skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
-        # Register get_user_input skill for execution by user_proxy_agent
-        user_proxy_agent.register_for_execution()(get_user_input)
+        if enable_user_input:
+            # Register get_user_input skill for LLM by assistant agent
+            self.agent.register_for_llm(description=LLM_PROMPTS["GET_USER_INPUT_PROMPT"])(get_user_input)
+            # Register get_user_input skill for execution by user_proxy_agent
+            user_proxy_agent.register_for_execution()(get_user_input)
+        else:
+            logger.debug("User input skill is disabled for PlannerAgent")
 
         self.agent.register_reply( # type: ignore
             [autogen.AssistantAgent, None],
