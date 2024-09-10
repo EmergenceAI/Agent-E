@@ -122,7 +122,7 @@ class AutogenWrapper:
             self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
-                return "I received an empty message. This is not an empty and is recoverable. Try to reformulate the task..."
+                return "I received an empty message. This is not an error and is recoverable. Try to reformulate the task..."
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 last_message=last_message+" "+  get_url() # type: ignore
