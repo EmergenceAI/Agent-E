@@ -75,7 +75,6 @@ async def execute_task(request: Request, query_model: CommandQueryModel):
     notification_queue = Queue()  # type: ignore
     transaction_id = str(uuid.uuid4()) if query_model.clientid is None else query_model.clientid
     register_notification_listener(notification_queue)
-    print(f"Config: {transaction_id}")
     return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue, query_model.request_originator, query_model.llm_config), media_type="text/event-stream")
 
 
@@ -134,7 +133,6 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
         command (str): The command to process.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
     """
-    print(f"LLM Config via API : {llm_config}")
     await playwright_manager.go_to_homepage() # Go to the homepage before processing the command
     current_url = await playwright_manager.get_current_url()
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
@@ -144,8 +142,8 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     if llm_config is None:
         normalized_llm_config = AgentsLLMConfig()
     else:
-        print("Applying LLM Config")
         normalized_llm_config = AgentsLLMConfig(llm_config=llm_config)
+        logger.info("Applied LLM config received via API.")
 
     # Retrieve planner agent and browser nav agent configurations
     planner_agent_config = normalized_llm_config.get_planner_agent_config()

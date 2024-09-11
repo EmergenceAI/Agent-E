@@ -34,7 +34,6 @@ class AgentsLLMConfig:
     def __init__(self, env_file_path: str = ".env", llm_config: Optional[dict[str,Any] | None] = None) -> None:
         load_dotenv(env_file_path, verbose=True, override=True)
         if llm_config:
-
             self.config: dict[str, Any] = self.load_config_from_api(llm_config)
         else:
             self.config: dict[str, Any] = self._load_config()
@@ -102,7 +101,7 @@ class AgentsLLMConfig:
             """
             try:
 
-                logger.info("Loading configuration from provided string")
+                logger.info("Loading LLM configuration provided via API.")
 
                 # Process configurations for both planner_agent and browser_nav_agent
                 planner_config = self._normalize_config(llm_config.get("planner_agent", {}))
@@ -195,6 +194,3 @@ if __name__ == "__main__":
 
     planner_config = config.get_planner_agent_config()
     browser_nav_config = config.get_browser_nav_agent_config()
-
-    print("Planner Agent Config:", planner_config)
-    print("Browser Nav Agent Config:", browser_nav_config)
