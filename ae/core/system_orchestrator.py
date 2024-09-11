@@ -94,7 +94,7 @@ class SystemOrchestrator:
         self.autogen_wrapper = await AutogenWrapper.create(self.planner_agent_config, self.browser_nav_agent_config, agents_needed=self.agent_names,
                                                            save_chat_logs_to_files=self.save_chat_logs_to_files, use_planner=self.use_planner)
 
-        self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
+        self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY", use_planner=self.use_planner)
         await self.browser_manager.async_initialize()
 
         if self.input_mode == "GUI_ONLY":

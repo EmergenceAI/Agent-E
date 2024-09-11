@@ -41,3 +41,18 @@ def final_reply_callback_planner_agent(message:str, message_type:MessageType = M
         loop = asyncio.get_event_loop()
         loop.run_until_complete(browser_manager.notify_user(message, message_type=message_type))
         return False, None  # required to ensure the agent communication flow continues
+
+def reply_back_notify_overlay(recipient: autogen.ConversableAgent, messages: list[dict[str, Any]], sender: autogen.Agent, config: dict[str, Any]):
+    if "callback" in config and  config["callback"] is not None:
+        callback = config["callback"]
+        callback(sender, recipient, messages[-1])
+
+    # only interested in the final message to the user, which shhould contain the answer/final response
+    if recipient.name == "browser_nav_executor" and messages[-1]["role"] == "user":
+        msg = messages[-1]['content']
+        msg = msg.replace("##TERMINATE TASK##", "").strip()
+
+        browser_manager = PlaywrightManager(browser_type='chromium', headless=False)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(browser_manager.notify_user(msg, message_type=MessageType.ANSWER))
+    return False, None  # required to ensure the agent communication flow continues]

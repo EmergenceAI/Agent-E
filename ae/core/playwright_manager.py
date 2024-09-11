@@ -49,7 +49,7 @@ class PlaywrightManager:
         return cls._instance
 
 
-    def __init__(self, browser_type: str = "chromium", headless: bool = False, gui_input_mode: bool = True, screenshots_dir: str = "", take_screenshots: bool = False):
+    def __init__(self, browser_type: str = "chromium", headless: bool = False, gui_input_mode: bool = True, screenshots_dir: str = "", take_screenshots: bool = False, use_planner: bool = True):
         """
         Initializes the PlaywrightManager with the specified browser type and headless mode.
         Initialization occurs only once due to the singleton pattern.
@@ -60,6 +60,7 @@ class PlaywrightManager:
         """
         if self.__initialized:
             return
+        self.use_planner = use_planner
         self.browser_type = browser_type
         self.isheadless = headless
         self.__initialized = True
@@ -304,12 +305,19 @@ class PlaywrightManager:
         safe_message = escape_js_message(message)
         self.ui_manager.new_system_message(safe_message, message_type)
 
+        overlay_no_detail_message_types = [MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO]
+        overlay_detail_message_types = [MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO, MessageType.STEP]
+
+        if not self.use_planner:
+            overlay_no_detail_message_types.append(MessageType.ACTION)
+            overlay_detail_message_types.append(MessageType.ACTION)
+
         if self.ui_manager.overlay_show_details == False:  # noqa: E712
-            if message_type not in (MessageType.PLAN, MessageType.QUESTION, MessageType.ANSWER, MessageType.INFO):
+            if message_type not in overlay_no_detail_message_types:
                 return
 
         if self.ui_manager.overlay_show_details == True:  # noqa: E712
-            if message_type not in (MessageType.PLAN,  MessageType.QUESTION , MessageType.ANSWER,  MessageType.INFO, MessageType.STEP):
+            if message_type not in overlay_detail_message_types:
                 return
 
         safe_message_type = escape_js_message(message_type.value)

@@ -197,9 +197,8 @@ class UIManager:
         Args:
             message (str): The message text to add.
         """
-
         self.conversation_history.append({"from":"system", "message":message, "message_type":type.value})
-        print(f"Adding system message: {message}")
+        print(f"Adding system message: {message}, type: {type.value}")
 
     def add_default_system_messages(self):
         """

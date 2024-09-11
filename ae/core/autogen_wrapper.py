@@ -331,7 +331,8 @@ class AutogenWrapper:
 
         """
         browser_nav_agent = BrowserNavAgent(self.browser_nav_agent_model_config, self.browser_nav_agent_config["llm_config_params"], # type: ignore
-                                            self.browser_nav_agent_config["other_settings"].get("system_prompt", None), user_proxy_agent) # type: ignore
+                                            self.browser_nav_agent_config["other_settings"].get("system_prompt", None), user_proxy_agent,  # type: ignore
+                                            self.use_planner)
         #print(">>> browser agent tools:", json.dumps(browser_nav_agent.agent.llm_config.get("tools"), indent=2)) # type: ignore
         return browser_nav_agent.agent
 

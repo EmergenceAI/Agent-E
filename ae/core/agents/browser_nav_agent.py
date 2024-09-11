@@ -7,6 +7,7 @@ from typing import Any
 import autogen  # type: ignore
 
 from ae.core.memory.static_ltm import get_user_ltm
+from ae.core.post_process_responses import reply_back_notify_overlay
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.click_using_selector import click as click_element
 
@@ -25,7 +26,7 @@ from ae.utils.logger import logger
 
 
 class BrowserNavAgent:
-    def __init__(self, model_config_list, llm_config_params: dict[str, Any], system_prompt: str|None, browser_nav_executor: autogen.UserProxyAgent): # type: ignore
+    def __init__(self, model_config_list, llm_config_params: dict[str, Any], system_prompt: str|None, browser_nav_executor: autogen.UserProxyAgent, use_planner: bool = True): # type: ignore
         """
         Initialize the BrowserNavAgent and store the AssistantAgent instance
         as an instance attribute for external access.
@@ -35,7 +36,9 @@ class BrowserNavAgent:
         - llm_config_params: A dictionary of configuration parameters for the LLM.
         - system_prompt: The system prompt to be used for this agent or the default will be used if not provided.
         - user_proxy_agent: An instance of the UserProxyAgent class.
+        - use_planner: (Default True) A boolean flag to indicate whether to use the planner agent or not.
         """
+        self.use_planner = use_planner
         self.browser_nav_executor = browser_nav_executor
         user_ltm = self.__get_ltm()
 
@@ -69,7 +72,6 @@ class BrowserNavAgent:
         returns: str | None - The user LTM or None if not found.
         """
         return get_user_ltm()
-
 
     def __register_skills(self):
         """
@@ -105,19 +107,19 @@ class BrowserNavAgent:
         self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
         self.browser_nav_executor.register_for_execution()(extract_text_from_pdf)
 
-        '''
-        # Register reply function for printing messages
-        self.browser_nav_executor.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_user_proxy,
-            config={"callback": None},
-        )
-        self.agent.register_reply( # type: ignore
-            [autogen.Agent, None],
-            reply_func=print_message_from_browser_agent,
-            config={"callback": None},
-        )
-        '''
+        if not self.use_planner:
+            # Register reply function for printing messages to the overlay
+            self.browser_nav_executor.register_reply( # type: ignore
+                [autogen.Agent, None],
+                reply_func=reply_back_notify_overlay,
+                config={"callback": None}
+            )
+            self.agent.register_reply( # type: ignore
+                [autogen.Agent, None],
+                reply_func=reply_back_notify_overlay,
+                config={"callback": None}
+            )
+
         self.__load_additional_skills()
 
         #print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
