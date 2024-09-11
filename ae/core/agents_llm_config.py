@@ -31,10 +31,11 @@ class AgentsLLMConfig:
         "model_base_url": "base_url",
     }
 
-    def __init__(self, env_file_path: str = ".env", config_string: Optional[str] = None) -> None:
+    def __init__(self, env_file_path: str = ".env", llm_config: Optional[dict[str,Any] | None] = None) -> None:
         load_dotenv(env_file_path, verbose=True, override=True)
-        if config_string:
-            self.config: dict[str, Any] = self.load_config_from_string(config_string)
+        if llm_config:
+
+            self.config: dict[str, Any] = self.load_config_from_api(llm_config)
         else:
             self.config: dict[str, Any] = self._load_config()
 
@@ -54,8 +55,8 @@ class AgentsLLMConfig:
                         raw_config = file_config[config_file_ref_key]
 
                         # Process configurations for both planner_agent and browser_nav_agent
-                        planner_config = self._normalize_config_from_file(raw_config.get("planner_agent", {}))
-                        browser_nav_config = self._normalize_config_from_file(raw_config.get("browser_nav_agent", {}))
+                        planner_config = self._normalize_config(raw_config.get("planner_agent", {}))
+                        browser_nav_config = self._normalize_config(raw_config.get("browser_nav_agent", {}))
 
                         config = {
                             "planner_agent": planner_config,
@@ -85,14 +86,14 @@ class AgentsLLMConfig:
 
         return config
 
-    def load_config_from_string(self, config_string: str) -> dict[str, Any]:
+    def load_config_from_api(self, llm_config: dict[str, Any]) -> dict[str, Any]:
             """
-            Load configuration from a JSON string.
+            Load configuration from a JSON provided during execution.
             
             Parameters
             ----------
-            config_string : str
-                A JSON string representing the configuration.
+            config_string : dict[str,Any]
+                A JSON representing the configuration.
             
             Returns
             -------
@@ -100,17 +101,17 @@ class AgentsLLMConfig:
                 The loaded and normalized configuration.
             """
             try:
-                raw_config = json.loads(config_string)
+
                 logger.info("Loading configuration from provided string")
 
                 # Process configurations for both planner_agent and browser_nav_agent
-                planner_config = self._normalize_config_from_file(raw_config.get("planner_agent", {}))
-                browser_nav_config = self._normalize_config_from_file(raw_config.get("browser_nav_agent", {}))
+                planner_config = self._normalize_config(llm_config.get("planner_agent", {}))
+                browser_nav_config = self._normalize_config(llm_config.get("browser_nav_agent", {}))
 
                 config = {
                     "planner_agent": planner_config,
                     "browser_nav_agent": browser_nav_config,
-                    "other_settings": {k: v for k, v in raw_config.items() if k not in ["planner_agent", "browser_nav_agent"]},
+                    "other_settings": {k: v for k, v in llm_config.items() if k not in ["planner_agent", "browser_nav_agent"]},
                 }
 
                 return config
@@ -119,7 +120,7 @@ class AgentsLLMConfig:
                 logger.error(f"Error decoding JSON string: {e}")
                 raise e
             
-    def _normalize_config_from_file(self, agent_config: dict[str, Any]) -> dict[str, Any]:
+    def _normalize_config(self, agent_config: dict[str, Any]) -> dict[str, Any]:
         """Normalize agent-specific config from a file, grouping keys into model_config_params, llm_config_params, and other_settings."""
         model_config = {}
         llm_config_params = {}

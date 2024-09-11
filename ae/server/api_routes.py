@@ -1,7 +1,9 @@
+from ast import Dict
 import asyncio
 import json
 import logging
 import os
+from typing import Any
 import uuid
 from queue import Empty
 from queue import Queue
@@ -38,7 +40,7 @@ logger = logging.getLogger("uvicorn")
 
 class CommandQueryModel(BaseModel):
     command: str = Field(..., description="The command related to web navigation to execute.")  # Required field with description
-    llm_config: str | None = Field(None, description="The LLM configuration string to use for the agents.")
+    llm_config: dict[str,Any] | None = Field(None, description="The LLM configuration string to use for the agents.")
     clientid: str | None = Field(None, description="Client identifier, optional")
     request_originator: str | None = Field(None, description="Optional id of the request originator")
 
@@ -73,10 +75,11 @@ async def execute_task(request: Request, query_model: CommandQueryModel):
     notification_queue = Queue()  # type: ignore
     transaction_id = str(uuid.uuid4()) if query_model.clientid is None else query_model.clientid
     register_notification_listener(notification_queue)
+    print(f"Config: {transaction_id}")
     return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue, query_model.request_originator, query_model.llm_config), media_type="text/event-stream")
 
 
-def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue, request_originator: str|None = None, llm_config: str|None = None):  # type: ignore
+def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue, request_originator: str|None = None, llm_config: dict[str,Any]|None = None):  # type: ignore
     """
     Run the task to process the command and generate events.
 
@@ -123,7 +126,7 @@ def run_task(request: Request, transaction_id: str, command: str, playwright_man
 
 
 
-async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager, config_string:str|None = None):
+async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager, llm_config:dict[str,Any]|None = None):
     """
     Process the command and send notifications.
 
@@ -131,19 +134,22 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
         command (str): The command to process.
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
     """
+    print(f"LLM Config via API : {llm_config}")
     await playwright_manager.go_to_homepage() # Go to the homepage before processing the command
     current_url = await playwright_manager.get_current_url()
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
     # Load the configuration using AgentsLLMConfig
-    if config_string is None:
-        llm_config = AgentsLLMConfig()
+    normalized_llm_config = None
+    if llm_config is None:
+        normalized_llm_config = AgentsLLMConfig()
     else:
-        llm_config = AgentsLLMConfig(config_string=config_string)
+        print("Applying LLM Config")
+        normalized_llm_config = AgentsLLMConfig(llm_config=llm_config)
 
     # Retrieve planner agent and browser nav agent configurations
-    planner_agent_config = llm_config.get_planner_agent_config()
-    browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
+    planner_agent_config = normalized_llm_config.get_planner_agent_config()
+    browser_nav_agent_config = normalized_llm_config.get_browser_nav_agent_config()
 
     ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config)
     command_exec_result = await ag.process_command(command, current_url)  # type: ignore
