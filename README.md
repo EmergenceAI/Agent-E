@@ -161,7 +161,16 @@ curl --location 'http://127.0.0.1:8000/execute_task' \
     "command": "go to espn, look for soccer news, report the names of the most recent soccer champs"
 }'
 ```
+Optionally, the API request can include an llm_config object if you want to apply a different configuration during API request execution. The llm_config object should have configuration seperately for planner_agent and browser_nav_agent. See  `agents_llm_config-example.json` for an exmaple.
 
+```bash
+curl --location 'http://127.0.0.1:8000/execute_task' \
+--header 'Content-Type: application/json' \
+--data '{
+    "command": "go to espn, look for soccer news, report the names of the most recent soccer champs",
+    "llm_config":{"planner_agent":{...}, "browser_nav_agent":{...}}
+}'
+```
 ### Customizing LLM Parameters
 Agent-E supports advanced LLM configurations using environment variables or JSON-based configuration files. This allows users to customize how the underlying model behaves, such as setting temperature, top-p, and model API base URLs.
 
