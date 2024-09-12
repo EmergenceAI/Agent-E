@@ -29,15 +29,20 @@ class SystemOrchestrator:
         shutdown_event (asyncio.Event): Event to wait for an exit command to be processed.
     """
 
-    def __init__(self, agent_scenario:str="user,planner_agent,browser_nav_agent,browser_nav_executor", input_mode:str="GUI_ONLY"):
+    def __init__(self, agent_scenario:str="user,planner_agent,browser_nav_agent,browser_nav_executor", input_mode:str="GUI_ONLY",
+                 planner_max_chat_round: int = 50, browser_nav_max_chat_round: int = 10):
         """
         Initializes the system orchestrator with the specified agent scenario and input mode.
 
         Args:
             agent_scenario (str, optional): The agent scenario to use for command processing. Defaults to "user_proxy,browser_nav_agent".
             input_mode (str, optional): The input mode of the system. Defaults to "GUI_ONLY".
+            planner_max_chat_rounds (int, optional): The maximum number of chat rounds for the planner. Defaults to 50.
+            browser_nav_max_chat_round (int, optional): The maximum number of chat rounds for the browser navigation agent. Defaults to 10.
         """
         load_dotenv()
+        self.planner_number_of_rounds = planner_max_chat_round
+        self.browser_number_of_rounds = browser_nav_max_chat_round
 
         self.agent_scenario = agent_scenario
         self.input_mode = input_mode
@@ -90,7 +95,8 @@ class SystemOrchestrator:
         self.browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
 
         self.autogen_wrapper = await AutogenWrapper.create(self.planner_agent_config, self.browser_nav_agent_config, agents_needed=self.agent_names,
-                                                           save_chat_logs_to_files=self.save_chat_logs_to_files)
+                                                           save_chat_logs_to_files=self.save_chat_logs_to_files,
+                                                           planner_max_chat_round=self.planner_number_of_rounds, browser_nav_max_chat_round=self.browser_number_of_rounds)
 
         self.browser_manager = browserManager.PlaywrightManager(gui_input_mode=self.input_mode == "GUI_ONLY")
         await self.browser_manager.async_initialize()

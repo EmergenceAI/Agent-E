@@ -31,7 +31,8 @@ class AutogenWrapper:
     A wrapper class for interacting with the Autogen library.
 
     Args:
-        max_chat_round (int): The maximum number of chat rounds.
+        planner_max_chat_round (int): The maximum number of chat rounds for the planner agent.
+        browser_nav_max_chat_round (int): The maximum number of chat rounds for the browser navigation agent.
 
     Attributes:
         number_of_rounds (int): The maximum number of chat rounds.
@@ -39,8 +40,9 @@ class AutogenWrapper:
 
     """
 
-    def __init__(self, save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
-        self.number_of_rounds = max_chat_round
+    def __init__(self, save_chat_logs_to_files: bool = True, planner_max_chat_round: int = 50, browser_nav_max_chat_round: int = 10):
+        self.planner_number_of_rounds = planner_max_chat_round
+        self.browser_number_of_rounds = browser_nav_max_chat_round
 
         self.agents_map: dict[str, UserProxyAgent_SequentialFunctionExecution | autogen.AssistantAgent | autogen.ConversableAgent ] | None = None
 
@@ -55,7 +57,7 @@ class AutogenWrapper:
 
     @classmethod
     async def create(cls, planner_agent_config: dict[str, Any], browser_nav_agent_config: dict[str, Any], agents_needed: list[str] | None = None,
-                     save_chat_logs_to_files: bool = True, max_chat_round: int = 1000):
+                     save_chat_logs_to_files: bool = True, planner_max_chat_round: int = 50, browser_nav_max_chat_round: int = 10):
         """
         Create an instance of AutogenWrapper.
 
@@ -75,17 +77,18 @@ class AutogenWrapper:
             browser_nav_agent_config: dict[str, Any]: A dictionary containing the configuration parameters for the browser navigation agent. Same format as planner_agent_config.
             agents_needed (list[str], optional): The list of agents needed. If None, then ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"] will be used.
             save_chat_logs_to_files (bool, optional): Whether to save chat logs to files. Defaults to True.
-            max_chat_round (int, optional): The maximum number of chat rounds. Defaults to 50.
+            planner_max_chat_rounds (int, optional): The maximum number of chat rounds for the planner. Defaults to 50.
+            browser_nav_max_chat_round (int, optional): The maximum number of chat rounds for the browser navigation agent. Defaults to 10.
 
         Returns:
             AutogenWrapper: An instance of AutogenWrapper.
 
         """
-        print(f">>> Creating AutogenWrapper with {agents_needed} and {max_chat_round} rounds. Save chat logs to files: {save_chat_logs_to_files}")
+        print(f">>> Creating AutogenWrapper with {agents_needed}, Planner max chat rounds: {planner_max_chat_round}, browser nav max chat rounds: {browser_nav_max_chat_round}. Save chat logs to files: {save_chat_logs_to_files}")
         if agents_needed is None:
             agents_needed = ["user", "browser_nav_executor", "planner_agent", "browser_nav_agent"]
         # Create an instance of cls
-        self = cls(save_chat_logs_to_files=save_chat_logs_to_files, max_chat_round=max_chat_round)
+        self = cls(save_chat_logs_to_files=save_chat_logs_to_files, planner_max_chat_round=planner_max_chat_round, browser_nav_max_chat_round=browser_nav_max_chat_round)
 
         os.environ["AUTOGEN_USE_DOCKER"] = "False"
 
@@ -147,7 +150,7 @@ class AutogenWrapper:
             "sender": self.agents_map["browser_nav_executor"],
             "recipient": self.agents_map["browser_nav_agent"],
             "message":reflection_message,
-            "max_turns": self.number_of_rounds,
+            "max_turns": self.browser_number_of_rounds,
             "summary_method": my_custom_summary_method,
                 }
             ],
@@ -268,7 +271,7 @@ class AutogenWrapper:
             system_message=LLM_PROMPTS["USER_AGENT_PROMPT"],
             is_termination_msg=is_planner_termination_message, # type: ignore
             human_input_mode="NEVER",
-            max_consecutive_auto_reply=self.number_of_rounds,
+            max_consecutive_auto_reply=self.planner_number_of_rounds,
         )
         return task_delegate_agent
 
@@ -299,7 +302,7 @@ class AutogenWrapper:
             is_termination_msg=is_browser_executor_termination_message,
             human_input_mode="NEVER",
             llm_config=None,
-            max_consecutive_auto_reply=self.number_of_rounds,
+            max_consecutive_auto_reply=self.browser_number_of_rounds,
             code_execution_config={
                                 "last_n_messages": 1,
                                 "work_dir": "tasks",
@@ -362,7 +365,7 @@ class AutogenWrapper:
 
             result=await self.agents_map["user"].a_initiate_chat( # type: ignore
                 self.agents_map["planner_agent"], # self.manager # type: ignore
-                max_turns=self.number_of_rounds,
+                max_turns=self.planner_number_of_rounds,
                 #clear_history=True,
                 message=prompt,
                 silent=False,
