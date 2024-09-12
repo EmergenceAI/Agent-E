@@ -11,8 +11,6 @@ import autogen  # type: ignore
 import nest_asyncio  # type: ignore
 import openai
 
-from collections import defaultdict
-
 #from autogen import Cache
 from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents.browser_nav_agent import BrowserNavAgent
