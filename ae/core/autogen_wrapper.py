@@ -19,6 +19,7 @@ from ae.core.post_process_responses import final_reply_callback_planner_agent as
 from ae.core.prompts import LLM_PROMPTS
 from ae.core.skills.get_url import geturl
 from ae.utils.autogen_sequential_function_call import UserProxyAgent_SequentialFunctionExecution
+from ae.utils.detect_llm_loops import is_agent_stuck_in_loop
 from ae.utils.logger import logger
 from ae.utils.response_parser import parse_response
 from ae.utils.ui_messagetype import MessageType
@@ -119,7 +120,7 @@ class AutogenWrapper:
             self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
-                return "I received an empty message. Try a different approach."
+                return "I received an empty message. This is not an error and is recoverable. Try to reformulate the task..."
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
                 last_message=last_message+" "+  get_url() # type: ignore
@@ -280,10 +281,17 @@ class AutogenWrapper:
 
         """
         def is_browser_executor_termination_message(x: dict[str, str])->bool: # type: ignore
+
              tools_call:Any = x.get("tool_calls", "")
              if tools_call :
-                return False
+                chat_messages=self.agents_map["browser_nav_executor"].chat_messages #type: ignore
+                # Get the only key from the dictionary
+                agent_key = next(iter(chat_messages)) # type: ignore
+                # Get the chat messages corresponding to the only key
+                messages = chat_messages[agent_key] # type: ignore
+                return is_agent_stuck_in_loop(messages) # type: ignore
              else:
+                print("Terminating browser executor")
                 return True
 
         browser_nav_executor_agent = UserProxyAgent_SequentialFunctionExecution(
