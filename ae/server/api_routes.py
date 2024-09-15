@@ -18,6 +18,7 @@ from pydantic import Field
 import ae.core.playwright_manager as browserManager
 from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
+from ae.utils.formatting_helper import is_terminating_message
 from ae.utils.ui_messagetype import MessageType
 
 browser_manager = browserManager.PlaywrightManager(headless=False)
@@ -159,9 +160,10 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config, planner_max_chat_round=planner_max_chat_round,
                                      browser_nav_max_chat_round=browser_nav_max_chat_round)
     command_exec_result = await ag.process_command(command, current_url)  # type: ignore
-
-    # Notify about the completion of the command
-    await playwright_manager.notify_user("DONE", MessageType.DONE)
+    if is_terminating_message(command_exec_result.summary):
+        await playwright_manager.notify_user("DONE", MessageType.DONE)
+    else:
+        await playwright_manager.notify_user("Max turns reached", MessageType.MAX_TURNS_REACHED)
 
 
 def register_notification_listener(notification_queue: Queue):  # type: ignore

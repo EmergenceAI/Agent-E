@@ -123,6 +123,8 @@ class AutogenWrapper:
             self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
             if not last_message or last_message.strip() == "": # type: ignore
+                # print(f">>> Last message from browser nav was empty. Max turns: {self.browser_number_of_rounds*2}, number of messages: {len(list(sender.chat_messages.items())[0][1])}")
+                # print(">>> Sender messages:", json.dumps( list(sender.chat_messages.items())[0][1], indent=2))
                 return "I received an empty message. This is not an error and is recoverable. Try to reformulate the task..."
             elif "##TERMINATE TASK##" in last_message:
                 last_message=last_message.replace("##TERMINATE TASK##", "") # type: ignore
