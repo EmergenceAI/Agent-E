@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from pydantic import Field
 
 import ae.core.playwright_manager as browserManager
+from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.utils.formatting_helper import is_terminating_message
@@ -160,6 +161,13 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config, planner_max_chat_round=planner_max_chat_round,
                                      browser_nav_max_chat_round=browser_nav_max_chat_round)
     command_exec_result = await ag.process_command(command, current_url)  # type: ignore
+    messages=ag.agents_map["planner_agent"].chat_messages
+    messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
+
+    with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'chat_messages.json'), 'w', encoding='utf-8') as f:
+        json.dump(messages_str_keys, f, ensure_ascii=False, indent=4)
+        logger.debug("Chat messages saved")
+
     if is_terminating_message(command_exec_result.summary):
         await playwright_manager.notify_user("DONE", MessageType.DONE)
     else:
