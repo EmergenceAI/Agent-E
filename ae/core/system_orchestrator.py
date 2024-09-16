@@ -75,7 +75,9 @@ class SystemOrchestrator:
         for agent_name in self.agent_names:
             if 'user' in agent_name:
                 self.ser_agent_name = agent_name
-            else:
+            elif 'planner' in agent_name:
+                self.planner_agent_name = agent_name
+            elif 'browser' in agent_name:
                 self.browser_agent_name = agent_name
 
     async def initialize(self):
@@ -178,7 +180,7 @@ class SystemOrchestrator:
             end_time = time.time()
             elapsed_time = round(end_time - start_time, 2)
             logger.info(f"Command \"{command}\" took: {elapsed_time} seconds.")
-            await self.save_chat_messages()
+            await self.save_planner_chat_messages()
             if result is not None:
                 chat_history= result.chat_history # type: ignore
                 last_message = chat_history[-1] if chat_history else None # type: ignore
@@ -189,11 +191,12 @@ class SystemOrchestrator:
             await self.browser_manager.command_completed(command, elapsed_time) # type: ignore
             self.is_running = False
 
-    async def save_chat_messages(self):
+    async def save_planner_chat_messages(self):
         """
         Saves the chat messages from the Autogen wrapper's agents to a JSON file.
         """
-        messages = self.autogen_wrapper.agents_map[self.browser_agent_name].chat_messages # type: ignore
+
+        messages = self.autogen_wrapper.agents_map[self.planner_agent_name].chat_messages # type: ignore
         messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
         if self.save_chat_logs_to_files:
             with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'chat_messages.json'), 'w', encoding='utf-8') as f:
