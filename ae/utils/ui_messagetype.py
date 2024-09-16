@@ -11,3 +11,4 @@ class MessageType(Enum):
     FINAL = "final"
     DONE = "transaction_done"
     ERROR = "error"
+    MAX_TURNS_REACHED = "max_turns_reached"
