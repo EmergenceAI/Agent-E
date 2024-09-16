@@ -394,7 +394,7 @@ Here are additional parameters that you can pass to customize the test execution
 - `--take_screenshots`: Takes screenshots after every operation performed. Example: `--take_screenshots` `true`. Default is `false`
 
 ### Example Command
-Here’s an example of how to use the parameters (macUsers add `-u` parameter to the command below):
+Here’s an example of how to use the parameters (macOS Users add `-u` parameter to the command below):
 ```bash
 python -m test.run_tests --min_task_index 0 --max_task_index 28 --test_results_id first_28_tests
 ```
