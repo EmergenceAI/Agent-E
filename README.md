@@ -372,8 +372,7 @@ python -m test.run_tests
 ### macOS Users
 If you're running the tests on macOS and encounter `BlockingIOError`, run the tests with unbuffered output:
 ```bash
-macOS Users
-If you're running the tests on macOS and encounter BlockingIOError, run the tests with unbuffered output:
+python -u -m test.run_tests
 ```
 
 ### Running Specific Tests
