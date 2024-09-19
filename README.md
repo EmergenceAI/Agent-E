@@ -110,6 +110,13 @@ Agent-E relies on several environment variables for its configuration. You need 
 
 - **`LOG_MESSAGES_FORMAT`**  
   Set to `json` or `text` (Default: `text`). Specifies the format for logging messages.
+
+- **`ADDITIONAL_SKILL_DIRS`** *(optional)*
+  A comma-separated list of directories or `.py` files where additional skills can be loaded from. This is used to dynamically load skills from specified directories or files.
+  Example: `ADDITIONAL_SKILL_DIRS="./private_skills,./extra_skills/my_custom_skill.py"` would be added to the `.env` file (or equivalent)
+
+- **`PLANNER_USER_INPUT_SKILL_ENABLED`** *(optional)*
+  Set to `true` or `false` (Default: `false`). Specifies whether to allow the planner agent to get user input or not.
   
 ## Running the Code
 
@@ -137,9 +144,13 @@ Agent-E provides a FastAPI wrapper, allowing you to send commands via HTTP and r
 
 #### To launch the FastAPI server:
 
-1. Run the following command:
+1. On Linux/macOS, run the following command:
    ```bash
    uvicorn ae.server.api_routes:app --reload --loop asyncio
+   ```
+2. On Windows, run the same command but without ```--reload``` (Python still has different async implementations across OSes, removing --reload helping finding a workaround, see this [answer on  StackOverflow](https://stackoverflow.com/a/78795990)):
+   ```cmd
+   uvicorn ae.server.api_routes:app --loop asyncio
    ```
 
 2. Send POST requests to execute tasks. For example, to execute a task using cURL:
@@ -150,7 +161,16 @@ curl --location 'http://127.0.0.1:8000/execute_task' \
     "command": "go to espn, look for soccer news, report the names of the most recent soccer champs"
 }'
 ```
+Optionally, the API request can include an llm_config object if you want to apply a different configuration during API request execution. The llm_config object should have configuration seperately for planner_agent and browser_nav_agent. See  `agents_llm_config-example.json` for an exmaple.
 
+```bash
+curl --location 'http://127.0.0.1:8000/execute_task' \
+--header 'Content-Type: application/json' \
+--data '{
+    "command": "go to espn, look for soccer news, report the names of the most recent soccer champs",
+    "llm_config":{"planner_agent":{...}, "browser_nav_agent":{...}}
+}'
+```
 ### Customizing LLM Parameters
 Agent-E supports advanced LLM configurations using environment variables or JSON-based configuration files. This allows users to customize how the underlying model behaves, such as setting temperature, top-p, and model API base URLs.
 
@@ -352,8 +372,7 @@ python -m test.run_tests
 ### macOS Users
 If you're running the tests on macOS and encounter `BlockingIOError`, run the tests with unbuffered output:
 ```bash
-macOS Users
-If you're running the tests on macOS and encounter BlockingIOError, run the tests with unbuffered output:
+python -u -m test.run_tests
 ```
 
 ### Running Specific Tests
@@ -375,7 +394,7 @@ Here are additional parameters that you can pass to customize the test execution
 - `--take_screenshots`: Takes screenshots after every operation performed. Example: `--take_screenshots` `true`. Default is `false`
 
 ### Example Command
-Here’s an example of how to use the parameters (macUsers add `-u` parameter to the command below):
+Here’s an example of how to use the parameters (macOS Users add `-u` parameter to the command below):
 ```bash
 python -m test.run_tests --min_task_index 0 --max_task_index 28 --test_results_id first_28_tests
 ```

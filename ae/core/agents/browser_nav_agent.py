@@ -1,3 +1,5 @@
+import importlib
+import os
 from datetime import datetime
 from string import Template
 from typing import Any
@@ -18,6 +20,7 @@ from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
+from ae.core.skills.skill_registry import skill_registry
 from ae.utils.logger import logger
 
 
@@ -73,44 +76,30 @@ class BrowserNavAgent:
         Register all the skills that the agent can perform.
         """
 
-        # Register openurl skill for LLM by assistant agent
+        # Register each skill for LLM by assistant agent and for execution by user_proxy_agen
+
         self.agent.register_for_llm(description=LLM_PROMPTS["OPEN_URL_PROMPT"])(openurl)
-        # Register openurl skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(openurl)
 
-        # Register enter_text_and_click skill for LLM by assistant agent
         # self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_AND_CLICK_PROMPT"])(enter_text_and_click)
-        # Register enter_text_and_click skill for execution by user_proxy_agent
         # self.browser_nav_executor.register_for_execution()(enter_text_and_click)
 
-        # Register get_dom_with_content_type skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
-        # Register get_dom_with_content_type skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(get_dom_with_content_type)
 
-        # Register click_element skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["CLICK_PROMPT"])(click_element)
-        # Register click_element skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(click_element)
 
-        # Register geturl skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["GET_URL_PROMPT"])(geturl)
-        # Register geturl skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(geturl)
 
-        # Register bulk_enter_text skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["BULK_ENTER_TEXT_PROMPT"])(bulk_enter_text)
-        # Register bulk_enter_text skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(bulk_enter_text)
 
-        # Register entertext skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["ENTER_TEXT_PROMPT"])(entertext)
-        # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(entertext)
 
-        # Register entertext skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["PRESS_KEY_COMBINATION_PROMPT"])(press_key_combination)
-        # Register entertext skill for execution by user_proxy_agent
         self.browser_nav_executor.register_for_execution()(press_key_combination)
 
         self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
@@ -129,5 +118,47 @@ class BrowserNavAgent:
             config={"callback": None},
         )
         '''
-        # print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
-        # print(">>> Registered skills for BrowserNavAgent and BrowserNavExecutorAgent")
+        self.__load_additional_skills()
+
+        #print(f">>> Function map: {self.browser_nav_executor.function_map}") # type: ignore
+
+
+    def __load_additional_skills(self):
+        """
+        Dynamically load additional skills from directories or specific Python files
+        specified by an environment variable.
+        """
+        # Get additional skill directories or files from environment variable
+        additional_skill_dirs: str = os.getenv('ADDITIONAL_SKILL_DIRS', "")
+        if len(additional_skill_dirs) == 0:
+            logger.debug("No additional skill directories or files specified.")
+            return
+
+        additional_skill_paths: list[str] = additional_skill_dirs.split(',')
+
+        for skill_path in additional_skill_paths:
+            skill_path = skill_path.strip()  # Strip whitespace
+
+            if os.path.isdir(skill_path):
+                # If the path is a directory, process all .py files in it
+                for filename in os.listdir(skill_path):
+                    if filename.endswith(".py"):
+                        module_name = filename[:-3]  # Remove .py extension
+                        module_path = f"{skill_path.replace('/', '.')}.{module_name}"
+                        importlib.import_module(module_path)
+
+            elif skill_path.endswith(".py") and os.path.isfile(skill_path):
+                # If the path is a specific .py file, load it directly
+                module_name = os.path.basename(skill_path)[:-3]  # Strip .py extension
+                directory_path = os.path.dirname(skill_path).replace('/', '.')
+                module_path = f"{directory_path}.{module_name}"
+                importlib.import_module(module_path)
+            else:
+                logger.warning(f"Invalid skill path specified: {skill_path}")
+
+        # Register the skills that were dynamically discovered
+        for skill in skill_registry:
+            self.agent.register_for_llm(description=skill['description'])(skill['func'])
+            self.browser_nav_executor.register_for_execution()(skill['func'])
+            logger.debug(f"Registered additional skill: {skill['name']}")
+

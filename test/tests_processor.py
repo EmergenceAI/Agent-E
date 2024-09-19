@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import time
+from ae.core.agents_llm_config import AgentsLLMConfig
 from test.evaluators import evaluator_router
 from test.test_utils import get_formatted_current_timestamp
 from test.test_utils import load_config
@@ -323,8 +324,9 @@ async def run_tests(ag: AutogenWrapper, browser_manager: PlaywrightManager, min_
     results_dir = create_results_dir(test_file, test_results_id)
     test_results: list[dict[str, str | int | float | None]] = []
 
+    llm_config = AgentsLLMConfig()
     if not ag:
-        ag = await AutogenWrapper.create()
+        ag = await AutogenWrapper.create(llm_config.get_planner_agent_config(), llm_config.get_browser_nav_agent_config())
 
     if not browser_manager:
         browser_manager = browserManager.PlaywrightManager(headless=False)

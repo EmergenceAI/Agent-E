@@ -5,6 +5,7 @@ import os
 import uuid
 from queue import Empty
 from queue import Queue
+from typing import Any
 
 import uvicorn
 from fastapi import FastAPI
@@ -15,8 +16,10 @@ from pydantic import BaseModel
 from pydantic import Field
 
 import ae.core.playwright_manager as browserManager
+from ae.config import SOURCE_LOG_FOLDER_PATH
 from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
+from ae.utils.formatting_helper import is_terminating_message
 from ae.utils.ui_messagetype import MessageType
 
 browser_manager = browserManager.PlaywrightManager(headless=False)
@@ -38,6 +41,9 @@ logger = logging.getLogger("uvicorn")
 
 class CommandQueryModel(BaseModel):
     command: str = Field(..., description="The command related to web navigation to execute.")  # Required field with description
+    llm_config: dict[str,Any] | None = Field(None, description="The LLM configuration string to use for the agents.")
+    planner_max_chat_round: int = Field(50, description="The maximum number of chat rounds for the planner.")
+    browser_nav_max_chat_round: int = Field(10, description="The maximum number of chat rounds for the browser navigation agent.")
     clientid: str | None = Field(None, description="Client identifier, optional")
     request_originator: str | None = Field(None, description="Optional id of the request originator")
 
@@ -72,10 +78,13 @@ async def execute_task(request: Request, query_model: CommandQueryModel):
     notification_queue = Queue()  # type: ignore
     transaction_id = str(uuid.uuid4()) if query_model.clientid is None else query_model.clientid
     register_notification_listener(notification_queue)
-    return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue, query_model.request_originator), media_type="text/event-stream")
+    return StreamingResponse(run_task(request, transaction_id, query_model.command, browser_manager, notification_queue, query_model.request_originator,query_model.llm_config,
+                                      planner_max_chat_round=query_model.planner_max_chat_round,
+                                      browser_nav_max_chat_round=query_model.browser_nav_max_chat_round), media_type="text/event-stream")
 
 
-def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue, request_originator: str|None = None):  # type: ignore
+def run_task(request: Request, transaction_id: str, command: str, playwright_manager: browserManager.PlaywrightManager, notification_queue: Queue, request_originator: str|None = None, llm_config: dict[str,Any]|None = None,   # type: ignore
+             planner_max_chat_round: int = 50, browser_nav_max_chat_round: int = 10):
     """
     Run the task to process the command and generate events.
 
@@ -86,13 +95,16 @@ def run_task(request: Request, transaction_id: str, command: str, playwright_man
         playwright_manager (PlaywrightManager): The manager handling browser interactions and notifications.
         notification_queue (Queue): The queue to hold notifications for this request.
         request_originator (str|None): The originator of the request.
+        llm_config (dict[str,Any]|None): The LLM configuration to use for the agents.
+        planner_max_chat_rounds (int, optional): The maximum number of chat rounds for the planner. Defaults to 50.
+        browser_nav_max_chat_round (int, optional): The maximum number of chat rounds for the browser navigation agent. Defaults to 10.
 
     Yields:
         str: JSON-encoded string representing a notification.
     """
 
     async def event_generator():
-        task = asyncio.create_task(process_command(command, playwright_manager))
+        task = asyncio.create_task(process_command(command, playwright_manager, planner_max_chat_round, browser_nav_max_chat_round, llm_config))
         task_detail = f"transaction_id={transaction_id}, request_originator={request_originator}, command={command}"
 
         try:
@@ -122,7 +134,7 @@ def run_task(request: Request, transaction_id: str, command: str, playwright_man
 
 
 
-async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager):
+async def process_command(command: str, playwright_manager: browserManager.PlaywrightManager, planner_max_chat_round: int, browser_nav_max_chat_round: int, llm_config:dict[str,Any]|None = None):
     """
     Process the command and send notifications.
 
@@ -135,17 +147,31 @@ async def process_command(command: str, playwright_manager: browserManager.Playw
     await playwright_manager.notify_user("Processing command", MessageType.INFO)
 
     # Load the configuration using AgentsLLMConfig
-    llm_config = AgentsLLMConfig()
+    normalized_llm_config = None
+    if llm_config is None:
+        normalized_llm_config = AgentsLLMConfig()
+    else:
+        normalized_llm_config = AgentsLLMConfig(llm_config=llm_config)
+        logger.info("Applied LLM config received via API.")
 
     # Retrieve planner agent and browser nav agent configurations
-    planner_agent_config = llm_config.get_planner_agent_config()
-    browser_nav_agent_config = llm_config.get_browser_nav_agent_config()
+    planner_agent_config = normalized_llm_config.get_planner_agent_config()
+    browser_nav_agent_config = normalized_llm_config.get_browser_nav_agent_config()
 
-    ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config)
+    ag = await AutogenWrapper.create(planner_agent_config, browser_nav_agent_config, planner_max_chat_round=planner_max_chat_round,
+                                     browser_nav_max_chat_round=browser_nav_max_chat_round)
     command_exec_result = await ag.process_command(command, current_url)  # type: ignore
+    messages=ag.agents_map["planner_agent"].chat_messages
+    messages_str_keys = {str(key): value for key, value in messages.items()} # type: ignore
 
-    # Notify about the completion of the command
-    await playwright_manager.notify_user("DONE", MessageType.DONE)
+    with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'chat_messages.json'), 'w', encoding='utf-8') as f:
+        json.dump(messages_str_keys, f, ensure_ascii=False, indent=4)
+        logger.debug("Chat messages saved")
+
+    if is_terminating_message(command_exec_result.summary):
+        await playwright_manager.notify_user("DONE", MessageType.DONE)
+    else:
+        await playwright_manager.notify_user("Max turns reached", MessageType.MAX_TURNS_REACHED)
 
 
 def register_notification_listener(notification_queue: Queue):  # type: ignore
