@@ -47,6 +47,8 @@ class AgentsLLMConfig:
             try:
                 with open(config_file, 'r') as file:  # noqa: UP015
                     file_config = json.load(file)
+                    logger.info(f"Loading configuration from: {config_file}")
+                    logger.info(f"Configuration file key: {config_file_ref_key}")
 
                 if config_file_ref_key:
                     if config_file_ref_key in file_config:
