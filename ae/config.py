@@ -2,7 +2,6 @@
 import os
 
 PROJECT_SOURCE_ROOT = os.path.dirname(os.path.abspath(__file__))
-print(f"PROJECT_SOURCE_ROOT: {PROJECT_SOURCE_ROOT}")
 SOURCE_LOG_FOLDER_PATH = os.path.join(PROJECT_SOURCE_ROOT, 'log_files')
 
 PROJECT_ROOT = os.path.dirname(PROJECT_SOURCE_ROOT)
