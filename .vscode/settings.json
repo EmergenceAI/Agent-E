@@ -4,6 +4,10 @@
     "python.analysis.inlayHints.functionReturnTypes": true,
     "python.analysis.inlayHints.variableTypes": true,
     "python.analysis.autoImportCompletions": true,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportUnusedImport": "information",
+        "reportMissingImports": "none"
+    },
     "[python]": {
         "editor.formatOnSave": false,
         "editor.defaultFormatter": "charliermarsh.ruff"
