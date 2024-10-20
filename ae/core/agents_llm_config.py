@@ -28,6 +28,7 @@ class AgentsLLMConfig:
     KEY_MAPPING_FILE: dict[str, str] = {
         "model_name": "model",
         "model_api_key": "api_key",
+        "model_base_url": "base_url",
         "model_api_type": "api_type",
     }
 
