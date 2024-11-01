@@ -16,10 +16,45 @@ This provides a natural language way to interacting with a web browser:
 While Agent-E is growing, it is already equipped to handle a versatile range of tasks, but the best task is the one that you come up with. So, take it for a spin and tell us what you were able to do with it. For more information see our [blog article](https://www.emergence.ai/blog/distilling-the-web-for-multi-agent-automation).
 
 
-## Quick Start
-## Setup
-
+## Quick Start Using Scripts
 To get started with Agent-E, follow the steps below to install dependencies and configure your environment.
+#### 1. Run the Installation Script
+
+- **macOS/Linux**:
+  - From the project root, run the following command to set up the environment and install all dependencies:
+    ```bash
+    ./install.sh
+    ```
+    - For **Playwright support**, you can pass the `-p` flag to install Playwright without further prompting:
+      ```bash
+      ./install.sh -p
+      ```
+
+- **Windows**:
+  - From the project root, execute the following command in PowerShell:
+    ```powershell
+    .\win_install.ps1
+    ```
+    - To install Playwright without further prompting, add the `-p` flag:
+      ```powershell
+      .\win_install.ps1 -p
+      ```
+#### 2. Configure Environment Variables
+- Go to the newly created `.env` and `agents_llm_config.json` and follow the instructions to set the fields
+
+#### 3. Run Agent-E
+Once you have set up the environment and installed all the dependencies, you can run Agent-E using the following command:
+```bash
+python -m ae.main
+```
+
+**For macOS Users**
+```bash
+python -u -m ae.main
+```
+
+
+## Manual Setup
 
 ### 1. Install `uv`
 Agent-E uses `uv` to manage the Python virtual environment and package dependencies.
