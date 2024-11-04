@@ -155,7 +155,7 @@ Agent-E relies on several environment variables for its configuration. You need 
   
 ## Running the Code
 
-Once you have set up the environment and installed all the dependencies, you can run Agent-E using the following command:
+Once you have set up the environment and installed all the dependencies, you can run Agent-E using `./run.sh` script or using the following command:
 ```bash
 python -m ae.main
 ```
