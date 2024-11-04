@@ -51,7 +51,6 @@
 		"planner_agent": {
 			"model_name": "llama-3.1-70b-versatile",
 			"model_api_key": "",
-            "model_base_url": "https://api.groq.com/openai/v1",
 			"model_api_type": "groq",
             "system_prompt": "You are a web automation task planner....",
             "llm_config_params": {
@@ -63,7 +62,6 @@
 		"browser_nav_agent": {
 			"model_name": "llama-3.1-70b-versatile",
 			"model_api_key": "",
-            "model_base_url": "https://api.groq.com/openai/v1",
 			"model_api_type": "groq",
 			"system_prompt": "You will perform web navigation tasks with the functions that you have...\nOnce a task is completed, confirm completion with ##TERMINATE TASK##.",
             "llm_config_params": {
