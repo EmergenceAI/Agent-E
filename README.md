@@ -575,15 +575,23 @@ You can also view the paper on [arXiv](https://arxiv.org/abs/2407.13032).
 
 Here are some features and improvements planned for future releases of Agent-E:
 
-- **Action Verification**: Implement response for every skill that reflects DOM changes (using Mutation Observers), so the LLM can judge if the skill executed properly.
-- **Execution Planner**: Develop a planner agent that can make the LLM decide on multiple steps ahead for faster execution.
-- **Memory + User Preferences**: Integrate long-term memory to learn user preferences over time.
-- **Local Vector DB**: Move user preferences to a local vector database and add a skill to query it, possibly sending preference keys into the prompt.
-- **DOM Distillation for Links**: Extend DOM distillation to handle content type links.
-- **Voice Input**: Add support for voice input.
-- **DOM Distillation Optimizations**: Replace deprecated `snapshot()` method for DOM distillation, and make it smaller for all content types.
-- **DOM Testing**: Develop various test cases for DOM distillation to ensure it captures all intended elements.
-- **Expand Skills Library**: Add skills for bookmarks, tab navigation, browser history, key combinations, and special keys.
-- **Group Chat**: Enable group chat features and move some skills to different agents.
+- **Robust Dropdown Handling**: Improve handling for dropdowns on sites like travel booking platforms (e.g., Booking.com, Expedia, Google Flights). Many of these menus have dynamic content or combine multiple aspects, such as selecting both departure and return dates within the same menu.
+- **Task Caching**: Implement caching for tasks that have been run before, allowing users to rerun tasks without requiring new LLM calls. This cache should be smart, selectively caching elements like DOM locators while excluding items such as information retrieval results to improve token efficiency.
+- **Open Source and Local LLM Compatibility**: Adapt Agent-E to work with open-source LLMs, ideally allowing it to run locally. This may involve simplifying prompts or refactoring skills to match the capabilities of these models.
+- **Multi-Tab and Bookmark Handling**: Add skills to support bookmarks and multi-tab usage. Currently, Agent-E can handle only one tab at a time, losing state if another tab is opened, requiring the user to restart.
+- **PDF Text Handling**: Enhance support for managing large amounts of text from PDFs that exceed LLM context windows, possibly by chunking the text with some overlap to retain context.
+- **Browser Nav Agent History Optimization**: Improve the Browser Navigation Agent by developing ways to trim browser history, aiming to reduce token usage and cognitive load on the LLM.
+- **Harvest User Preferences**: Integrate Long-Term Memory (LTM) support to automatically populate user preferences over time, with options for users to manually inject preferences. This may involve using a vector database like FAISS locally or an external hosted vector database.
+- **DOM Distillation Testing Harness**: Develop a testing harness for DOM distillation, allowing distillation improvements to be measured for accuracy and performance improvements.
+- **DOM Distillation Optimization**: Continue to make DOM distillation faster and more efficient.
+- **Shadow DOM Support**: Some sites use Shadow DOMs, support extracting its content from Accessibility Tree.
+- **Google Suite Compatibility**: Add support for Google Docs, Sheets, Slides, and Gmail, which often use canvas elements inaccessible via conventional DOM methods.
+- **Cross-Platform Installer**: Create an installer compatible with Windows, Mac, and ideally Ubuntu, aimed at non-technical users. This installer should allow for environment variable configuration within the app.
+- **Execution Process Video Recording**: Implement video recording to capture the execution process, as requested in issue [#106](https://github.com/EmergenceAI/Agent-E/issues/106).
+- **DOM Distillation Optimizations**: Replace deprecated `snapshot()` method for DOM distillation.
 - **Token Optimization**: Investigate ways to reduce the number of tokens used by the AutoGen-required prompts and annotations.
+- ~~**Action Verification**: Implement response for every skill that reflects DOM changes (using Mutation Observers), so the LLM can judge if the skill executed properly.~~
+- ~~**Execution Planner**: Develop a planner agent that can make the LLM decide on multiple steps ahead for faster execution.~~
+- ~~[Nested chat did the trick]**Group Chat**: Enable group chat features and move some skills to different agents.~~
+
 
