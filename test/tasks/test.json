@@ -248,7 +248,7 @@
                 "url_match"
             ],
             "reference_answers": null,
-            "reference_url": "https://www.mit.edu/alumni/",
+            "reference_url": "https://www.mit.edu/alumni/ |OR| https://alum.mit.edu/",
             "program_html": null
         }
     },
@@ -303,7 +303,7 @@
         "storage_state": null,
         "start_url": "about:blank",
         "geolocation": null,
-        "intent_template": "search {{site}} for {{item}}",
+        "intent_template": "Go to the search result page {{site}} for {{item}}",
         "instantiation_dict": {
             "site": "on google",
             "item": "the library of Alexandria"
@@ -615,7 +615,8 @@
                         "area four",
                         "Shy Bird",
                         "olio",
-                        "cava"
+                        "cava",
+                        "pammy's"
                     ],
                     "min_required": 2
                 }
@@ -786,6 +787,8 @@
             "reference_answers": {
                 "some_matches": {
                     "phrases": [
+                        "memory",
+                        "storage",
                         "big",
                         "reception",
                         "slow",
@@ -909,10 +912,10 @@
         "geolocation": null,
         "intent_template": "find {{item}} on {{site}}",
         "instantiation_dict": {
-            "item": "china",
+            "item": "china news",
             "site": "BBC"
         },
-        "intent": "find china on BBC",
+        "intent": "find china news on BBC",
         "require_reset": false,
         "eval": {
             "eval_types": [

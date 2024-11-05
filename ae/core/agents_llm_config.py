@@ -29,6 +29,7 @@ class AgentsLLMConfig:
         "model_name": "model",
         "model_api_key": "api_key",
         "model_base_url": "base_url",
+        "model_api_type": "api_type",
     }
 
     def __init__(self, env_file_path: str = ".env", llm_config: dict[str,Any] | None = None) -> None:

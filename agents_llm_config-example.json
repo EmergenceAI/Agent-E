@@ -46,5 +46,53 @@
                 "seed":12345
             }
 		}
-	}
+	},
+    "llama": {
+		"planner_agent": {
+			"model_name": "llama-3.1-70b-versatile",
+			"model_api_key": "",
+			"model_api_type": "groq",
+            "system_prompt": "You are a web automation task planner....",
+            "llm_config_params": {
+                "cache_seed": null,
+                "temperature": 0.1,
+                "top_p": 0.1
+            }
+		},
+		"browser_nav_agent": {
+			"model_name": "llama-3.1-70b-versatile",
+			"model_api_key": "",
+			"model_api_type": "groq",
+			"system_prompt": "You will perform web navigation tasks with the functions that you have...\nOnce a task is completed, confirm completion with ##TERMINATE TASK##.",
+            "llm_config_params": {
+                "cache_seed": null,
+                "temperature": 0.1,
+                "top_p": 0.1
+            }
+		}
+    },
+    "anthropic": {
+		"planner_agent": {
+			"model_name": "claude-3-opus-20240229",
+			"model_api_key": "",
+			"model_api_type": "anthropic",
+            "system_prompt": "You are a web automation task planner....",
+            "llm_config_params": {
+                "cache_seed": null,
+                "temperature": 0.1,
+                "top_p": 0.1
+            }
+		},
+		"browser_nav_agent": {
+			"model_name": "claude-3-opus-20240229",
+			"model_api_key": "",
+			"model_api_type": "anthropic",
+			"system_prompt": "You will perform web navigation tasks with the functions that you have...\nOnce a task is completed, confirm completion with ##TERMINATE TASK##.",
+            "llm_config_params": {
+                "cache_seed": null,
+                "temperature": 0.1,
+                "top_p": 0.1
+            }
+		}
+    }
 }
