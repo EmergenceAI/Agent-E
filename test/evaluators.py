@@ -414,7 +414,7 @@ class VQAEvaluator(Evaluator):
         path_to_screenshots = f"{TEST_LOGS}/{test_folder}/logs_for_task_{task_id}/snapshots"
         screenshot_names = list_items_in_folder(path_to_screenshots)  # type: ignore
         
-        # Stop evaluation if no
+        # Check if screenshots were taken during execution
         if len(screenshot_names) < 1:
             warnings.warn(f"No screenshot were found for task {test_folder} in {path_to_screenshots}. Please make sure you are using the `--take_screenshots true` flag.")
             return {"score": -1, "reason": "No screenshots found for evaluation"}
@@ -429,8 +429,6 @@ class VQAEvaluator(Evaluator):
         score_dict = validate_task_vqa(state_seq, task)  # type: ignore
         score = score_dict["pred_task_completed"]
         reason = score_dict["pred_rationale"]
-
-        print(f"VQA score is {score} becauase {reason}\n ")
         return {"score": score, "reason": reason}
 
 
