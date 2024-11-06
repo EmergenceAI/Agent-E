@@ -7,6 +7,7 @@ import time
 import urllib
 import urllib.parse
 from typing import Any
+import warnings
 
 from ae.config import PROJECT_TEST_ROOT
 from ae.utils.logger import logger
@@ -412,6 +413,11 @@ class VQAEvaluator(Evaluator):
         test_folder = list_items_in_folder(TEST_LOGS)[-1]  # Get the most recent log folder
         path_to_screenshots = f"{TEST_LOGS}/{test_folder}/logs_for_task_{task_id}/snapshots"
         screenshot_names = list_items_in_folder(path_to_screenshots)  # type: ignore
+        
+        # Stop evaluation if no
+        if len(screenshot_names) < 1:
+            warnings.warn(f"No screenshot were found for task {test_folder} in {path_to_screenshots}. Please make sure you are using the `--take_screenshots true` flag.")
+            return {"score": -1, "reason": "No screenshots found for evaluation"}
 
         # Load and compress screenshots
         for screenshot_name in screenshot_names:
