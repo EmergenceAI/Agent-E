@@ -1,4 +1,5 @@
 """Implements helper functions to assist evaluation cases where other evaluators are not suitable."""
+
 import json
 import os
 from datetime import datetime
@@ -8,6 +9,8 @@ from typing import Any
 from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize  # type: ignore
 from openai import OpenAI
+from PIL import Image
+from pyparsing import str_type
 
 load_dotenv()
 client = OpenAI()
@@ -103,7 +106,6 @@ def llm_ua_match(pred: str, reference: str, question: str) -> float:
         return 1.0
 
 
-
 def generate_from_openai_chat_completion(
     messages: list[dict[str, str]],
     model: str,
@@ -135,23 +137,22 @@ def generate_from_openai_chat_completion(
         ValueError: If the 'OPENAI_API_KEY' environment variable is not set.
     """
     if "OPENAI_API_KEY" not in os.environ:
-        raise ValueError(
-            "OPENAI_API_KEY environment variable must be set when using OpenAI API."
-        )
+        raise ValueError("OPENAI_API_KEY environment variable must be set when using OpenAI API.")
     client.api_key = os.environ["OPENAI_API_KEY"]
     client.organization = os.environ.get("OPENAI_ORGANIZATION", "")
 
     response = client.chat.completions.create(
         model=model,
-        messages=messages, # type: ignore
+        messages=messages,  # type: ignore
         temperature=temperature,
         max_tokens=max_tokens,
         top_p=top_p,
         n=1,
         stop=[stop_token] if stop_token else None,
     )
-    answer: str = response.choices[0].message.content # type: ignore
+    answer: str = response.choices[0].message.content  # type: ignore
     return answer
+
 
 def clean_answer(answer: str) -> str:
     """Cleans and preprocesses the answer string for evaluation.
@@ -165,6 +166,7 @@ def clean_answer(answer: str) -> str:
     answer = answer.strip().strip('"').strip("'").lower()
     return answer
 
+
 def evaluate_exact_match(ref: str, pred: str) -> float:
     """Evaluates if the predicted answer exactly matches the reference answer.
 
@@ -176,6 +178,7 @@ def evaluate_exact_match(ref: str, pred: str) -> float:
         float: 1.0 if the answers match exactly, otherwise 0.0.
     """
     return float(clean_answer(pred) == clean_answer(ref))
+
 
 def evaluate_must_include(ref: str, pred: str, tokenize: bool = False) -> float:
     """Checks if the predicted answer includes all phrases from the reference answer.
@@ -195,6 +198,7 @@ def evaluate_must_include(ref: str, pred: str, tokenize: bool = False) -> float:
     else:
         return float(clean_ref in clean_pred)
 
+
 def evaluate_fuzzy_match(ref: str, pred: str, intent: str) -> float:
     """Evaluates if the predicted answer is semantically similar to the reference answer.
 
@@ -209,6 +213,7 @@ def evaluate_fuzzy_match(ref: str, pred: str, intent: str) -> float:
         float: 1.0 if the answers are considered semantically similar, otherwise 0.0.
     """
     return llm_fuzzy_match(pred, ref, intent)
+
 
 def evaluate_ua_match(ref: str, pred: str, intent: str) -> float:
     """Evaluates if the predicted reason for a task being unachievable matches the reference reason.
@@ -237,14 +242,16 @@ def load_config(config_file: Path | str) -> list[dict[str, Any]]:
         configs = json.load(f)
     return configs
 
+
 def task_config_validator(task_config: dict[str, Any]) -> bool:
     # Access the attributes
-    command = task_config.get('intent')
+    command = task_config.get("intent")
 
     if not command:
         raise ValueError("Intent is missing in the task config file. Without it the task cannot be run.")
 
     return True
+
 
 def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
     """Get the current timestamp in the specified format.
@@ -261,3 +268,55 @@ def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
     # Format the timestamp as a human-readable string
     timestamp_str = current_time.strftime(format)
     return timestamp_str
+
+
+def list_items_in_folder(path: str_type) -> list[str] | None:
+    """Returns all items inside a given file directory
+    Parameters:
+        path (str): Path to a directory.
+    Return:
+        list[str]: Name of all items found in the given directory.
+    """
+    try:
+        items = os.listdir(path)
+        items_with_mtime = [(item, os.path.getmtime(os.path.join(path, item))) for item in items]
+        items_with_mtime.sort(key=lambda x: x[1])
+        sorted_items = [item for item, mtime in items_with_mtime]
+        return sorted_items
+    except FileNotFoundError:
+        print(f"The path {path} does not exist.")
+        return None
+    except NotADirectoryError:
+        print(f"The path {path} is not a directory.")
+        return None
+    except PermissionError:
+        print(f"Permission denied to access {path}.")
+        return None
+
+
+def compress_png(file_path, max_size_mb=20, reduce_factor=0.9):
+    """Compresses a png file
+    Parameters:
+        file_path (str): Path to a png file
+        max_size_mb (int): The maximum size allowed after compression
+        reduce_factor (int): Amount the png is reduced each iteration
+    Return:
+        bool: True if the png was compressed successfully. False otherwise.
+    """
+    try:
+        file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+        while file_size_mb > max_size_mb:
+            print(f"Compressing {file_path} (Initial Size: {file_size_mb:.2f} MB)")
+            with Image.open(file_path) as img:
+                width, height = img.size
+                new_width = int(width * reduce_factor)
+                new_height = int(height * reduce_factor)
+                img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                img.save(file_path, optimize=True)
+                file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+                print(f"Resized to: {new_width}x{new_height}, Size: {file_size_mb:.2f} MB")
+        print(f"Final Size of {file_path}: {file_size_mb:.2f} MB")
+        return file_size_mb <= max_size_mb
+    except Exception as e:
+        print(f"Error compressing {file_path}: {e}")
+        return False
