@@ -61,12 +61,25 @@ async def custom_fill_element(page: Page, selector: str, text_to_enter: str):
         relies on these events being fired, additional steps may be needed to simulate them.
     """
     selector = f"{selector}"  # Ensures the selector is treated as a string
-    await page.evaluate("""(inputParams) => {
-        const selector = inputParams.selector;
-        let text_to_enter = inputParams.text_to_enter;
-        text_to_enter = text_to_enter.trim();
-        document.querySelector(selector).value = text_to_enter;
-    }""", {"selector": selector, "text_to_enter": text_to_enter})
+    try:
+        result = await page.evaluate(
+            """(inputParams) => {
+            const selector = inputParams.selector;
+            let text_to_enter = inputParams.text_to_enter;
+            text_to_enter = text_to_enter.trim();
+            const element = document.querySelector(selector);
+            if (!element) {
+                throw new Error(`Element not found: ${selector}`);
+            }
+            element.value = text_to_enter;
+            return `Value set for ${selector}`;
+        }""",
+            {"selector": selector, "text_to_enter": text_to_enter},
+        )
+        logger.debug(f"custom_fill_element result: {result}")
+    except Exception as e:
+        logger.error(f"Error in custom_fill_element, Selector: {selector}, Text: {text_to_enter}. Error: {str(e)}")
+        raise
 
 async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'query_selector' (DOM selector query using mmid attribute e.g. [mmid='114']) and 'text' (text to enter on the element)."]) -> Annotated[str, "Explanation of the outcome of this operation."]:
     """
@@ -120,6 +133,20 @@ async def entertext(entry: Annotated[EnterTextEntry, "An object containing 'quer
         dom_changes_detected = changes # type: ignore
 
     subscribe(detect_dom_changes)
+
+    await page.evaluate(
+        """
+        (selector) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.value = '';
+            } else {
+                console.error('Element not found:', selector);
+            }
+        }
+        """,
+        query_selector,
+    )
 
     result = await do_entertext(page, query_selector, text_to_enter)
     await asyncio.sleep(0.1) # sleep for 100ms to allow the mutation observer to detect changes

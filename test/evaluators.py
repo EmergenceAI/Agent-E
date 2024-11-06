@@ -167,31 +167,37 @@ class URLEvaluator(Evaluator):
         ref_urls = [clean_url(url) for url in ref_urls]
         matching_rule = task_config["eval"].get("url_note", "GOLD in PRED")
         if matching_rule == "GOLD in PRED":
-            ref_base_paths, ref_queries = parse_urls(ref_urls)
-            pred_base_paths, pred_query = parse_url(pred)
-
-            base_score = float(
-                any(
-                    [
-                        ref_base_path in pred_base_paths
-                        for ref_base_path in ref_base_paths
-                    ]
-                )
-            )
-            query_score = 1.0
-            for k, possible_values in ref_queries.items():
-                query_score *= float(
-                    any(
-                        possible_ref_value in pred_query.get(k, [])
-                        for possible_ref_value in possible_values
-                    )
-                )
-            score = base_score * query_score
+            for ref_url in ref_urls:
+                ref_base_path, ref_query = parse_url(ref_url)
+                pred_base_paths, pred_query = parse_url(pred)
+                # Calculate base score for each ref_url
+                base_score = float(ref_base_path in pred_base_paths)
+                # Calculate query score for each ref_url
+                query_score = 1.0
+                for k, possible_values in ref_query.items(): # type: ignore
+                    if k in pred_query:
+                        query_score *= float(
+                            any(
+                                possible_ref_value in pred_query.get(k, []) # type: ignore
+                                for possible_ref_value in possible_values # type: ignore
+                            )
+                        )
+                    else:
+                        # If the key is not in pred_query, check if the reference URL has no query parameters
+                        if not possible_values:
+                            query_score *= 1.0  # No query parameters to match, so consider it a match
+                        else:
+                            query_score *= 0.0  # Reference URL has query parameters but predicted URL does not
+                # Calculate final score for each ref_url
+                score = base_score * query_score
+                # Return immediately if any score is 1
+                if score == 1.0:
+                    return {"score": score}
 
         else:
             raise ValueError(f"Unknown matching rule: {matching_rule}")
 
-        return {"score": score}
+        return {"score": 0.0}
 
 
 class HTMLContentEvaluator(Evaluator):

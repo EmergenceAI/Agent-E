@@ -1,0 +1,10 @@
+AUTOGEN_MODEL_NAME=PUT YOUR MODEL NAME HERE, for example: gpt-4-turbo, gpt-4o
+AUTOGEN_MODEL_API_KEY=PUT YOUR MODEL API KEY HERE
+AUTOGEN_MODEL_BASE_URL=IF YOU ARE USING OpenAI, remove this line, otherwise add the base URL, for example: https://api.groq.com/openai/v1
+OPENAI_API_KEY=If you are using the testing/benchmarking, put your openai key here otherwise remove this line
+
+BROWSER_STORAGE_DIR=/Users/macuser/Library/Application Support/Google/Chrome/Profile 5
+
+# If you want to use json file for config (see sample agents_llm_config.json and the Readme)
+AGENTS_LLM_CONFIG_FILE=agents_llm_config.json
+AGENTS_LLM_CONFIG_FILE_REF_KEY=The key for the config stanza to use from the file

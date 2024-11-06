@@ -159,3 +159,10 @@ test/results/*
 Pipfile.lock
 requirements.txt
 Pipfile
+
+# file containing LLM config for the agents
+agents_llm_config.json
+ae/testing.py
+
+# All $HOME directory for the chrome browser
+$HOME/
