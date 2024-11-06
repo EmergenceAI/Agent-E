@@ -37,9 +37,9 @@ def validate_action(init_state: dict[str, Any], requested_action: dict[str, Any]
         pred_rationale: dict[str, str] = pred_json["rationale"]
         pred_is_met: bool = pred_json["was_taken"]
     except Exception as e:
-        print("Unexpected formatting of vqa output.", e)
-        pred_rationale = None
-        pred_is_met = None
+        pred_rationale = f"Unexpected formatting error from vqa model: {e}"
+        pred_is_met = -1
+        pred_questions = ""
 
     return {
         # metadata
@@ -71,9 +71,9 @@ def validate_task(state_seq: list[Any], task: str) -> dict[str, str]:
         pred_rationale: dict[str, str] = pred_json["rationale"]
         pred_is_met: bool = pred_json["was_completed"]
     except Exception as e:
-        print("Unexpected formatting of vqa output.", e)
-        pred_rationale = None
-        pred_is_met = None
+        pred_rationale = f"Unexpected formatting error from vqa model: {e}"
+        pred_is_met = -1
+        pred_questions = ""
 
     return {
         # metadata
@@ -101,10 +101,9 @@ def validate_task_vqa(state_seq: list[Any], task: str) -> dict[str, str]:
         pred_is_met: bool = pred_json["was_completed"]
         pred_questions: list[Any] = pred_json["visual_questions"]
     except Exception as e:
-        print("Unexpected formatting of vqa output.", e)
-        pred_rationale = None
-        pred_is_met = None
-        pred_questions = None
+        pred_rationale = f"Unexpected formatting error from vqa model: {e}"
+        pred_is_met = -1
+        pred_questions = ""
 
     return {
         # metadata
