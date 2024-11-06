@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import time
+import glob
 from typing import Any
 
 import ae.core.playwright_manager as browserManager
@@ -60,6 +61,12 @@ def create_task_log_folders(task_id: str, test_results_id: str):
     if not os.path.exists(task_screenshots_dir):
         os.makedirs(task_screenshots_dir)
         logger.info(f"Created screenshots dir for task {task_id} at: {task_screenshots_dir}")
+    else:
+        images = glob.glob(os.path.join(task_screenshots_dir, '*'))
+        for image_path in images:
+            # Check if the path is a file before deleting
+            if os.path.isfile(image_path):
+                os.remove(image_path)
 
     return {"task_log_folder": task_log_dir, "task_screenshots_folder": task_screenshots_dir}
 
