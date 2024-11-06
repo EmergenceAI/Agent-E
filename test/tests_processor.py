@@ -2,16 +2,12 @@ import asyncio
 import json
 import os
 import time
-from ae.core.agents_llm_config import AgentsLLMConfig
-from test.evaluators import evaluator_router
-from test.test_utils import get_formatted_current_timestamp
-from test.test_utils import load_config
-from test.test_utils import task_config_validator
 from typing import Any
 
 import ae.core.playwright_manager as browserManager
 import nltk  # type: ignore
 from ae.config import PROJECT_TEST_ROOT
+from ae.core.agents_llm_config import AgentsLLMConfig
 from ae.core.autogen_wrapper import AutogenWrapper
 from ae.core.playwright_manager import PlaywrightManager
 from ae.utils.logger import logger
@@ -20,6 +16,11 @@ from autogen.agentchat.chat import ChatResult  # type: ignore
 from playwright.async_api import Page
 from tabulate import tabulate
 from termcolor import colored
+
+from test.evaluators import evaluator_router
+from test.test_utils import get_formatted_current_timestamp
+from test.test_utils import load_config
+from test.test_utils import task_config_validator
 
 nltk.download('punkt') # type: ignore
 
@@ -109,8 +110,8 @@ def extract_last_response(messages: list[dict[str, Any]]) -> str:
                 if final_answer:
                     return final_answer
         return ""
-    except:
-        logger.error("Error extracting last response from chat history.")
+    except Exception as e:
+        logger.error("Error extracting last response from chat history.", e)
         return ""
 
 

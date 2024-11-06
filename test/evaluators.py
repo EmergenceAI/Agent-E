@@ -1,26 +1,28 @@
 """base class for evaluation"""
 import collections
 import html
+import os
 import time
 import urllib
 import urllib.parse
-from test.test_utils import clean_answer
-from test.test_utils import evaluate_exact_match
-from test.test_utils import evaluate_fuzzy_match
-from test.test_utils import evaluate_must_include
-from test.test_utils import evaluate_ua_match
-from test.test_utils import list_items_in_folder
-from test.test_utils import compress_png
 from typing import Any
 
+from ae.config import PROJECT_TEST_ROOT
 from ae.utils.logger import logger
 from playwright.sync_api import CDPSession
 from playwright.sync_api import Page
 from termcolor import colored
 
-import os
+from test.test_utils import clean_answer
+from test.test_utils import compress_png
+from test.test_utils import evaluate_exact_match
+from test.test_utils import evaluate_fuzzy_match
+from test.test_utils import evaluate_must_include
+from test.test_utils import evaluate_ua_match
+from test.test_utils import list_items_in_folder
+
 from .validation_agent.validator import validate_task_vqa
-from ae.config import PROJECT_ROOT, PROJECT_TEST_ROOT
+
 TEST_LOGS = os.path.join(PROJECT_TEST_ROOT, 'logs')
 
 class Evaluator:
@@ -410,10 +412,10 @@ class EvaluatorComb(Evaluator):
 
 class VQAEvaluator(Evaluator):
     async def __call__(
-        self, 
-        task_config: dict[str, Any], 
-        page: Page, 
-        client: CDPSession, 
+        self,
+        task_config: dict[str, Any],
+        page: Page,
+        client: CDPSession,
         answer: str
     ) -> float:
         """Evaluates the current task using a VQA model
@@ -433,13 +435,13 @@ class VQAEvaluator(Evaluator):
         # Get path to screenshots for the given task
         test_folder = list_items_in_folder(TEST_LOGS)[-1] # Get the most recent log folder
         path_to_screenshots = f"{TEST_LOGS}/{test_folder}/logs_for_task_{task_id}/snapshots"
-        screenshot_names = list_items_in_folder(path_to_screenshots) # type: ignore        
-        
+        screenshot_names = list_items_in_folder(path_to_screenshots) # type: ignore
+
         # Load and compress screenshots
         for screenshot_name in screenshot_names:
             screenshot_path = f"{path_to_screenshots}/{screenshot_name}"
             compress_png(screenshot_path)
-            state_seq.append({"id":task_id, "path_to_screenshot": f"{path_to_screenshots}/{screenshot_name}"}) 
+            state_seq.append({"id":task_id, "path_to_screenshot": f"{path_to_screenshots}/{screenshot_name}"})
 
         #Calculate VQA Score
         score_dict = validate_task_vqa(state_seq, task) # type: ignore
@@ -447,8 +449,8 @@ class VQAEvaluator(Evaluator):
         reason = score_dict["pred_rationale"]
 
         print(f"VQA score is {score} becauase {reason}\n ")
-        return {"score": score, "reason": reason} 
-    
+        return {"score": score, "reason": reason}
+
 def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
     """Creates and configures a composite evaluator based on the evaluation types specified in the configuration file.
 

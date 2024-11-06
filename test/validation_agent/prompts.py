@@ -1,4 +1,5 @@
-prompt__validate_action: str = lambda task_action: f"""# Task
+def prompt__validate_action(task_action: str) -> str:
+    return f"""# Task
 You are an RPA bot that navigates digital UIs like a human. Your job is to validate that a certain action was successfully taken.
 
 # Action
@@ -19,7 +20,8 @@ Answer in the JSON format:
 
 Answer:"""
 
-prompt__validate_task__intro: str = lambda task_descrip: f"""# Task
+def prompt__validate_task__intro(task_descrip: str) -> str:
+    return f"""# Task
 Your job is to decide whether the workflow was successfully completed, as depicted by the following sequence of screenshots.
 
 # Workflow
@@ -32,42 +34,44 @@ The workflow was executed within the web application shown in the screenshots.
 
 # Workflow Demonstration
 
-You are given the following sequence of screenshots which were sourced from a demonstration of the workflow. 
+You are given the following sequence of screenshots which were sourced from a demonstration of the workflow.
 The screenshots are presented in chronological order.
 
 Here are the screenshots of the workflow:"""
 
-prompt__validate_task__close: str = lambda : f"""
+def prompt__validate_task__close() -> str:
+    return """
 # Instructions
 
-Given what you observe in the previous sequence of screenshots, was the workflow successfully completed? 
-If the workflow is asking a question, consider it completed successfully if you could deduce the answer to the question by viewing the screenshots. 
+Given what you observe in the previous sequence of screenshots, was the workflow successfully completed?
+If the workflow is asking a question, consider it completed successfully if you could deduce the answer to the question by viewing the screenshots.
 If the workflow was completed successfully, then set `was_completed` to `true`
 
 Provide your answer as a JSON dictionary with the following format:
-{{
+{
     "rationale": <rationale>,
     "was_completed": <true/false>
-}}
+}
 
 Please write your JSON below:
 """
 
-prompt__validate_VQA_task__close: str = lambda : f"""
+def prompt__validate_VQA_task__close() -> str:
+    return """
 # Instructions
 
-Given what you observe in the previous sequence of screenshots, was the workflow successfully completed? 
+Given what you observe in the previous sequence of screenshots, was the workflow successfully completed?
 To determine this, derive few visual questions from the task description that upon answering will help decide if the workflow was successfully completed.
-If the workflow is asking a question, consider it completed successfully if you could deduce the answer to the question by viewing the screenshots. 
+If the workflow is asking a question, consider it completed successfully if you could deduce the answer to the question by viewing the screenshots.
 If the workflow was completed successfully, then set `was_completed` to `true`.
 Also, provide the visual questions and their answers as part of the response.
 
 Provide your answer as a JSON dictionary with the following format:
-{{
+{
     "visual_questions": <list of visual questions and their answers>,
     "rationale": <rationale>,
     "was_completed": <true/false>
-}}
+}
 
 Please write your JSON below:
 """

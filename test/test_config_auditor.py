@@ -1,9 +1,10 @@
 import json
 import os
-from test.test_utils import load_config
 from typing import Any
 
 from ae.config import PROJECT_TEST_ROOT
+
+from test.test_utils import load_config
 
 
 def validate_and_update_task_ids(tasks: list[dict[str, Any]]) -> None:

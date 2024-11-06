@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+
 from test.tests_processor import run_tests
 
 if __name__ == "__main__":

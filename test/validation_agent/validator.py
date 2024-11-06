@@ -1,14 +1,17 @@
-from .prompts import prompt__validate_action, prompt__validate_task__intro, prompt__validate_task__close, prompt__validate_VQA_task__close
-from .utils import (
-    _fetch_openai_completion,
-    fetch_openai_vision_completion,
-    load_screenshot_for_state,
-    build_prompt_sequence
-)
-from typing import Dict, Any, List
-import json
 import argparse
+import json
 import os
+from typing import Any
+
+from .prompts import prompt__validate_action
+from .prompts import prompt__validate_task__close
+from .prompts import prompt__validate_task__intro
+from .prompts import prompt__validate_VQA_task__close
+from .utils import _fetch_openai_completion
+from .utils import build_prompt_sequence
+from .utils import fetch_openai_vision_completion
+from .utils import load_screenshot_for_state
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -20,7 +23,7 @@ def parse_args():
     parser.add_argument("--task", type=str, help="Description of the task for task completion validation")
     return parser.parse_known_args()
 
-def validate_action(init_state: Dict[str, Any], requested_action: Dict[str, Any], resultant_state: Dict[str, Any]) -> Dict[str, str]:
+def validate_action(init_state: dict[str, Any], requested_action: dict[str, Any], resultant_state: dict[str, Any]) -> dict[str, str]:
     ## Simple validator function of an action that takes as input the initial state, the requested action, and the resultant state, and determines if it succeeded.
     path_to_screenshot_before, encoded_image_before = load_screenshot_for_state(init_state)
     path_to_screenshot_after, encoded_image_after = load_screenshot_for_state(resultant_state)
@@ -30,9 +33,10 @@ def validate_action(init_state: Dict[str, Any], requested_action: Dict[str, Any]
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: Dict[str, str] = pred_json['rationale']
+        pred_rationale: dict[str, str] = pred_json['rationale']
         pred_is_met: bool = pred_json['was_taken']
-    except:
+    except Exception as e:
+        print("Unexpected formatting of vqa output.", e)
         pred_rationale = None
         pred_is_met = None
 
@@ -50,17 +54,17 @@ def validate_action(init_state: Dict[str, Any], requested_action: Dict[str, Any]
         "pred_raw_response": pred_raw_response,
     }
 
-def validate_task(state_seq: List[Any], task: str) -> Dict[str, str]:
+def validate_task(state_seq: list[Any], task: str) -> dict[str, str]:
     ## Simple validator function that takes as input the sequence of states and the task, and determines if it succeeded.
     prompt_sequence = build_prompt_sequence(state_seq)
-    intro_prompt: Dict[str, str] = {
+    intro_prompt: dict[str, str] = {
         "role" : "user",
         "content" : [{
             "type" : "text",
             "text" : prompt__validate_task__intro(task)
         }]
     }
-    close_prompt: Dict[str, str] = {
+    close_prompt: dict[str, str] = {
         "role" : "user",
         "content" : [{
             "type" : "text",
@@ -68,15 +72,16 @@ def validate_task(state_seq: List[Any], task: str) -> Dict[str, str]:
         }]
     }
     # Feed (S, S', S'', ...) -- i.e. all screenshots at once
-    messages: List[str] = [intro_prompt] + prompt_sequence + [close_prompt]
+    messages: list[str] = [intro_prompt] + prompt_sequence + [close_prompt]
     pred_raw_response: str = _fetch_openai_completion(messages, model='gpt-4-vision-preview', temperature=0.0)
 
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: Dict[str, str] = pred_json['rationale']
+        pred_rationale: dict[str, str] = pred_json['rationale']
         pred_is_met: bool = pred_json['was_completed']
-    except:
+    except Exception as e:
+        print("Unexpected formatting of vqa output.", e)
         pred_rationale = None
         pred_is_met = None
 
@@ -89,17 +94,17 @@ def validate_task(state_seq: List[Any], task: str) -> Dict[str, str]:
         "pred_raw_response": pred_raw_response
     }
 
-def validate_task_vqa(state_seq: List[Any], task: str) -> Dict[str, str]:
+def validate_task_vqa(state_seq: list[Any], task: str) -> dict[str, str]:
     ## Simple validator function that takes as input the sequence of states and the task, and determines if it succeeded.
     prompt_sequence = build_prompt_sequence(state_seq)
-    intro_prompt: Dict[str, str] = {
+    intro_prompt: dict[str, str] = {
         "role" : "user",
         "content" : [{
             "type" : "text",
             "text" : prompt__validate_task__intro(task)
         }]
     }
-    close_prompt: Dict[str, str] = {
+    close_prompt: dict[str, str] = {
         "role" : "user",
         "content" : [{
             "type" : "text",
@@ -107,16 +112,17 @@ def validate_task_vqa(state_seq: List[Any], task: str) -> Dict[str, str]:
         }]
     }
     # Feed (S, S', S'', ...) -- i.e. all screenshots at once
-    messages: List[str] = [intro_prompt] + prompt_sequence + [close_prompt]
+    messages: list[str] = [intro_prompt] + prompt_sequence + [close_prompt]
     pred_raw_response: str = _fetch_openai_completion(messages, model='gpt-4-vision-preview', temperature=0.0)
 
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: Dict[str, str] = pred_json['rationale']
+        pred_rationale: dict[str, str] = pred_json['rationale']
         pred_is_met: bool = pred_json['was_completed']
-        pred_questions: List[Any] = pred_json["visual_questions"]
-    except:
+        pred_questions: list[Any] = pred_json["visual_questions"]
+    except Exception as e:
+        print("Unexpected formatting of vqa output.", e)
         pred_rationale = None
         pred_is_met = None
         pred_questions = None
@@ -138,11 +144,10 @@ def main(args):
     path_to_images: str = args.path_to_images
     task: str = args.task
     requested_action: str = args.requested_action
-    
+
     assert sum([is_action, is_task_completion]) == 1, "Must specify EXACTLY ONE of --is_action or --is_task_completion"
-    
+
     # Execute eval
-    output_file_name: str = ""
     if is_action:
         init_state = {"id":0,"path_to_screenshot":f"{path_to_images}/0.png"}
         resultant_state = {"id": 2, "path_to_screenshot":f"{path_to_images}/1.png"}

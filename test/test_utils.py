@@ -4,11 +4,11 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from PIL import Image
 
 from dotenv import load_dotenv
 from nltk.tokenize import word_tokenize  # type: ignore
 from openai import OpenAI
+from PIL import Image
 from pyparsing import str_type
 
 load_dotenv()
@@ -266,10 +266,8 @@ def get_formatted_current_timestamp(format: str = "%Y-%m-%d %H:%M:%S") -> str:
 
 def list_items_in_folder(path:str_type)-> list[str] | None:
     '''Returns all items inside a given file directory
-    
     Parameters:
         path (str): Path to a directory.
-    
     Return:
         list[str]: Name of all items found in the given directory.
     '''
@@ -295,10 +293,8 @@ def compress_png(file_path, max_size_mb=20, reduce_factor=0.9):
         file_path (str): Path to a png file
         max_size_mb (int): The maximum size allowed after compression
         reduce_factor (int): Amount the png is reduced each iteration
-    
     Return:
         bool: True if the png was compressed successfully. False otherwise.
-    
     '''
     try:
         file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
