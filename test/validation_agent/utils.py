@@ -9,6 +9,7 @@ import openai
 
 SYSTEM_PROMPT: str = "You are a helpful assistant that automates digital workflows."
 
+
 def encode_image(path_to_img: str):
     """Base64 encode an image"""
     with open(path_to_img, "rb") as image_file:
@@ -20,9 +21,8 @@ def load_screenshot_for_state(state: dict[str, Any]) -> tuple[str, str]:
     encoded_image: str = encode_image(path_to_screenshot)
     return path_to_screenshot, encoded_image
 
-def fetch_openai_vision_completion(
-    prompt: str, base64_images: list[str], **kwargs
-) -> str:
+
+def fetch_openai_vision_completion(prompt: str, base64_images: list[str], **kwargs) -> str:
     """Helper function to call OpenAI's Vision API. Handles rate limit errors and other exceptions"""
     messages: list[Any] = [
         {
@@ -70,13 +70,15 @@ def build_prompt_sequence(state_seq: list[Any]) -> list[str]:
     prompt_sequence: list[str] = []
     for item in state_seq:
         path_to_screenshot, encoded_image = load_screenshot_for_state(item)
-        prompt_sequence.append({
-            "role": "user",
-            "content": [{
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:image/jpeg;base64,{encoded_image}"
-                },
-            }],
-        })
+        prompt_sequence.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{encoded_image}"},
+                    }
+                ],
+            }
+        )
     return prompt_sequence

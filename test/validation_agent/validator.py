@@ -23,6 +23,7 @@ def parse_args():
     parser.add_argument("--task", type=str, help="Description of the task for task completion validation")
     return parser.parse_known_args()
 
+
 def validate_action(init_state: dict[str, Any], requested_action: dict[str, Any], resultant_state: dict[str, Any]) -> dict[str, str]:
     ## Simple validator function of an action that takes as input the initial state, the requested action, and the resultant state, and determines if it succeeded.
     path_to_screenshot_before, encoded_image_before = load_screenshot_for_state(init_state)
@@ -33,8 +34,8 @@ def validate_action(init_state: dict[str, Any], requested_action: dict[str, Any]
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: dict[str, str] = pred_json['rationale']
-        pred_is_met: bool = pred_json['was_taken']
+        pred_rationale: dict[str, str] = pred_json["rationale"]
+        pred_is_met: bool = pred_json["was_taken"]
     except Exception as e:
         print("Unexpected formatting of vqa output.", e)
         pred_rationale = None
@@ -42,44 +43,33 @@ def validate_action(init_state: dict[str, Any], requested_action: dict[str, Any]
 
     return {
         # metadata
-        "init_state_id" : init_state["id"],
-        "action_id" : requested_action["id"],
+        "init_state_id": init_state["id"],
+        "action_id": requested_action["id"],
         "path_to_screenshot_before": path_to_screenshot_before,
         "path_to_screenshot_after": path_to_screenshot_after,
         # gt
         "requested_action": requested_action["action"],
         # preds
         "pred_rationale": pred_rationale,
-        "pred_action_taken" : pred_is_met,
+        "pred_action_taken": pred_is_met,
         "pred_raw_response": pred_raw_response,
     }
+
 
 def validate_task(state_seq: list[Any], task: str) -> dict[str, str]:
     ## Simple validator function that takes as input the sequence of states and the task, and determines if it succeeded.
     prompt_sequence = build_prompt_sequence(state_seq)
-    intro_prompt: dict[str, str] = {
-        "role" : "user",
-        "content" : [{
-            "type" : "text",
-            "text" : prompt__validate_task__intro(task)
-        }]
-    }
-    close_prompt: dict[str, str] = {
-        "role" : "user",
-        "content" : [{
-            "type" : "text",
-            "text" : prompt__validate_task__close()
-        }]
-    }
+    intro_prompt: dict[str, str] = {"role": "user", "content": [{"type": "text", "text": prompt__validate_task__intro(task)}]}
+    close_prompt: dict[str, str] = {"role": "user", "content": [{"type": "text", "text": prompt__validate_task__close()}]}
     # Feed (S, S', S'', ...) -- i.e. all screenshots at once
     messages: list[str] = [intro_prompt] + prompt_sequence + [close_prompt]
-    pred_raw_response: str = _fetch_openai_completion(messages, model='gpt-4-vision-preview', temperature=0.0)
+    pred_raw_response: str = _fetch_openai_completion(messages, model="gpt-4-vision-preview", temperature=0.0)
 
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: dict[str, str] = pred_json['rationale']
-        pred_is_met: bool = pred_json['was_completed']
+        pred_rationale: dict[str, str] = pred_json["rationale"]
+        pred_is_met: bool = pred_json["was_completed"]
     except Exception as e:
         print("Unexpected formatting of vqa output.", e)
         pred_rationale = None
@@ -90,36 +80,25 @@ def validate_task(state_seq: list[Any], task: str) -> dict[str, str]:
         "task_description": task,
         # preds
         "pred_rationale": pred_rationale,
-        "pred_task_completed" : pred_is_met,
-        "pred_raw_response": pred_raw_response
+        "pred_task_completed": pred_is_met,
+        "pred_raw_response": pred_raw_response,
     }
+
 
 def validate_task_vqa(state_seq: list[Any], task: str) -> dict[str, str]:
     ## Simple validator function that takes as input the sequence of states and the task, and determines if it succeeded.
     prompt_sequence = build_prompt_sequence(state_seq)
-    intro_prompt: dict[str, str] = {
-        "role" : "user",
-        "content" : [{
-            "type" : "text",
-            "text" : prompt__validate_task__intro(task)
-        }]
-    }
-    close_prompt: dict[str, str] = {
-        "role" : "user",
-        "content" : [{
-            "type" : "text",
-            "text" : prompt__validate_VQA_task__close()
-        }]
-    }
+    intro_prompt: dict[str, str] = {"role": "user", "content": [{"type": "text", "text": prompt__validate_task__intro(task)}]}
+    close_prompt: dict[str, str] = {"role": "user", "content": [{"type": "text", "text": prompt__validate_VQA_task__close()}]}
     # Feed (S, S', S'', ...) -- i.e. all screenshots at once
     messages: list[str] = [intro_prompt] + prompt_sequence + [close_prompt]
-    pred_raw_response: str = _fetch_openai_completion(messages, model='gpt-4-vision-preview', temperature=0.0)
+    pred_raw_response: str = _fetch_openai_completion(messages, model="gpt-4-vision-preview", temperature=0.0)
 
     # Evaluate
     try:
         pred_json = json.loads(pred_raw_response.replace("```json", "").replace("```", "").strip())
-        pred_rationale: dict[str, str] = pred_json['rationale']
-        pred_is_met: bool = pred_json['was_completed']
+        pred_rationale: dict[str, str] = pred_json["rationale"]
+        pred_is_met: bool = pred_json["was_completed"]
         pred_questions: list[Any] = pred_json["visual_questions"]
     except Exception as e:
         print("Unexpected formatting of vqa output.", e)
@@ -133,9 +112,10 @@ def validate_task_vqa(state_seq: list[Any], task: str) -> dict[str, str]:
         # preds
         "pred_visual_questions": pred_questions,
         "pred_rationale": pred_rationale,
-        "pred_task_completed" : pred_is_met,
-        "pred_raw_response": pred_raw_response
+        "pred_task_completed": pred_is_met,
+        "pred_raw_response": pred_raw_response,
     }
+
 
 def main(args):
     is_action: bool = args.is_action
@@ -149,8 +129,8 @@ def main(args):
 
     # Execute eval
     if is_action:
-        init_state = {"id":0,"path_to_screenshot":f"{path_to_images}/0.png"}
-        resultant_state = {"id": 2, "path_to_screenshot":f"{path_to_images}/1.png"}
+        init_state = {"id": 0, "path_to_screenshot": f"{path_to_images}/0.png"}
+        resultant_state = {"id": 2, "path_to_screenshot": f"{path_to_images}/1.png"}
         requested_action = {"id": 1, "action": requested_action}
 
         out = validate_action(init_state, requested_action, resultant_state)
@@ -158,11 +138,11 @@ def main(args):
         state_seq = []
         file_num = 0
         filelist = [filename for filename in os.listdir(path_to_images) if filename.endswith(".png")]
-        filelist.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+        filelist.sort(key=lambda f: int("".join(filter(str.isdigit, f))))
         for file in filelist:
             if file.endswith(".png"):
-                state_seq.append({"id":file_num, "path_to_screenshot": os.path.join(path_to_images,file)})
-                file_num+=1
+                state_seq.append({"id": file_num, "path_to_screenshot": os.path.join(path_to_images, file)})
+                file_num += 1
         if use_vqa:
             print("Using VQA")
             out = validate_task_vqa(state_seq, task)
@@ -172,6 +152,7 @@ def main(args):
     else:
         raise ValueError("Must specify either --is_action or --is_task_completion")
     return out
+
 
 if __name__ == "__main__":
     args, __ = parse_args()

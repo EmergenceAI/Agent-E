@@ -1,4 +1,5 @@
 """base class for evaluation"""
+
 import collections
 import html
 import os
@@ -23,7 +24,8 @@ from test.test_utils import list_items_in_folder
 
 from .validation_agent.validator import validate_task_vqa
 
-TEST_LOGS = os.path.join(PROJECT_TEST_ROOT, 'logs')
+TEST_LOGS = os.path.join(PROJECT_TEST_ROOT, "logs")
+
 
 class Evaluator:
     """Base class for evaluation strategies.
@@ -36,7 +38,7 @@ class Evaluator:
         """Initialize the evaluator with an optional evaluation tag."""
         self.eval_tag = eval_tag
 
-    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession, answer: str) -> dict[str, float|str]:
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession, answer: str) -> dict[str, float | str]:
         """Abstract method to be implemented by subclasses for evaluation.
 
         Raises:
@@ -57,27 +59,25 @@ class StringEvaluator(Evaluator):
         page: Page | None = None,
         client: CDPSession | None = None,
         answer: str | None = None,
-
-    ) -> dict[str, float|str]:
+    ) -> dict[str, float | str]:
         last_action = answer or ""
         pred = clean_answer(last_action)
 
         score = 1.0
         for approach, value in task_config["eval"]["reference_answers"].items():
-
             match approach:
                 case "exact_match":
                     logger.info(f"Evaluating exact_match for answer: Predicted: {pred} , Reference: {value}")
                     score *= evaluate_exact_match(ref=value, pred=pred)
 
                 case "must_include":
-                    logger.info(f"Evaluating must_include for answer: \"{answer}\" to see if it includes the expeced values: \"{value}\"\n")
+                    logger.info(f'Evaluating must_include for answer: "{answer}" to see if it includes the expeced values: "{value}"\n')
                     assert isinstance(value, list)
-                    for must_value in value: # type: ignore
+                    for must_value in value:  # type: ignore
                         score *= evaluate_must_include(
-                            ref=must_value, # type: ignore
+                            ref=must_value,  # type: ignore
                             pred=pred,
-                            tokenize=(len(value) == 1), # type: ignore
+                            tokenize=(len(value) == 1),  # type: ignore
                         )
                 case "some_matches":
                     min_required_matches = value.get("min_required", 1)
@@ -101,9 +101,11 @@ class StringEvaluator(Evaluator):
                     else:
                         logger.info(f"Evaluating generic for answer: {answer}")
                         assert isinstance(value, list)
-                        for reference in value: # type: ignore
+                        for reference in value:  # type: ignore
                             score *= evaluate_fuzzy_match(
-                                ref=reference, pred=pred, intent=intent # type: ignore
+                                ref=reference,
+                                pred=pred,
+                                intent=intent,  # type: ignore
                             )
                 case _:
                     logger.info(f"Unknown approach value received: {approach}")
@@ -116,13 +118,7 @@ class URLEvaluator(Evaluator):
     This includes checking if the base path of the URL and its query parameters match those specified in the reference URLs.
     """
 
-    async def __call__(
-        self,
-        task_config: dict[str, Any],
-        page: Page,
-        client: CDPSession | None = None,
-        answer: str | None = None
-    ) -> dict[str, float|str]:
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession | None = None, answer: str | None = None) -> dict[str, float | str]:
         """Evaluates the current page URL against reference URLs specified in the config file.
 
         Parameters:
@@ -176,12 +172,12 @@ class URLEvaluator(Evaluator):
                 base_score = float(ref_base_path in pred_base_paths)
                 # Calculate query score for each ref_url
                 query_score = 1.0
-                for k, possible_values in ref_query.items(): # type: ignore
+                for k, possible_values in ref_query.items():  # type: ignore
                     if k in pred_query:
                         query_score *= float(
                             any(
-                                possible_ref_value in pred_query.get(k, []) # type: ignore
-                                for possible_ref_value in possible_values # type: ignore
+                                possible_ref_value in pred_query.get(k, [])  # type: ignore
+                                for possible_ref_value in possible_values  # type: ignore
                             )
                         )
                     else:
@@ -208,13 +204,7 @@ class HTMLContentEvaluator(Evaluator):
     This involves navigating to URLs specified in the configuration and checking for the presence of HTML elements or content using various strategies.
     """
 
-    async def __call__(
-        self,
-        task_config: dict[str, Any],
-        page: Page,
-        client: CDPSession | None = None,
-        answer: str | None = None
-    ) -> dict[str, float|str]:
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession | None = None, answer: str | None = None) -> dict[str, float | str]:
         """Evaluates the presence of specified HTML content on the webpage.
 
         Parameters:
@@ -279,43 +269,35 @@ class HTMLContentEvaluator(Evaluator):
 
             if "exact_match" in target["required_contents"]:
                 required_contents = target["required_contents"]["exact_match"]
-                cur_score = evaluate_exact_match(
-                    ref=required_contents, pred=selected_element
-                )
+                cur_score = evaluate_exact_match(ref=required_contents, pred=selected_element)
                 score *= float(cur_score)
                 # logger.info(f"[exact match] {cur_score}, selected element: {selected_element}, required contents: {required_contents}")
             elif "must_include" in target["required_contents"]:
                 required_contents = target["required_contents"]["must_include"]
                 assert isinstance(required_contents, list)
-                for content in required_contents: # type: ignore
-                    content_or = content.split(" |OR| ") # type: ignore
+                for content in required_contents:  # type: ignore
+                    content_or = content.split(" |OR| ")  # type: ignore
                     cur_score = any(
                         [
                             evaluate_must_include(
-                                ref=content, # type: ignore
+                                ref=content,  # type: ignore
                                 pred=selected_element,
                                 tokenize=False,
                             )
-                            for content in content_or # type: ignore
+                            for content in content_or  # type: ignore
                         ]
                     )
                     score *= float(cur_score)
                     # logger.info(f"[must include] {cur_score}, selected element: {selected_element}, required contents: {content_or}")
             else:
-                raise ValueError(
-                    f"Unknown required_contents: {target['required_contents'].keys()}"
-                )
+                raise ValueError(f"Unknown required_contents: {target['required_contents'].keys()}")
         return {"score": score}
+
 
 class ManualContentEvaluator(Evaluator):
     """Evaluation Route for Manual Evaluation."""
-    async def __call__(
-        self,
-        task_config: dict[str, Any],
-        page: Page,
-        client: CDPSession | None = None,
-        answer: str | None = None
-    ) -> dict[str, float|str]:
+
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession | None = None, answer: str | None = None) -> dict[str, float | str]:
         """Pauses Execution to get manual evaluation score from user.
 
         Parameters:
@@ -345,23 +327,24 @@ class ManualContentEvaluator(Evaluator):
             print(colored("Golden answer (reference): ", "yellow") + reference_answer)
 
         user_response = input(colored("Annotate the task as Pass, Fail or Skip (please use Skip sparingly)? ", "magenta", attrs=["bold"]))
-        eval_response: dict[str, float|str] = {}
-        if(user_response.lower()=="pass"):
+        eval_response: dict[str, float | str] = {}
+        if user_response.lower() == "pass":
             eval_response["score"] = 1.0
-        elif user_response.lower()=="fail":
+        elif user_response.lower() == "fail":
             eval_response["score"] = 0.0
-        elif user_response.lower()=="skip":
+        elif user_response.lower() == "skip":
             eval_response["score"] = -0.1
         else:
             print(colored(f"Received response: {user_response}", "red"))
             raise ValueError("Invalid user response. Please enter 'Pass', 'Fail' or 'Skip'.")
-        reason: str|None = None
+        reason: str | None = None
 
         if eval_response["score"] <= 0:
             reason = input("Reason for rating: ")
             eval_response["reason"] = reason
 
         return eval_response
+
 
 class EvaluatorComb(Evaluator):
     """Combines multiple evaluators to perform a comprehensive evaluation based on different criteria.
@@ -378,14 +361,13 @@ class EvaluatorComb(Evaluator):
         """
         self.evaluators = evaluators
 
-
     async def __call__(
         self,
         task_config: dict[str, Any],
         page: Page,
         client: CDPSession,
         answer: str,
-    ) -> dict[str, float|str]:
+    ) -> dict[str, float | str]:
         """Performs the evaluation using all included evaluators and aggregates their scores.
 
         Parameters:
@@ -401,23 +383,17 @@ class EvaluatorComb(Evaluator):
         reason: str | None = None
         for evaluator in self.evaluators:
             eval_result = await evaluator(task_config, page, client, answer)
-            score: float = score * eval_result["score"] # type: ignore
+            score: float = score * eval_result["score"]  # type: ignore
             if "reason" in eval_result:
                 if reason is None:
-                    reason = eval_result["reason"] # type: ignore
+                    reason = eval_result["reason"]  # type: ignore
                 else:
                     reason += f"\n{eval_result['reason']}"
-        return {"score": score, "reason": reason} # type: ignore
+        return {"score": score, "reason": reason}  # type: ignore
 
 
 class VQAEvaluator(Evaluator):
-    async def __call__(
-        self,
-        task_config: dict[str, Any],
-        page: Page,
-        client: CDPSession,
-        answer: str
-    ) -> float:
+    async def __call__(self, task_config: dict[str, Any], page: Page, client: CDPSession, answer: str) -> float:
         """Evaluates the current task using a VQA model
         Parameters:
             task_config (dict[str, Any]): The task configuration containing evaluation criteria.
@@ -433,23 +409,24 @@ class VQAEvaluator(Evaluator):
         score = -1.0
 
         # Get path to screenshots for the given task
-        test_folder = list_items_in_folder(TEST_LOGS)[-1] # Get the most recent log folder
+        test_folder = list_items_in_folder(TEST_LOGS)[-1]  # Get the most recent log folder
         path_to_screenshots = f"{TEST_LOGS}/{test_folder}/logs_for_task_{task_id}/snapshots"
-        screenshot_names = list_items_in_folder(path_to_screenshots) # type: ignore
+        screenshot_names = list_items_in_folder(path_to_screenshots)  # type: ignore
 
         # Load and compress screenshots
         for screenshot_name in screenshot_names:
             screenshot_path = f"{path_to_screenshots}/{screenshot_name}"
             compress_png(screenshot_path)
-            state_seq.append({"id":task_id, "path_to_screenshot": f"{path_to_screenshots}/{screenshot_name}"})
+            state_seq.append({"id": task_id, "path_to_screenshot": f"{path_to_screenshots}/{screenshot_name}"})
 
-        #Calculate VQA Score
-        score_dict = validate_task_vqa(state_seq, task) # type: ignore
+        # Calculate VQA Score
+        score_dict = validate_task_vqa(state_seq, task)  # type: ignore
         score = score_dict["pred_task_completed"]
         reason = score_dict["pred_rationale"]
 
         print(f"VQA score is {score} becauase {reason}\n ")
         return {"score": score, "reason": reason}
+
 
 def evaluator_router(task_config: dict[str, Any]) -> EvaluatorComb:
     """Creates and configures a composite evaluator based on the evaluation types specified in the configuration file.

@@ -20,6 +20,7 @@ Answer in the JSON format:
 
 Answer:"""
 
+
 def prompt__validate_task__intro(task_descrip: str) -> str:
     return f"""# Task
 Your job is to decide whether the workflow was successfully completed, as depicted by the following sequence of screenshots.
@@ -39,6 +40,7 @@ The screenshots are presented in chronological order.
 
 Here are the screenshots of the workflow:"""
 
+
 def prompt__validate_task__close() -> str:
     return """
 # Instructions
@@ -55,6 +57,7 @@ Provide your answer as a JSON dictionary with the following format:
 
 Please write your JSON below:
 """
+
 
 def prompt__validate_VQA_task__close() -> str:
     return """

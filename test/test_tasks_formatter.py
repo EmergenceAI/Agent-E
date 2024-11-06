@@ -15,6 +15,7 @@ def format_test_config_file(test_config_file: str):
     with open(test_config_file, "w") as file:
         json.dump(tasks, file, indent=4)
 
+
 def add_task_index_to_test_config_file(test_config_file: str):
     with open(test_config_file) as file:
         tasks = json.load(file)
@@ -23,5 +24,7 @@ def add_task_index_to_test_config_file(test_config_file: str):
         tasks[i] = task
     with open(test_config_file, "w") as file:
         json.dump(tasks, file, indent=4)
+
+
 format_test_config_file("test/tasks/webvoyager_test.json")
 add_task_index_to_test_config_file("test/tasks/webvoyager_test.json")

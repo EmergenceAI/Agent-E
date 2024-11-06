@@ -14,7 +14,7 @@ def validate_and_update_task_ids(tasks: list[dict[str, Any]]) -> None:
         tasks (List[Dict[str, Any]]): The list of tasks to process.
     """
     for index, task in enumerate(tasks):
-        task['task_id'] = index
+        task["task_id"] = index
 
 
 def substitute_intent_templates(tasks: list[dict[str, Any]]) -> None:
@@ -24,12 +24,12 @@ def substitute_intent_templates(tasks: list[dict[str, Any]]) -> None:
         tasks (List[Dict[str, Any]]): The list of tasks to process.
     """
     for task in tasks:
-        if 'intent_template' in task and 'instantiation_dict' in task:
-            template = task['intent_template']
-            for key, value in task['instantiation_dict'].items():
-                placeholder = '{{' + key + '}}'
+        if "intent_template" in task and "instantiation_dict" in task:
+            template = task["intent_template"]
+            for key, value in task["instantiation_dict"].items():
+                placeholder = "{{" + key + "}}"
                 template = template.replace(placeholder, str(value))
-            task['intent'] = template
+            task["intent"] = template
 
 
 def save_json_file(tasks: list[dict[str, Any]], file_path: str) -> None:
@@ -39,8 +39,9 @@ def save_json_file(tasks: list[dict[str, Any]], file_path: str) -> None:
         tasks (List[Dict[str, Any]]): The list of modified tasks.
         file_path (str): The path to save the JSON file.
     """
-    with open(file_path, 'w', encoding='utf-8') as file:
+    with open(file_path, "w", encoding="utf-8") as file:
         json.dump(tasks, file, ensure_ascii=False, indent=4)
+
 
 def process_tasks(file_path: str) -> None:
     """Load, process, and save tasks from/to a JSON file.
@@ -53,6 +54,7 @@ def process_tasks(file_path: str) -> None:
     substitute_intent_templates(tasks)
     save_json_file(tasks, file_path)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     file_path = os.path.join(PROJECT_TEST_ROOT, "tasks", "test.json")
     process_tasks(file_path)
