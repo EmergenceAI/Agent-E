@@ -188,4 +188,4 @@ def register_notification_listener(notification_queue: Queue):  # type: ignore
 
 if __name__ == "__main__":
     logger.info("**********Application Started**********")
-    uvicorn.run("main:app", host=HOST, port=PORT, workers=WORKERS, reload=IS_DEBUG, log_level="info")
+    uvicorn.run("main:app", host=HOST, port=PORT, workers=WORKERS, reload=IS_DEBUG, log_level="DEBUG")
