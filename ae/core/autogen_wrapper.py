@@ -101,24 +101,27 @@ class AutogenWrapper:
         self.agents_map = await self.__initialize_agents(agents_needed)
 
         def trigger_nested_chat(manager: autogen.ConversableAgent):
+            logger.debug("Checking if nested chat needs to be triggered.")
             content:str=manager.last_message()["content"] # type: ignore
             content_json = parse_response(content) # type: ignore
             next_step = content_json.get('next_step', None)
             plan = content_json.get('plan', None)
             if plan is not None:
                 notify_planner_messages(plan, message_type=MessageType.PLAN)
-
             if next_step is None:
                 notify_planner_messages("Received no response, terminating..", message_type=MessageType.INFO) # type: ignore
+                logger.debug(f"No next_step found in the planner response. Will not trigger nested chat. Planner response : {content_json}")
                 return False
             else:
                 notify_planner_messages(next_step, message_type=MessageType.STEP) # type: ignore
+                logger.debug(f"next_step {next_step} found in the planner response. Triggering nested chat. Planner response : {content_json}")
                 return True
 
         def get_url() -> str:
             return asyncio.run(geturl())
 
         def my_custom_summary_method(sender: autogen.ConversableAgent,recipient: autogen.ConversableAgent, summary_args: dict ) : # type: ignore
+            logger.debug("Analysing the return message from nested_chat")
             messages_str_keys = {str(key): value for key, value in sender.chat_messages.items()} # type: ignore
             self.__save_chat_log(list(messages_str_keys.values())[0]) # type: ignore
             last_message=recipient.last_message(sender)["content"] # type: ignore
@@ -131,6 +134,7 @@ class AutogenWrapper:
                 last_message=last_message+" "+  get_url() # type: ignore
                 notify_planner_messages(last_message, message_type=MessageType.ACTION) # type: ignore
                 return last_message #  type: ignore
+            logger.debug(f"Returning last message from nested chat {recipient.last_message(sender)['content']}") # type: ignore
             return recipient.last_message(sender)["content"] # type: ignore
 
         def reflection_message(recipient, messages, sender, config): # type: ignore
@@ -139,10 +143,11 @@ class AutogenWrapper:
             next_step = content_json.get('next_step', None)
 
             if next_step is None:
-                print ("Message to nested chat returned None")
+                logger.debug ("Message to nested chat returned None")
                 return None
             else:
                 next_step = next_step.strip() +" " + get_url() # type: ignore
+                logger.debug(f"Message to nested chat returned {next_step}")
                 return next_step # type: ignore
 
         # print(f">>> Registering nested chat. Available agents: {self.agents_map}")
@@ -243,9 +248,11 @@ class AutogenWrapper:
 
         """
         def is_planner_termination_message(x: dict[str, str])->bool: # type: ignore
+             logger.debug(f"Checking if planner message is a termination message: {x}")
              should_terminate = False
              function: Any = x.get("function", None)
              if function is not None:
+                 logger.debug(f"Planner called a function. Not terminating. {x}")
                  return False
 
              content:Any = x.get("content", "")
@@ -264,7 +271,7 @@ class AutogenWrapper:
                 except json.JSONDecodeError:
                     logger.error("Error decoding JSON response:\n{content}.\nTerminating..")
                     should_terminate = True
-
+             logger.debug(f"Planner termination check response {should_terminate}")
              return should_terminate # type: ignore
 
         task_delegate_agent = UserProxyAgent_SequentialFunctionExecution(
@@ -304,7 +311,7 @@ class AutogenWrapper:
             is_termination_msg=is_browser_executor_termination_message,
             human_input_mode="NEVER",
             llm_config=None,
-            max_consecutive_auto_reply=self.browser_number_of_rounds,
+            max_consecutive_auto_reply=100,
             code_execution_config={
                                 "last_n_messages": 1,
                                 "work_dir": "tasks",

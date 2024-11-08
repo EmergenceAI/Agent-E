@@ -10,7 +10,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 # Custom function to configure the logger
-def configure_logger(level: str = "INFO") -> None:
+def configure_logger(level: str = "DEBUG") -> None:
     log_format = os.getenv("LOG_MESSAGES_FORMAT", "text").lower()
 
     # Set log level for the main logger
