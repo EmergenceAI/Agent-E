@@ -12,7 +12,7 @@ from ae.core.skills.click_using_selector import click as click_element
 #from ae.core.skills.enter_text_and_click import enter_text_and_click
 #from ae.core.skills.enter_text_using_selector import bulk_enter_text
 from ae.core.skills.enter_text_using_selector import entertext
-from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
+from ae.core.skills.get_dom import get_dom 
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
@@ -74,9 +74,9 @@ class BrowserNavAgent:
         self.browser_nav_executor.register_for_execution()(enter_text_and_click)
         '''
         # Register get_dom_with_content_type skill for LLM by assistant agent
-        self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_WITH_CONTENT_TYPE_PROMPT"])(get_dom_with_content_type)
+        self.agent.register_for_llm(description=LLM_PROMPTS["GET_DOM_PROMPT"])(get_dom)
         # Register get_dom_with_content_type skill for execution by user_proxy_agent
-        self.browser_nav_executor.register_for_execution()(get_dom_with_content_type)
+        self.browser_nav_executor.register_for_execution()(get_dom)
 
         # Register click_element skill for LLM by assistant agent
         self.agent.register_for_llm(description=LLM_PROMPTS["CLICK_PROMPT"])(click_element)

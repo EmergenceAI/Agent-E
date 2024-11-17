@@ -493,6 +493,16 @@ async def get_dom_with_accessibility_info() -> Annotated[dict[str, Any] | None, 
 
     return await do_get_accessibility_info(page)
 
+def replace_keyshortcuts(tree: Any):
+    if isinstance(tree, dict):
+        for key in list(tree.keys()):
+            if key == 'keyshortcuts':
+                tree['mmid'] = tree.pop('keyshortcuts')
+            if key in tree:
+                replace_keyshortcuts(tree[key])
+    elif isinstance(tree, list):
+        for item in tree:
+            replace_keyshortcuts(item)
 
 async def do_get_accessibility_info(page: Page, only_input_fields: bool = False):
     """
@@ -508,23 +518,5 @@ async def do_get_accessibility_info(page: Page, only_input_fields: bool = False)
     """
     await __inject_attributes(page)
     accessibility_tree: dict[str, Any] = await page.accessibility.snapshot(interesting_only=True)  # type: ignore
-
-    with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'json_accessibility_dom.json'), 'w',  encoding='utf-8') as f:
-        f.write(json.dumps(accessibility_tree, indent=2))
-        logger.debug("json_accessibility_dom.json saved")
-
-    await __cleanup_dom(page)
-    try:
-        enhanced_tree = await __fetch_dom_info(page, accessibility_tree, only_input_fields)
-
-        logger.debug("Enhanced Accessibility Tree ready")
-
-        with open(os.path.join(SOURCE_LOG_FOLDER_PATH, 'json_accessibility_dom_enriched.json'), 'w',  encoding='utf-8') as f:
-            f.write(json.dumps(enhanced_tree, indent=2))
-            logger.debug("json_accessibility_dom_enriched.json saved")
-
-        return enhanced_tree
-    except Exception as e:
-        logger.error(f"Error while fetching DOM info: {e}")
-        traceback.print_exc()
-        return None
+    replace_keyshortcuts(accessibility_tree)
+    return accessibility_tree

@@ -127,6 +127,8 @@ Revise search query if needed, ask for more information if needed, and always ve
    all_fields - returns a JSON string containing a list of objects representing all interactive elements and their attributes with mmid attribute. Use this strictly to identify and interact with any type of elements on page.
    If information is not available in one content type, you must try another content_type.""",
 
+   "GET_DOM_PROMPT": """Retrieves the DOM of the current web site.
+   The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.""",
 
    "GET_ACCESSIBILITY_TREE": """Retrieves the accessibility tree of the current web site.
    The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.""",
