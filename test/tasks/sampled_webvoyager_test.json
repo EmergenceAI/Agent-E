@@ -681,9 +681,9 @@
     "storage_state": null,
     "start_url": "https://www.booking.com/",
     "geolocation": null,
-    "intent_template": "Find a well-reviewed hotel in Paris with available bookings suitable for a couple (2 adults) on Valentine's Day week, August 14-21, 2024, that offers free cancellation options.",
+    "intent_template": "Find a well-reviewed hotel in Paris with available bookings suitable for a couple (2 adults) on Valentine's Day week, Febuary 14-21, 2025, that offers free cancellation options.",
     "instantiation_dict": {},
-    "intent": "Find a well-reviewed hotel in Paris with available bookings suitable for a couple (2 adults) on Valentine's Day week, August 14-21, 2024, that offers free cancellation options.",
+    "intent": "Find a well-reviewed hotel in Paris with available bookings suitable for a couple (2 adults) on Valentine's Day week, Febuary 14-21, 2025, that offers free cancellation options.",
     "require_reset": false,
     "eval": {
       "eval_types": [
@@ -708,9 +708,9 @@
     "storage_state": null,
     "start_url": "https://www.booking.com/",
     "geolocation": null,
-    "intent_template": "Book a highly-rated hotel with a swimming pool and free WiFi near the Louvre Museum in Paris for the weekend of October 3-5, 2024.",
+    "intent_template": "Book a highly-rated hotel with a swimming pool and free WiFi near the Louvre Museum in Paris for the weekend of January 3-5, 2025.",
     "instantiation_dict": {},
-    "intent": "Book a highly-rated hotel with a swimming pool and free WiFi near the Louvre Museum in Paris for the weekend of October 3-5, 2024.",
+    "intent": "Book a highly-rated hotel with a swimming pool and free WiFi near the Louvre Museum in Paris for the weekend of January 3-5, 2025.",
     "require_reset": false,
     "eval": {
       "eval_types": [
@@ -735,9 +735,9 @@
     "storage_state": null,
     "start_url": "https://www.booking.com/",
     "geolocation": null,
-    "intent_template": "Identify a hotel in Tokyo with a spa and wellness center, rated 9 or above, with availability for a five-night stay starting on August 20, 2024. Check if free cancellation is offered.",
+    "intent_template": "Identify a hotel in Tokyo with a spa and wellness center, rated 9 or above, with availability for a five-night stay starting on December 20, 2024. Check if free cancellation is offered.",
     "instantiation_dict": {},
-    "intent": "Identify a hotel in Tokyo with a spa and wellness center, rated 9 or above, with availability for a five-night stay starting on August 20, 2024. Check if free cancellation is offered.",
+    "intent": "Identify a hotel in Tokyo with a spa and wellness center, rated 9 or above, with availability for a five-night stay starting on December 20, 2024. Check if free cancellation is offered.",
     "require_reset": false,
     "eval": {
       "eval_types": [
@@ -762,9 +762,9 @@
     "storage_state": null,
     "start_url": "https://www.booking.com/",
     "geolocation": null,
-    "intent_template": "Find a hotel in Dubai with a swimming pool, for a week-long stay from August 22 to August 29, 2024.",
+    "intent_template": "Find a hotel in Dubai with a swimming pool, for a week-long stay from December 22 to December 29, 2024.",
     "instantiation_dict": {},
-    "intent": "Find a hotel in Dubai with a swimming pool, for a week-long stay from August 22 to August 29, 2024.",
+    "intent": "Find a hotel in Dubai with a swimming pool, for a week-long stay from December 22 to December 29, 2024.",
     "require_reset": false,
     "eval": {
       "eval_types": [
@@ -1410,9 +1410,9 @@
     "storage_state": null,
     "start_url": "https://www.google.com/travel/flights/",
     "geolocation": null,
-    "intent_template": "Locate the lowest-priced one-way flight from Tokyo to Sydney for an adult, departing on August 25, 2024, and include the flight duration and number of layovers.",
+    "intent_template": "Locate the lowest-priced one-way flight from Tokyo to Sydney for an adult, departing on December 25, 2024, and include the flight duration and number of layovers.",
     "instantiation_dict": {},
-    "intent": "Locate the lowest-priced one-way flight from Tokyo to Sydney for an adult, departing on August 25, 2024, and include the flight duration and number of layovers.",
+    "intent": "Locate the lowest-priced one-way flight from Tokyo to Sydney for an adult, departing on December 25, 2024, and include the flight duration and number of layovers.",
     "require_reset": false,
     "eval": {
       "eval_types": [
@@ -1437,9 +1437,9 @@
     "storage_state": null,
     "start_url": "https://www.google.com/travel/flights/",
     "geolocation": null,
-    "intent_template": "Find a one-way business class flight from Buenos Aires to Amsterdam on October 10, 2024, and provide the details of the flight with the shortest duration.",
+    "intent_template": "Find a one-way business class flight from Buenos Aires to Amsterdam on January 10, 2025, and provide the details of the flight with the shortest duration.",
     "instantiation_dict": {},
-    "intent": "Find a one-way business class flight from Buenos Aires to Amsterdam on October 10, 2024, and provide the details of the flight with the shortest duration.",
+    "intent": "Find a one-way business class flight from Buenos Aires to Amsterdam on January 10, 2025, and provide the details of the flight with the shortest duration.",
     "require_reset": false,
     "eval": {
       "eval_types": [
