@@ -80,7 +80,7 @@ fi
 new_env_file_created=false
 if [ ! -f .env ]; then
     echo "📝 Creating .env file..."
-    cp .env-example .env
+    cp .check-env-example .env
     new_env_file_created=true
 fi
 
