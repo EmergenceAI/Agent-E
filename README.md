@@ -1,5 +1,7 @@
 # Agent-E
-📚 [Cite paper](https://arxiv.org/abs/2407.13032)
+**[Try our cloud version](https://www.emergence.ai/web-automation-api)**
+
+📚 [Cite paper](https://arxiv.org/abs/2407.13032) _Note: The WebVoyager validation used [nested_chat_for_hierarchial_planning branch](https://github.com/EmergenceAI/Agent-E/tree/nested_chat_for_hierarchial_planning) and GPT4-Turbo_
 
 
 Agent-E is an agent based system that aims to automate actions on the user's computer. At the moment it focuses on automation within the browser. The system is based on on [AutoGen agent framework](https://github.com/microsoft/autogen).
