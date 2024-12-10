@@ -1,3 +1,5 @@
+<img src="./docs/images/QR.png" alt="QR code." width="200">
+
 # Agent-E
 **[Try our cloud version](https://www.emergence.ai/web-automation-api)**
 
