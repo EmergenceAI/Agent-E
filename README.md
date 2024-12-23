@@ -346,7 +346,7 @@ If you encounter other issues, please refer to the project’s [GitHub issues](h
 
 ![Agent-E system view](docs/images/agent-e-system-architecture.png?raw=true "Agent-E system view")
 
-Building on the foundation provided by the [AutoGen agent framework](https://github.com/microsoft/autogen), Agent-E's architecture leverages the interplay between skills and agents. Each skill embodies an atomic action, a fundamental building block that, when executed, returns a natural language description of its outcome. This granularity allows Agent-E to flexibly assemble these skills to tackle complex web automation workflows.
+Building on the foundation provided by the [AG2 agent framework](https://docs.ag2.ai/docs/Home) (Formerly AutoGen), Agent-E's architecture leverages the interplay between skills and agents. Each skill embodies an atomic action, a fundamental building block that, when executed, returns a natural language description of its outcome. This granularity allows Agent-E to flexibly assemble these skills to tackle complex web automation workflows.
 
 ![Agent-E AutoGen setup](docs/images/agent-e-autogen-setup.png?raw=true "Agent-E AutoGen setup")
 
