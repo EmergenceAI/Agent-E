@@ -5,7 +5,7 @@ annotated-types==0.7.0
 anthropic==0.36.2
     # via
     #   agent-e (pyproject.toml)
-    #   autogen-agentchat
+    #   autogen
 anyio==4.6.2.post1
     # via
     #   anthropic
@@ -14,7 +14,7 @@ anyio==4.6.2.post1
     #   openai
     #   starlette
     #   watchfiles
-autogen-agentchat==0.2.36
+autogen==0.6.0
     # via agent-e (pyproject.toml)
 cachetools==5.5.0
     # via google-auth
