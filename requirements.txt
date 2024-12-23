@@ -37,7 +37,7 @@ click==8.1.7
 cryptography==43.0.1
     # via pdfminer-six
 diskcache==5.6.3
-    # via autogen-agentchat
+    # via autogen
 distro==1.9.0
     # via
     #   anthropic
@@ -46,7 +46,7 @@ distro==1.9.0
 dnspython==2.7.0
     # via email-validator
 docker==7.1.0
-    # via autogen-agentchat
+    # via autogen
 email-validator==2.2.0
     # via fastapi
 fastapi==0.111.1
@@ -56,7 +56,7 @@ fastapi-cli==0.0.5
 filelock==3.16.1
     # via huggingface-hub
 flaml==2.3.1
-    # via autogen-agentchat
+    # via autogen
 fsspec==2024.9.0
     # via huggingface-hub
 google-ai-generativelanguage==0.6.2
@@ -86,7 +86,7 @@ googleapis-common-protos==1.65.0
 greenlet==3.0.3
     # via playwright
 groq==0.11.0
-    # via autogen-agentchat
+    # via autogen
 grpcio==1.67.0
     # via
     #   google-api-core
@@ -142,7 +142,7 @@ numpy==1.26.4
     #   autogen-agentchat
     #   flaml
 openai==1.52.0
-    # via autogen-agentchat
+    # via autogen
 packaging==24.1
     # via
     #   autogen-agentchat
@@ -235,9 +235,9 @@ starlette==0.37.2
 tabulate==0.9.0
     # via agent-e (pyproject.toml)
 termcolor==2.5.0
-    # via autogen-agentchat
+    # via autogen
 tiktoken==0.8.0
-    # via autogen-agentchat
+    # via autogen
 tokenizers==0.20.1
     # via anthropic
 tqdm==4.66.5
