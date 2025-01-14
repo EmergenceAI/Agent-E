@@ -4,7 +4,7 @@
 [Discord](https://discord.gg/wgNfmFuqJF) &nbsp;&nbsp; [Cite paper](https://arxiv.org/abs/2407.13032) _Note: The WebVoyager validation used [nested_chat_for_hierarchial_planning branch](https://github.com/EmergenceAI/Agent-E/tree/nested_chat_for_hierarchial_planning) and GPT4-Turbo_
 
 
-Agent-E is an agent based system that aims to automate actions on the user's computer. At the moment it focuses on automation within the browser. The system is based on on [AutoGen agent framework](https://github.com/microsoft/autogen).
+Agent-E is an agent based system that aims to automate actions on the user's computer. At the moment it focuses on automation within the browser. The system is based on on [AG2 agent framework](https://docs.ag2.ai/docs/Home).
 
 This provides a natural language way to interacting with a web browser:
 - Fill out forms (web forms not PDF yet) using information about you or from another site
@@ -346,7 +346,7 @@ If you encounter other issues, please refer to the project’s [GitHub issues](h
 
 ![Agent-E system view](docs/images/agent-e-system-architecture.png?raw=true "Agent-E system view")
 
-Building on the foundation provided by the [AutoGen agent framework](https://github.com/microsoft/autogen), Agent-E's architecture leverages the interplay between skills and agents. Each skill embodies an atomic action, a fundamental building block that, when executed, returns a natural language description of its outcome. This granularity allows Agent-E to flexibly assemble these skills to tackle complex web automation workflows.
+Building on the foundation provided by the [AG2 agent framework](https://docs.ag2.ai/docs/Home) (Formerly AutoGen), Agent-E's architecture leverages the interplay between skills and agents. Each skill embodies an atomic action, a fundamental building block that, when executed, returns a natural language description of its outcome. This granularity allows Agent-E to flexibly assemble these skills to tackle complex web automation workflows.
 
 ![Agent-E AutoGen setup](docs/images/agent-e-autogen-setup.png?raw=true "Agent-E AutoGen setup")
 
