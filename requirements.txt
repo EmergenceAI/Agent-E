@@ -2,42 +2,47 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 annotated-types==0.7.0
     # via pydantic
-anthropic==0.36.2
+anthropic==0.43.0
     # via
     #   agent-e (pyproject.toml)
-    #   autogen
-anyio==4.6.2.post1
+    #   pyautogen
+anyio==4.8.0
     # via
     #   anthropic
+    #   asyncer
+    #   fast-depends
     #   groq
     #   httpx
     #   openai
     #   starlette
     #   watchfiles
-autogen==0.6.0
+asyncer==0.0.8
+    # via pyautogen
+autogen==0.7.0
     # via agent-e (pyproject.toml)
 cachetools==5.5.0
     # via google-auth
-certifi==2024.8.30
+certifi==2024.12.14
     # via
     #   httpcore
     #   httpx
     #   requests
 cffi==1.17.1
     # via cryptography
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via
     #   pdfminer-six
     #   requests
-click==8.1.7
+click==8.1.8
     # via
     #   nltk
+    #   rich-toolkit
     #   typer
     #   uvicorn
-cryptography==43.0.1
+cryptography==44.0.0
     # via pdfminer-six
 diskcache==5.6.3
-    # via autogen
+    # via pyautogen
 distro==1.9.0
     # via
     #   anthropic
@@ -46,30 +51,29 @@ distro==1.9.0
 dnspython==2.7.0
     # via email-validator
 docker==7.1.0
-    # via autogen
+    # via pyautogen
 email-validator==2.2.0
     # via fastapi
+fast-depends==2.4.12
+    # via pyautogen
 fastapi==0.111.1
     # via agent-e (pyproject.toml)
-fastapi-cli==0.0.5
+fastapi-cli==0.0.7
     # via fastapi
-filelock==3.16.1
-    # via huggingface-hub
-flaml==2.3.1
-    # via autogen
-fsspec==2024.9.0
-    # via huggingface-hub
+flaml==2.3.3
+    # via pyautogen
 google-ai-generativelanguage==0.6.2
     # via google-generativeai
-google-api-core==2.21.0
+google-api-core==2.24.0
     # via
     #   google-ai-generativelanguage
     #   google-api-python-client
     #   google-generativeai
-google-api-python-client==2.149.0
+google-api-python-client==2.159.0
     # via google-generativeai
-google-auth==2.35.0
+google-auth==2.37.0
     # via
+    #   anthropic
     #   google-ai-generativelanguage
     #   google-api-core
     #   google-api-python-client
@@ -79,15 +83,15 @@ google-auth-httplib2==0.2.0
     # via google-api-python-client
 google-generativeai==0.5.1
     # via agent-e (pyproject.toml)
-googleapis-common-protos==1.65.0
+googleapis-common-protos==1.66.0
     # via
     #   google-api-core
     #   grpcio-status
 greenlet==3.0.3
     # via playwright
-groq==0.11.0
-    # via autogen
-grpcio==1.67.0
+groq==0.15.0
+    # via pyautogen
+grpcio==1.69.0
     # via
     #   google-api-core
     #   grpcio-status
@@ -97,7 +101,7 @@ h11==0.14.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==1.0.6
+httpcore==1.0.7
     # via httpx
 httplib2==0.22.0
     # via
@@ -105,23 +109,21 @@ httplib2==0.22.0
     #   google-auth-httplib2
 httptools==0.6.4
     # via uvicorn
-httpx==0.27.2
+httpx==0.28.1
     # via
     #   anthropic
     #   fastapi
     #   groq
     #   openai
-huggingface-hub==0.25.2
-    # via tokenizers
 idna==3.10
     # via
     #   anyio
     #   email-validator
     #   httpx
     #   requests
-jinja2==3.1.4
+jinja2==3.1.5
     # via fastapi
-jiter==0.6.1
+jiter==0.8.2
     # via
     #   anthropic
     #   openai
@@ -129,7 +131,7 @@ joblib==1.4.2
     # via nltk
 markdown-it-py==3.0.0
     # via rich
-markupsafe==3.0.1
+markupsafe==3.0.2
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
@@ -139,23 +141,21 @@ nltk==3.8.1
     # via agent-e (pyproject.toml)
 numpy==1.26.4
     # via
-    #   autogen-agentchat
     #   flaml
-openai==1.52.0
-    # via autogen
-packaging==24.1
-    # via
-    #   autogen-agentchat
-    #   huggingface-hub
+    #   pyautogen
+openai==1.59.7
+    # via pyautogen
+packaging==24.2
+    # via pyautogen
 pdfminer-six==20231228
     # via pdfplumber
 pdfplumber==0.11.1
     # via agent-e (pyproject.toml)
-pillow==11.0.0
+pillow==11.1.0
     # via pdfplumber
 playwright==1.44.0
     # via agent-e (pyproject.toml)
-proto-plus==1.24.0
+proto-plus==1.25.0
     # via
     #   google-ai-generativelanguage
     #   google-api-core
@@ -173,41 +173,42 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
+pyautogen==0.7.0
+    # via autogen
 pycparser==2.22
     # via cffi
 pydantic==2.6.2
     # via
     #   agent-e (pyproject.toml)
     #   anthropic
-    #   autogen-agentchat
+    #   fast-depends
     #   fastapi
     #   google-generativeai
     #   groq
     #   openai
+    #   pyautogen
 pydantic-core==2.16.3
     # via pydantic
 pyee==11.1.0
     # via playwright
-pygments==2.18.0
+pygments==2.19.1
     # via rich
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via httplib2
-pypdfium2==4.30.0
+pypdfium2==4.30.1
     # via pdfplumber
 python-dotenv==1.0.0
     # via
     #   agent-e (pyproject.toml)
-    #   autogen-agentchat
+    #   pyautogen
     #   uvicorn
 python-json-logger==2.0.7
     # via agent-e (pyproject.toml)
-python-multipart==0.0.12
+python-multipart==0.0.20
     # via fastapi
 pyyaml==6.0.2
-    # via
-    #   huggingface-hub
-    #   uvicorn
-regex==2024.9.11
+    # via uvicorn
+regex==2024.11.6
     # via
     #   nltk
     #   tiktoken
@@ -215,10 +216,13 @@ requests==2.32.3
     # via
     #   docker
     #   google-api-core
-    #   huggingface-hub
     #   tiktoken
-rich==13.9.2
-    # via typer
+rich==13.9.4
+    # via
+    #   rich-toolkit
+    #   typer
+rich-toolkit==0.13.2
+    # via fastapi-cli
 rsa==4.9
     # via google-auth
 shellingham==1.5.4
@@ -228,41 +232,38 @@ sniffio==1.3.1
     #   anthropic
     #   anyio
     #   groq
-    #   httpx
     #   openai
 starlette==0.37.2
     # via fastapi
 tabulate==0.9.0
     # via agent-e (pyproject.toml)
 termcolor==2.5.0
-    # via autogen
+    # via pyautogen
 tiktoken==0.8.0
-    # via autogen
-tokenizers==0.20.1
-    # via anthropic
-tqdm==4.66.5
+    # via pyautogen
+tqdm==4.67.1
     # via
     #   google-generativeai
-    #   huggingface-hub
     #   nltk
     #   openai
-typer==0.12.5
+typer==0.15.1
     # via fastapi-cli
 typing-extensions==4.12.2
     # via
     #   anthropic
+    #   anyio
     #   fastapi
     #   google-generativeai
     #   groq
-    #   huggingface-hub
     #   openai
     #   pydantic
     #   pydantic-core
     #   pyee
+    #   rich-toolkit
     #   typer
 uritemplate==4.1.1
     # via google-api-python-client
-urllib3==2.2.3
+urllib3==2.3.0
     # via
     #   docker
     #   requests
@@ -273,7 +274,9 @@ uvicorn==0.30.3
     #   fastapi-cli
 uvloop==0.21.0
     # via uvicorn
-watchfiles==0.24.0
+watchfiles==1.0.4
     # via uvicorn
-websockets==13.1
-    # via uvicorn
+websockets==14.1
+    # via
+    #   pyautogen
+    #   uvicorn
