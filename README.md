@@ -1,5 +1,7 @@
 # Agent-E
-**[Try our cloud version](https://www.emergence.ai/web-automation-api)**
+**Free Trial: Managed Web Agent & Orchestrator**<br>
+Try our Web Agent (Agent-E with enterprise enhancements) and multi-agent orchestrator. Access features such as advanced logging, role-based access, and cloud-hosted scalable infrastructure, backed by expert support. Sign up [here](https://www.emergence.ai/orchestrator)
+
 
 [Discord](https://discord.gg/wgNfmFuqJF) &nbsp;&nbsp; [Cite paper](https://arxiv.org/abs/2407.13032) _Note: The WebVoyager validation used [nested_chat_for_hierarchial_planning branch](https://github.com/EmergenceAI/Agent-E/tree/nested_chat_for_hierarchial_planning) and GPT4-Turbo_
 
