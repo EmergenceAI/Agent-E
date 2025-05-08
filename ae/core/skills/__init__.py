@@ -16,3 +16,5 @@ from ae.core.skills.get_user_input import get_user_input
 from ae.core.skills.open_url import openurl
 
 from ae.core.skills.press_key_combination import press_key_combination
+
+from ae.core.skills.wait import wait
