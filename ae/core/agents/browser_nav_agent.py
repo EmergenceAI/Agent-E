@@ -17,6 +17,7 @@ from ae.core.skills.get_dom_with_content_type import get_dom_with_content_type
 from ae.core.skills.get_url import geturl
 from ae.core.skills.open_url import openurl
 from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
+from ae.core.skills.wait import wait
 
 #from ae.core.skills.pdf_text_extractor import extract_text_from_pdf
 from ae.core.skills.press_key_combination import press_key_combination
@@ -104,6 +105,9 @@ class BrowserNavAgent:
 
         self.agent.register_for_llm(description=LLM_PROMPTS["EXTRACT_TEXT_FROM_PDF_PROMPT"])(extract_text_from_pdf)
         self.browser_nav_executor.register_for_execution()(extract_text_from_pdf)
+        
+        self.agent.register_for_llm(description=LLM_PROMPTS["WAIT_PROMPT"])(wait)
+        self.browser_nav_executor.register_for_execution()(wait)
 
         '''
         # Register reply function for printing messages
