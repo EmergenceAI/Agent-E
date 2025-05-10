@@ -17,4 +17,4 @@ from ae.core.skills.open_url import openurl
 
 from ae.core.skills.press_key_combination import press_key_combination
 
-from ae.core.skills.wait import wait
+from ae.core.skills.pause_flow import pause_flow
