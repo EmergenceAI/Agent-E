@@ -182,4 +182,6 @@ Some basic information about the user: $basic_user_information""",
    By following these guidelines, you will enhance the efficiency, reliability, and user interaction of your web navigation tasks.
    Always aim for clear, concise, and well-structured code that aligns with best practices in asynchronous programming and web automation.
    """,
+
+   "PAUSE_FLOW_PROMPT": """Pauses execution for a specified number of seconds. This skill is useful for waiting for page elements to load, animations to complete, or implementing timed delays between actions. The skill accepts an integer or float parameter specifying the duration in seconds and returns a confirmation message after the pause completes.""",
 }
