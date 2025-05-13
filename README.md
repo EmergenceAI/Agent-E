@@ -6,7 +6,7 @@ Try our Web Agent (Agent-E with enterprise enhancements) and multi-agent orchest
 [Discord](https://discord.gg/wgNfmFuqJF) &nbsp;&nbsp; [Cite paper](https://arxiv.org/abs/2407.13032) _Note: The WebVoyager validation used [nested_chat_for_hierarchial_planning branch](https://github.com/EmergenceAI/Agent-E/tree/nested_chat_for_hierarchial_planning) and GPT4-Turbo_
 
 
-Agent-E is an agent based system that aims to automate actions on the user's computer. At the moment it focuses on automation within the browser. The system is based on on [AG2 agent framework](https://docs.ag2.ai/docs/Home).
+Agent-E is an agent based system that aims to automate actions on the user's computer. At the moment it focuses on automation within the browser. The system is based on on [AG2 agent framework](https://docs.ag2.ai/docs/Home) (Formerly AutoGen). This project is also collected in [Build with AG2](https://github.com/ag2ai/build-with-ag2), where you can find more projects built with AG2!
 
 This provides a natural language way to interacting with a web browser:
 - Fill out forms (web forms not PDF yet) using information about you or from another site
