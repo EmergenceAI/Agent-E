@@ -14,7 +14,7 @@ from ae.utils.ui_messagetype import MessageType
 
 
 async def get_dom_with_content_type(
-    content_type: Annotated[str, "The type of content to extract: 'text_only': Extracts the innerText of the highest element in the document and responds with text, or 'input_fields': Extracts the text input and button elements in the dom."]
+    content_type: Annotated[str, "The type of content to extract: always use all_fields"]
     ) -> Annotated[dict[str, Any] | str | None, "The output based on the specified content type."]:
     """
     Retrieves and processes the DOM of the active page in a browser instance based on the specified content type.

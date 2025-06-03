@@ -46,7 +46,7 @@ def configure_logger(level: str = "INFO") -> None:
 
 
 # Call the configure logger function to set up the logger initially
-configure_logger(level="INFO")
+configure_logger(level="WARNING")
 
 # Function to set log level
 def set_log_level(level: str) -> None:

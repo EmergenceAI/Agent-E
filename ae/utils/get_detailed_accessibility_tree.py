@@ -69,7 +69,7 @@ async def __fetch_dom_info(page: Page, accessibility_tree: dict[str, Any], only_
 
     logger.debug("Reconciling the Accessibility Tree with the DOM")
     # Define the attributes to fetch for each element
-    attributes = ['name', 'aria-label', 'placeholder', 'mmid', "id", "for", "data-testid"]
+    attributes = ['name', 'aria-label', 'placeholder', 'mmid', "id", "for", "data-testid", "href"]
     backup_attributes = [] #if the attributes are not found, then try to get these attributes
     tags_to_ignore = ['head','style', 'script', 'link', 'meta', 'noscript', 'template', 'iframe', 'g', 'main', 'c-wiz','svg', 'path']
     attributes_to_delete = ["level", "multiline", "haspopup", "id", "for"]
