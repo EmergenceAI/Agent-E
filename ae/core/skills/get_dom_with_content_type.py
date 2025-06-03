@@ -14,7 +14,7 @@ from ae.utils.ui_messagetype import MessageType
 
 
 async def get_dom_with_content_type(
-    content_type: Annotated[str, "The type of content to extract: always use all_fields"]
+    content_type: Annotated[str, "The type of content to extract: always use links_only"]
     ) -> Annotated[dict[str, Any] | str | None, "The output based on the specified content type."]:
     """
     Retrieves and processes the DOM of the active page in a browser instance based on the specified content type.
@@ -55,6 +55,16 @@ async def get_dom_with_content_type(
     if content_type == 'all_fields':
         user_success_message = "Fetched all the fields in the DOM"
         extracted_data = await do_get_accessibility_info(page, only_input_fields=False)
+    elif content_type == 'links_only':
+        logger.debug('Fetching DOM for only_links')
+        extracted_data = await do_get_accessibility_info(page, only_input_fields=False)
+        if extracted_data is None:
+            return "Could not fetch links. Please consider trying with content_type all_fields."
+        json_data = extracted_data.get('children', [])
+        if len(json_data)> 0:
+            # Filter out only links that have href attribute
+            extracted_data = [item for item in json_data if item.get('tag') in ['a', 'button'] or item.get('role') in ['link', 'button'] ]
+        user_success_message = "Fetched only links in the DOM"
     elif content_type == 'input_fields':
         logger.debug('Fetching DOM for input_fields')
         extracted_data = await do_get_accessibility_info(page, only_input_fields=True)

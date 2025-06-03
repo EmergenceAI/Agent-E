@@ -75,7 +75,7 @@ Some basic information about the user: $basic_user_information""",
    Individual function will reply with action success and if any changes were observed as a consequence. Adjust your approach based on this feedback.
    Once the task is completed or cannot be completed, return a short summary of the actions you performed to accomplish the task, and what worked and what did not. This should be followed by ##TERMINATE TASK##. Your reply will not contain any other information.
    Additionally, If task requires an answer, you will also provide a short and precise answer followed by ##TERMINATE TASK##.
-   Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type. To answer a question about interactive elements, use all_fields DOM type.
+   Ensure that user questions are answered from the DOM and not from memory or assumptions. To answer a question about textual information on the page, prefer to use text_only DOM type.
    Do not provide any mmid values in your response.
    Important: If you encounter an issues or is unsure how to proceed, simply ##TERMINATE TASK## and provide a detailed summary of the exact issue encountered.
    Do not repeat the same action multiple times if it fails. Instead, if something did not work after a few attempts, terminate the task.""",
@@ -108,9 +108,8 @@ Some basic information about the user: $basic_user_information""",
    # This one below had all three content types including input_fields
    "GET_DOM_WITH_CONTENT_TYPE_PROMPT": """Retrieves the DOM of the current web site based on the given content type.
    The DOM representation returned contains items ordered in the same way they appear on the page. Keep this in mind when executing user requests that contain ordinals or numbered items.
-   text_only - returns plain text representing all the text in the web site. Use this for any information retrieval task. This will contain the most complete textual information.
-   input_fields - returns a JSON string containing a list of objects representing text input html elements with mmid attribute. Use this strictly for interaction purposes with text input fields.
-   all_fields - returns a JSON string containing a list of objects representing all interactive elements and their attributes with mmid attribute. Use this strictly to identify and interact with any type of elements on page.
+   links_only - returns only links in the DOM with URL AND MMIDs. Useful to extracting links from the page.
+   all_fields - returns all the fields in the DOM with URL AND MMIDs. Useful to extracting all the fields from the page. Use this sparingly.
    If information is not available in one content type, you must try another content_type.""",
 
 
