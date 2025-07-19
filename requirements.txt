@@ -5,7 +5,7 @@ annotated-types==0.7.0
 anthropic==0.43.0
     # via
     #   agent-e (pyproject.toml)
-    #   pyautogen
+    #   ag2
 anyio==4.8.0
     # via
     #   anthropic
@@ -17,7 +17,7 @@ anyio==4.8.0
     #   starlette
     #   watchfiles
 asyncer==0.0.8
-    # via pyautogen
+    # via ag2
 autogen==0.7.0
     # via agent-e (pyproject.toml)
 cachetools==5.5.0
@@ -42,7 +42,7 @@ click==8.1.8
 cryptography==44.0.0
     # via pdfminer-six
 diskcache==5.6.3
-    # via pyautogen
+    # via ag2
 distro==1.9.0
     # via
     #   anthropic
@@ -51,17 +51,17 @@ distro==1.9.0
 dnspython==2.7.0
     # via email-validator
 docker==7.1.0
-    # via pyautogen
+    # via ag2
 email-validator==2.2.0
     # via fastapi
 fast-depends==2.4.12
-    # via pyautogen
+    # via ag2
 fastapi==0.111.1
     # via agent-e (pyproject.toml)
 fastapi-cli==0.0.7
     # via fastapi
 flaml==2.3.3
-    # via pyautogen
+    # via ag2
 google-ai-generativelanguage==0.6.2
     # via google-generativeai
 google-api-core==2.24.0
@@ -90,7 +90,7 @@ googleapis-common-protos==1.66.0
 greenlet==3.0.3
     # via playwright
 groq==0.15.0
-    # via pyautogen
+    # via ag2
 grpcio==1.69.0
     # via
     #   google-api-core
@@ -142,11 +142,11 @@ nltk==3.8.1
 numpy==1.26.4
     # via
     #   flaml
-    #   pyautogen
+    #   ag2
 openai==1.59.7
-    # via pyautogen
+    # via ag2
 packaging==24.2
-    # via pyautogen
+    # via ag2
 pdfminer-six==20231228
     # via pdfplumber
 pdfplumber==0.11.1
@@ -173,7 +173,7 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
-pyautogen==0.7.0
+ag2==0.7.0
     # via autogen
 pycparser==2.22
     # via cffi
@@ -186,7 +186,7 @@ pydantic==2.6.2
     #   google-generativeai
     #   groq
     #   openai
-    #   pyautogen
+    #   ag2
 pydantic-core==2.16.3
     # via pydantic
 pyee==11.1.0
@@ -200,7 +200,7 @@ pypdfium2==4.30.1
 python-dotenv==1.0.0
     # via
     #   agent-e (pyproject.toml)
-    #   pyautogen
+    #   ag2
     #   uvicorn
 python-json-logger==2.0.7
     # via agent-e (pyproject.toml)
@@ -238,9 +238,9 @@ starlette==0.37.2
 tabulate==0.9.0
     # via agent-e (pyproject.toml)
 termcolor==2.5.0
-    # via pyautogen
+    # via ag2
 tiktoken==0.8.0
-    # via pyautogen
+    # via ag2
 tqdm==4.67.1
     # via
     #   google-generativeai
@@ -278,5 +278,5 @@ watchfiles==1.0.4
     # via uvicorn
 websockets==14.1
     # via
-    #   pyautogen
+    #   ag2
     #   uvicorn
