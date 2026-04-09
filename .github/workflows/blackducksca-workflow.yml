@@ -1,0 +1,31 @@
+# Quickstart: Black Duck Security Scan Action with blackducksca:
+#     https://documentation.blackduck.com/bundle/bridge/page/documentation/t_github-blackduck-quickstart.html
+name: Black Duck Security Scan
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch: {}
+jobs:
+  blackducksca:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Black Duck Security Scan
+        id: black-duck-security-scan
+        uses: blackduck-inc/black-duck-security-scan@v2
+        with:
+          blackducksca_url: ${{ vars.BLACKDUCKSCA_URL }}
+          blackducksca_token: ${{ secrets.BLACKDUCKSCA_TOKEN }}
+          blackducksca_scan_full: true
+          blackducksca_scan_failure_severities: 'NONE'
+          mark_build_status: success
+        env:
+          DETECT_PROJECT_VERSION_NAME: master
+        continue-on-error: true
