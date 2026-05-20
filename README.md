@@ -156,6 +156,17 @@ Agent-E relies on several environment variables for its configuration. You need 
 
 - **`PLANNER_USER_INPUT_SKILL_ENABLED`** *(optional)*
   Set to `true` or `false` (Default: `false`). Specifies whether to allow the planner agent to get user input or not.
+
+### OpenAI-compatible gateways
+
+Agent-E can also use OpenAI-compatible gateways by setting the model base URL.
+For example, to route through Tuning Engines:
+
+```bash
+AUTOGEN_MODEL_NAME=<YOUR_MODEL_ALIAS>
+AUTOGEN_MODEL_API_KEY=sk-te-...
+AUTOGEN_MODEL_BASE_URL=https://api.tuningengines.com/v1
+```
   
 ## Running the Code
 
@@ -220,6 +231,26 @@ AGENTS_LLM_CONFIG_FILE_REF_KEY=openai_gpt
 ```
 A sample JSON config file is provided in the project root: `agents_llm_config-example.json`.
 
+The same Tuning Engines endpoint can be configured in JSON by setting
+`AGENTS_LLM_CONFIG_FILE_REF_KEY=tuning_engines` and `model_base_url` for both
+agents:
+
+```json
+{
+  "tuning_engines": {
+    "planner_agent": {
+      "model_name": "<YOUR_MODEL_ALIAS>",
+      "model_api_key": "sk-te-...",
+      "model_base_url": "https://api.tuningengines.com/v1"
+    },
+    "browser_nav_agent": {
+      "model_name": "<YOUR_MODEL_ALIAS>",
+      "model_api_key": "sk-te-...",
+      "model_base_url": "https://api.tuningengines.com/v1"
+    }
+  }
+}
+```
 
 #### Default Values for LLM Parameters
 If you do not set `temperature`, `top_p`, or `seed` in your `.env` file or JSON configuration, Agent-E will use the following default values:
@@ -597,5 +628,4 @@ Here are some features and improvements planned for future releases of Agent-E:
 - ~~**Action Verification**: Implement response for every skill that reflects DOM changes (using Mutation Observers), so the LLM can judge if the skill executed properly.~~
 - ~~**Execution Planner**: Develop a planner agent that can make the LLM decide on multiple steps ahead for faster execution.~~
 - ~~[Nested chat did the trick]**Group Chat**: Enable group chat features and move some skills to different agents.~~
-
 
