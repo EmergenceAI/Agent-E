@@ -143,7 +143,7 @@ Some basic information about the user: $basic_user_information""",
 
 
    "PRESS_KEY_COMBINATION_PROMPT": """Presses the given key on the current web page.
-   This is useful for pressing the enter button to submit a search query, PageDown to scroll, ArrowDown to change selection in a focussed list etc.""",
+   This is useful for pressing the enter button to submit a search query, PageDown to scroll, ArrowDown to change selection in a focused list etc.""",
 
 
    "ADD_TO_MEMORY_PROMPT": """"Save any information that you may need later in this term memory. This could be useful for saving things to do, saving information for personalisation, or even saving information you may need in future for efficiency purposes E.g. Remember to call John at 5pm, This user likes Tesla company and considered buying shares, The user enrollment form is available in <url> etc.""",
