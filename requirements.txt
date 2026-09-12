@@ -137,7 +137,7 @@ mdurl==0.1.2
     # via markdown-it-py
 nest-asyncio==1.6.0
     # via agent-e (pyproject.toml)
-nltk==3.8.1
+nltk==3.10.3
     # via agent-e (pyproject.toml)
 numpy==1.26.4
     # via
